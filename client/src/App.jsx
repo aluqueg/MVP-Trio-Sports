@@ -1,12 +1,14 @@
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {Container} from 'react-bootstrap'
+import { AppRoutes } from './routes/AppRoutes';
 
 function App() {
 
   return (
-    <>
-      Hola TRIO Sport!
-    </>
+    <Container fluid>
+      <AppRoutes />
+    </Container>
   )
 }
 

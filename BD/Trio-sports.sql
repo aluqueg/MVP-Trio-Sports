@@ -79,6 +79,110 @@ CREATE TABLE comment (
     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
     
+INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
+VALUES ('Juan', 'Pérez', '1990-05-15', 'Masculino', 'juan_perez.jpg', 'Madrid', 'juan.perez@example.com', 'password123', 'Amante de la tecnología y la programación.', '2024-08-13 12:00:00', 1, 0, 2);
+
+INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
+VALUES ('María', 'López', '1985-10-20', 'Femenino', 'maria_lopez.jpg', 'Barcelona', 'maria.lopez@example.com', 'securepass456', 'Diseñadora gráfica apasionada por el arte.', '2024-08-13 12:30:00', 1, 0, 2);
+
+INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
+VALUES ('Carlos', 'González', '1978-03-12', 'Masculino', 'carlos_gonzalez.jpg', 'Valencia', 'carlos.gonzalez@example.com', 'mypassword789', 'Ingeniero en sistemas, apasionado por la música.', '2024-08-13 13:00:00', 1, 0, 2);
+
+INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
+VALUES ('Ana', 'Martínez', '1995-07-30', 'Femenino', 'ana_martinez.jpg', 'Sevilla', 'ana.martinez@example.com', 'ana_securepass', 'Administradora de empresas con interés en el marketing.', '2024-08-13 13:30:00', 0, 0, 2);
     
+-- MENSAJES
     
+INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
+VALUES ('¿Te apuntas a la carrera de 10K el próximo domingo?', '2024-08-13 09:15:00', 1, 2, FALSE);
+
+INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
+VALUES ('¡Claro! He estado entrenando duro. ¿Cómo va tu preparación?', '2024-08-13 09:30:00', 2, 1, TRUE);
+
+INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
+VALUES ('Bastante bien, ayer hice 50 km en bicicleta. ¿Y tú?', '2024-08-12 17:45:00', 3, 4, FALSE);
+
+INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
+VALUES ('Yo estuve en el gimnasio, levantando pesas. Luego jugué un partido de tenis.', '2024-08-13 08:00:00', 4, 3, TRUE);
     
+-- sport
+
+INSERT INTO sport (sport_name)
+VALUES ('Fútbol');
+
+INSERT INTO sport (sport_name)
+VALUES ('Ciclismo');
+
+INSERT INTO sport (sport_name)
+VALUES ('Tenis');
+
+INSERT INTO sport (sport_name)
+VALUES ('Atletismo');
+
+-- Practice
+
+INSERT INTO practice (sport_id, user_id)
+VALUES (1, 1);
+
+INSERT INTO practice (sport_id, user_id)
+VALUES (2, 1);
+
+INSERT INTO practice (sport_id, user_id)
+VALUES (2, 2);
+
+INSERT INTO practice (sport_id, user_id)
+VALUES (3, 2);
+
+INSERT INTO practice (sport_id, user_id)
+VALUES (3, 3);
+
+INSERT INTO practice (sport_id, user_id)
+VALUES (4, 3);
+
+INSERT INTO practice (sport_id, user_id)
+VALUES (4, 4);
+
+INSERT INTO practice (sport_id, user_id)
+VALUES (1, 4);
+
+-- Activity
+
+INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
+VALUES ('2024-08-16 09:00:00', 4, 'Partido amistoso de tenis en la cancha', 'Barcelona', 'Participa en un amistoso torneo de tenis. No olvides tu raqueta y pelotas.', 2, 3, 'https://maps.example.com/abc');
+
+INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
+VALUES ('2024-08-17 07:00:00', NULL, 'Ruta en bicicleta por la montaña', 'Valencia', 'Acompáñanos en una ruta en bicicleta por los senderos de montaña. Lleva tu bicicleta en buen estado y equipo de protección.', 3, 2, 'https://maps.example.com/def');
+
+INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
+VALUES ('2024-08-19 10:00:00', 10, 'Competencia de atletismo en el estadio', 'Sevilla', 'Participa en una competencia de atletismo en el estadio local. Prepárate para las pruebas de velocidad y resistencia.', 4, 4, 'https://maps.example.com/ghi');
+
+INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
+VALUES ('2024-08-19 10:00:00', 10, 'Partido de fútbol amistoso en el campo de deportes', 'Madrid', 'Únete a un divertido partido de fútbol en el campo de deportes. Asegúrate de llevar tu equipo y estar listo para jugar.', 1, 1, 'https://maps.example.com/jkl');
+
+-- Participate
+
+INSERT INTO participate (activity_id, user_id, date_time_participate)
+VALUES (1, 2, '2024-08-16 08:45:00');
+
+INSERT INTO participate (activity_id, user_id, date_time_participate)
+VALUES (2, 3, '2024-08-17 06:50:00');
+
+INSERT INTO participate (activity_id, user_id, date_time_participate)
+VALUES (3, 4, '2024-08-19 09:30:00');
+
+INSERT INTO participate (activity_id, user_id, date_time_participate)
+VALUES (4, 1, '2024-08-19 09:00:00');
+
+-- comment
+
+INSERT INTO comment (activity_id, comment_id, user_id, text)
+VALUES (1, 1, 2, '¡Fue un partido de tenis genial! La cancha estaba en excelentes condiciones y el ambiente muy competitivo.');
+
+INSERT INTO comment (activity_id, comment_id, user_id, text)
+VALUES (2, 1, 3, 'La ruta en bicicleta fue increíble. Los senderos eran impresionantes, y el paisaje espectacular.');
+
+INSERT INTO comment (activity_id, comment_id, user_id, text)
+VALUES (3, 1, 4, 'La competencia de atletismo estuvo muy bien organizada. Las pruebas fueron emocionantes y el ambiente muy motivador.');
+
+INSERT INTO comment (activity_id, comment_id, user_id, text)
+VALUES (4, 1, 1, 'El partido de fútbol fue muy divertido. Todos jugamos bien y la coordinación del equipo fue excelente.');
