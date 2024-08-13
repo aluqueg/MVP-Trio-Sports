@@ -1,14 +1,16 @@
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Container} from 'react-bootstrap'
 import { AppRoutes } from './routes/AppRoutes';
+import { TrioContextProvider } from './context/TrioContextProvider';
 
 function App() {
 
   return (
-    <Container fluid>
-      <AppRoutes />
-    </Container>
+    <>
+    <TrioContextProvider>
+      <AppRoutes/>
+    </TrioContextProvider>
+    </>
   )
 }
 

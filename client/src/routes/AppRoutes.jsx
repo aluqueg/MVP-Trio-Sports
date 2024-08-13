@@ -8,9 +8,11 @@ import { Chats } from '../pages/Chats/Chats'
 import { Profile } from '../pages/Profile/Profile'
 import { ErrorPage } from '../pages/ErrorPage/ErrorPage'
 import { Login } from '../pages/Auth/Login/Login'
-import { Register } from '../pages/Auth/Register/Register'
 import { Row } from 'react-bootstrap'
 import { NavBarApp } from '../components/NavBarApp/NavBarApp'
+import { Register } from "../pages/Auth/Register/Register"
+import { Email } from "../pages/Auth/Register/Email"
+import { Name } from "../pages/Auth/Register/Name"
 
 export const AppRoutes = () => {
   return (
@@ -27,7 +29,10 @@ export const AppRoutes = () => {
         <Route path='/chats' element={<Chats />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
+        <Route path='/register' element={<Register/>}>
+         <Route index element={<Email/>}/>
+         <Route path="name" element={<Name/>}/>
+        </Route> 
         <Route path='*' element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
