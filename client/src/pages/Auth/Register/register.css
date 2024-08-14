@@ -1,0 +1,23 @@
+.button-color{
+  background-color: lightgray;
+  border-color: lightgray;
+}
+
+.generos{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  background-color: grey;
+  width: 500px;
+  max-height: 200px;
+
+}
+.all_generos{
+  max-height: 150px;
+  overflow-y: auto;
+}
+.prueba{
+  background-color:rgba(219, 74, 43, 1) ;
+}
