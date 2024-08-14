@@ -18,42 +18,40 @@ const initialValueMsg = {
 };
 
 export const Login = () => {
-  const { user, setUser } = useContext(TrioContext);
+  const { user, setUser , setToken} = useContext(TrioContext);
   const [login, setLogin] = useState(initialValue);
   const [msg, setMsg] = useState(initialValueMsg);
-
   const navigate = useNavigate();
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLogin({ ...login, [name]: value });
   };
-
   const onSubmit = async () => {
     if (!login.email || !login.password) {
       setMsg({ text: "Debes cumplimentar todos los campos", show: true });
+      return
     }
 
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/users/login",
+        "http://localhost:3000/api/users/login",
         login
       );
       let token = res.data;
-      console.log(token);
 
       localStorage.setItem("token", token);
 
-      const response = await axios.get("http://localhost:4000/users/profile", {
-        Bearer: { Authorization: `Bearer ${token}` },
+      const response = await axios.get("http://localhost:3000/api/users/profile", {
+        headers: { Authorization: `Bearer ${token}` }
       });
 
-      setUser(response.data.resultUser);
-      //setToken(token)
+      setUser(response.data);
+      setToken(token)
+      console.log(response.data)
 
-      if (response.data.resultUser.type === 2) {
+      if (response.data.type === 2) {
         navigate("/allActivities");
-      } else if (response.data.resultUser.type === 1) {
+      } else if (response.data.type === 1) {
         //setUserAdmin(res.data)
         navigate("/admin");
       }
@@ -68,7 +66,6 @@ export const Login = () => {
       }
     }
   };
-
   return (
     <div>
       <Form>
