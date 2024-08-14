@@ -1,8 +1,107 @@
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import { TrioContext } from "../../../context/TrioContextProvider";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+//valor inicial login
+const initialValue = {
+  email: "",
+  password: "",
+};
+
+//valor inicial mensaje
+const initialValueMsg = {
+  text: "",
+  show: false,
+};
 
 export const Login = () => {
+  const { user, setUser } = useContext(TrioContext);
+  const [login, setLogin] = useState(initialValue);
+  const [msg, setMsg] = useState(initialValueMsg);
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLogin({ ...login, [name]: value });
+  };
+
+  const onSubmit = async () => {
+    if (!login.email || !login.password) {
+      setMsg({ text: "Debes cumplimentar todos los campos", show: true });
+    }
+
+    try {
+      const res = await axios.post(
+        "http://localhost:4000/api/users/login",
+        login
+      );
+      let token = res.data;
+      console.log(token);
+
+      localStorage.setItem("token", token);
+
+      const response = await axios.get("http://localhost:4000/users/profile", {
+        Bearer: { Authorization: `Bearer ${token}` },
+      });
+
+      setUser(response.data.resultUser);
+      //setToken(token)
+
+      if (response.data.resultUser.type === 2) {
+        navigate("/allActivities");
+      } else if (response.data.resultUser.type === 1) {
+        //setUserAdmin(res.data)
+        navigate("/admin");
+      }
+    } catch (err) {
+      console.log(err);
+
+      if (err.response.status === 401) {
+        setMsg({
+          show: true,
+          text: err.response.data,
+        });
+      }
+    }
+  };
+
   return (
-    <>
-    Login
-    </>
-  )
-}
+    <div>
+      <Form>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Control
+            type="email"
+            placeholder="Correo electrónico"
+            name="email"
+            value={login.email}
+            onChange={handleChange}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            name="password"
+            value={login.password}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        {msg.show && <p>{msg.text}</p>}
+
+        <Button variant="primary" onClick={onSubmit}>
+          Inicia sesión
+        </Button>
+      </Form>
+      <p>¿Has olvidado la contraseña?</p>
+      <hr />
+
+      <Button>Crea cuenta nueva</Button>
+    </div>
+  );
+};
