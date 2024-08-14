@@ -8,7 +8,7 @@ import { Chats } from '../pages/Chats/Chats'
 import { Profile } from '../pages/Profile/Profile'
 import { ErrorPage } from '../pages/ErrorPage/ErrorPage'
 import { Login } from '../pages/Auth/Login/Login'
-import { Row } from 'react-bootstrap'
+import { Container, Row } from 'react-bootstrap'
 import { NavBarApp } from '../components/NavBarApp/NavBarApp'
 import { Register } from "../pages/Auth/Register/Register"
 import { Email } from "../pages/Auth/Register/Email"
@@ -20,6 +20,7 @@ export const AppRoutes = () => {
       <Row>
         <NavBarApp />
       </Row>
+      <Container fluid='xl'>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/allActivities' element={<AllActivities />} />
@@ -35,6 +36,7 @@ export const AppRoutes = () => {
         </Route> 
         <Route path='*' element={<ErrorPage />} />
       </Routes>
+      </Container>
     </BrowserRouter>
   )
 }
