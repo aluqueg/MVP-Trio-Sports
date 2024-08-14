@@ -3,6 +3,12 @@ import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
 import "./register.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { getMonth, getYear, format } from "date-fns";
+import { setDefaultLocale } from "react-datepicker";
+import { es } from "date-fns/locale/es";
+setDefaultLocale("es");
 
 export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
@@ -31,7 +37,7 @@ export const Register = () => {
     "Noviembre",
     "Diciembre",
   ];
-  const days = (month) => {
+/*   const days = (month) => {
     let day = "";
     if (
       month == "Enero" ||
@@ -54,23 +60,35 @@ export const Register = () => {
       day = 28;
     }
     return day;
+  }; */
+  const range = (start, end, step = 1) => {
+    let output = [];
+    for (let i = start; i < end; i += step) {
+      output.push(i);
+    }
+    return output;
   };
-
-  const [birthDate, setBirthDate] = useState({});
-  const handleBirthDate = (e) => {
+  const [defaultDate,setDefaultDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(new Date());
+  const years = range(1990, getYear(new Date()) + 1, 1);
+  /* const [birthDate, setBirthDate] = useState({}); */
+ /*  const handleBirthDate = (e) => {
     const { name, value } = e.target;
     setBirthDate({ ...birthDate, [name]: value });
-  };
-  const getDays = Array.from(
+  }; */
+  /* const getDays = Array.from(
     { length: days(birthDate?.month) },
     (_, i) => i + 1
-  );
-  const getYEars = Array.from({ length: 100 }, (_, i) => i + 1 + 1924);
+  ); */
+  /* const getYEars = Array.from({ length: 100 }, (_, i) => i + 1 + 1924); */
   const continuarBirthDate = () => {
     setpage(page + 1);
-    const Date = `${birthDate.day}-${birthDate.month}-${birthDate.year}`;
+    const Date = format(startDate, `dd-MM-yyyy`);
     setUserRegister({ ...userRegister, date: Date });
   };
+
+  /* GENERO */
+
   const [noBinario, setNoBinario] = useState(false);
   const selectNobinario = () => setNoBinario(!noBinario);
   const sportsList = ["Fútbol", "Baloncesto", "Tenis", "Natación"];
@@ -164,62 +182,67 @@ export const Register = () => {
         {/* CUMPLEAÑOS */}
         {page === 2 ? (
           <>
-            <Form.Group className="mb-3" controlId="day">
-              <Form.Label>Dia</Form.Label>
-              <Form.Control
-                as="select"
-                name="day"
-                onChange={handleBirthDate}
-                value={birthDate?.day}
-              >
-                {birthDate?.month ? (
-                  <option value="">Selecciona un dia</option>
-                ) : (
-                  <option>Elige mes primero</option>
-                )}
-                {getDays.map((e, idx) => (
-                  <option key={idx} value={e}>
-                    {e}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
+            <DatePicker
+              locale={es}
+              renderCustomHeader={({
+                date,
+                changeYear,
+                changeMonth,
+                decreaseMonth,
+                increaseMonth,
+                prevMonthButtonDisabled,
+                nextMonthButtonDisabled,
+              }) => (
+                <div
+                  style={{
+                    margin: 10,
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <button
+                    onClick={decreaseMonth}
+                    disabled={prevMonthButtonDisabled}
+                  >
+                    {"<"}
+                  </button>
+                  <select
+                    value={getYear(date)}
+                    onChange={({ target: { value } }) => changeYear(value)}
+                  >
+                    {years.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
 
-            <Form.Group className="mb-3" controlId="month">
-              <Form.Label>Mes</Form.Label>
-              <Form.Control
-                as="select"
-                name="month"
-                onChange={handleBirthDate}
-                value={birthDate?.month}
-              >
-                <option value="">Selecciona un mes</option>
-                {months.map((e, idx) => (
-                  <option key={idx} value={e}>
-                    {e}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
+                  <select
+                    value={months[getMonth(date)]}
+                    onChange={({ target: { value } }) =>
+                      changeMonth(months.indexOf(value))
+                    }
+                  >
+                    {months.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
 
-            <Form.Group className="mb-3" controlId="year">
-              <Form.Label>Año</Form.Label>
-              <Form.Control
-                as="select"
-                name="year"
-                onChange={handleBirthDate}
-                value={birthDate?.year}
-              >
-                <option value="">Selecciona un año</option>
-                {getYEars.map((e, idx) => (
-                  <option key={idx} value={e}>
-                    {e}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
+                  <button
+                    onClick={increaseMonth}
+                    disabled={nextMonthButtonDisabled}
+                  >
+                    {">"}
+                  </button>
+                </div>
+              )}
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+            />
             <Button onClick={volver}>Volver</Button>
-            {!birthDate?.day || !birthDate?.month || !birthDate?.year ? (
+            {format(startDate, `dd-MM-yyyy`) === format(defaultDate, `dd-MM-yyyy`) ? (
               <Button className="button-color">Continuar</Button>
             ) : (
               <Button onClick={continuarBirthDate}>Continuar</Button>
