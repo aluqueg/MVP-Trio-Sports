@@ -70,6 +70,7 @@ export const Register = () => {
   const [defaultDate, setDefaultDate] = useState(new Date());
   const [startDate, setStartDate] = useState(new Date());
   const years = range(1990, getYear(new Date()) + 1, 1);
+  const lastLogDate = format(startDate, `yyyy-MM-dd HH-mm-ss`);
   const continuarBirthDate = () => {
     setpage(page + 1);
     const Date = format(startDate, `dd-MM-yyyy`);
