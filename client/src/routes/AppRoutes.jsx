@@ -11,6 +11,7 @@ import { Login } from '../pages/Auth/Login/Login'
 import { Container, Row } from 'react-bootstrap'
 import { NavBarApp } from '../components/NavBarApp/NavBarApp'
 import { Register } from "../pages/Auth/Register/Register"
+import { AddSport } from "../pages/AddSport/AddSport"
 
 export const AppRoutes = () => {
   return (
@@ -23,6 +24,7 @@ export const AppRoutes = () => {
         <Route path='/' element={<Home />} />
         <Route path='/allActivities' element={<AllActivities />} />
         <Route path='/activity' element={<Activity />} />
+        <Route path='/addSport' element={<AddSport />} />
         <Route path='/addActivity' element={<AddActivity />} />
         <Route path='/allUsers' element={<AllUsers />} />
         <Route path='/chats' element={<Chats />} />
