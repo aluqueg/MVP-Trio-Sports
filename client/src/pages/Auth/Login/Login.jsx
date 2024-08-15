@@ -97,8 +97,9 @@ export const Login = () => {
       </Form>
       <p>¿Has olvidado la contraseña?</p>
       <hr />
-
-      <Button>Crea cuenta nueva</Button>
+      <Button
+        onClick={()=>navigate("/register")}
+      >Crea cuenta nueva</Button>
     </div>
   );
 };

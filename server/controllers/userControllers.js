@@ -6,7 +6,26 @@ require("dotenv").config();
 
 class userController {
   createUser = (req, res) => {
-    res.send("createUser");
+    const {user_name, last_name, birth_date, gender, user_city, email, password} = req.body.userRegister;
+    console.log(req.body)
+    let saltRounds = 8;
+    bcrypt.hash(password, saltRounds, (err, hash)=>{
+      if(err){
+        res.status(500).json(err)
+        console.log("error create user 1")
+      }else{
+        let data = [user_name, last_name, birth_date, gender, user_city, email, hash, req.body.lastLogDate]
+        let sql = `INSERT INTO user (user_name, last_name, birth_date, gender, user_city, email, password, last_log_date) VALUES (?,?,?,?,?,?,?,?)`;
+        connection.query(sql, data, (errIns, result)=>{
+          if(errIns){
+            res.status(500).json(errIns)
+            console.log("error create user 2")
+          }else{
+            res.status(201).json(result)
+          }
+        })
+      }
+    })
   };
 
   login = (req, res) => {

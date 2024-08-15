@@ -6,17 +6,17 @@
   height: 2rem;
 }
 
-button {
+
+.login-btn {
   color: var(--trio2);
   background-color: rgba(0, 0, 0, 0);
   border: 2px solid var(--trio2);
   border-radius: 25px;
-  min-width: 10rem;
   font-size: 1.3rem;
   transition: background-color 0.2s ease;
 }
 
-button:hover {
+.login-btn:hover {
   color: white;
   background-color: var(--trio2);
   border: 2px solid var(--trio2);

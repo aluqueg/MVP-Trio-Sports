@@ -2,18 +2,22 @@ import { useState } from "react";
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
+import axios from "axios"
 import "./register.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getMonth, getYear, format } from "date-fns";
 import { setDefaultLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
+import { useNavigate } from "react-router-dom";
 setDefaultLocale("es");
 import axios from 'axios'
 
 export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
   const [page, setpage] = useState(0);
+  const navigate = useNavigate();
+
   const [msgEmail,setMsgEmail] = useState()
   const handleRegister = (e) => {
     const { name, value } = e.target;
@@ -105,6 +109,18 @@ export const Register = () => {
     setpage(page + 1);
     setUserRegister({ ...userRegister, sports: array });
   };
+
+  /* ENVIAR DATOS REGISTER */
+
+  const onSubmit = async ()=>{
+    try{
+      const res = await axios.post("http://localhost:4000/api/users/createUser", {userRegister, lastLogDate})
+      navigate("/login");
+    }catch(err){
+      console.log(err)
+    }
+  }
+  console.log(lastLogDate);
   console.log(userRegister);
   return (
     <>
@@ -123,7 +139,18 @@ export const Register = () => {
               />
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
-            {!userRegister.email ? (
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Label>Contraseña</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter password"
+                name="password"
+                onChange={handleRegister}
+                value={userRegister?.password}
+              />
+              <Form.Text className="text-muted"></Form.Text>
+            </Form.Group>
+            {!userRegister.email || !userRegister.password ? (
               <Button className="button-color">Continuar</Button>
             ) : (
               <Button onClick={continuarEmail}>Continuar</Button>
@@ -135,14 +162,14 @@ export const Register = () => {
 
         {page == 1 ? (
           <>
-            <Form.Group className="mb-3" controlId="name">
+            <Form.Group className="mb-3" controlId="user_name">
               <Form.Label>NOMBRE</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter name"
-                name="name"
+                name="user_name"
                 onChange={handleRegister}
-                value={userRegister?.name}
+                value={userRegister?.user_name}
               />
               <Form.Text className="text-muted"></Form.Text>
               <Form.Group className="mb-3" controlId="last_name">
@@ -150,7 +177,7 @@ export const Register = () => {
                 <Form.Control
                   type="text"
                   placeholder="Enter name"
-                  name="lastName"
+                  name="last_name"
                   onChange={handleRegister}
                   value={userRegister?.lastName}
                 />
@@ -158,7 +185,7 @@ export const Register = () => {
               <Form.Text className="text-muted"></Form.Text>{" "}
             </Form.Group>
             <Button onClick={volver}>Volver</Button>
-            {!userRegister.name ? (
+            {!userRegister.user_name || !userRegister.last_name ? (
               <Button className="button-color">Continuar</Button>
             ) : (
               <Button onClick={continuar}>Continuar</Button>
@@ -240,19 +267,19 @@ export const Register = () => {
         {/* CIUDAD */}
         {page == 3 ? (
           <>
-            <Form.Group className="mb-3" controlId="city">
-              <Form.Label>CUAL ES TU ciudad</Form.Label>
+            <Form.Group className="mb-3" controlId="user_city">
+              <Form.Label>CUAL ES TU CIUDAD</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="cual es tu ciudad"
-                name="city"
+                name="user_city"
                 onChange={handleRegister}
-                value={userRegister?.city}
+                value={userRegister?.user_city}
               />
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
             <Button onClick={volver}>Volver</Button>
-            {!userRegister.city ? (
+            {!userRegister.user_city ? (
               <Button className="button-color">Continuar</Button>
             ) : (
               <Button onClick={continuar}>Continuar</Button>
@@ -321,6 +348,7 @@ export const Register = () => {
                   </>
                 );
               })}
+
             </ListGroup>
             <Button onClick={volver}>Volver</Button>
             {sports.length > 5 || sports.length < 1 ? (
@@ -330,6 +358,15 @@ export const Register = () => {
                 Continuar
               </Button>
             )}
+          </>
+        ) : null}
+        {/* GENERO */}
+        {page == 6 ? (
+          <>
+            <ListGroup as="ul">
+            <Button onClick={volver}>Volver</Button>
+            <Button onClick={onSubmit}>Enviar Datos</Button>
+            </ListGroup>
           </>
         ) : null}
       </Form>
