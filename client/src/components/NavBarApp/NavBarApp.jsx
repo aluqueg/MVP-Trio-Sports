@@ -32,6 +32,7 @@ export const NavBarApp = () => {
               <Nav className="d-flex">
                 <button
                   onClick={()=>navigate('/login')}
+                  className="login-btn"
                 >Iniciar Sesión</button>
               </Nav>
             </Offcanvas.Body>

@@ -12,7 +12,7 @@ export const TrioContextProvider = ({children}) => {
     const tokenLocal = localStorage.getItem("token")
     if(tokenLocal){
       const {id} = jwtDecode(tokenLocal);
-      axios.get("http://localhost:3000/api/users/profile",{headers: {Authorization:`Bearer ${tokenLocal}`}})
+      axios.get("http://localhost:4000/api/users/profile",{headers: {Authorization:`Bearer ${tokenLocal}`}})
       .then(res=>{
         setUser(res.data)
         setToken(tokenLocal)

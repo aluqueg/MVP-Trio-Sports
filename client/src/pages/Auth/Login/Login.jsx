@@ -34,14 +34,14 @@ export const Login = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/users/login",
+        "http://localhost:4000/api/users/login",
         login
       );
       let token = res.data;
 
       localStorage.setItem("token", token);
 
-      const response = await axios.get("http://localhost:3000/api/users/profile", {
+      const response = await axios.get("http://localhost:4000/api/users/profile", {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -97,8 +97,9 @@ export const Login = () => {
       </Form>
       <p>¿Has olvidado la contraseña?</p>
       <hr />
-
-      <Button>Crea cuenta nueva</Button>
+      <Button
+        onClick={()=>navigate("/register")}
+      >Crea cuenta nueva</Button>
     </div>
   );
 };
