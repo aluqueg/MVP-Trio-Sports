@@ -58,6 +58,18 @@ class userController {
   editUser = (req, res) => {
     res.send("editUser");
   };
+
+  emailValidation = (req,res) =>{
+    const {email} = req.body
+    let sql = `SELECT * FROM user WHERE email = "${email}"`
+    connection.query(sql,(err,result)=>{
+      if(err){
+        res.status(500).json(err)
+      }else{
+        res.status(200).json(result)
+      }
+    })
+  }
 }
 
 module.exports = new userController();

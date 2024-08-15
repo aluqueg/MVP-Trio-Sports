@@ -9,10 +9,12 @@ import { getMonth, getYear, format } from "date-fns";
 import { setDefaultLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
 setDefaultLocale("es");
+import axios from 'axios'
 
 export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
   const [page, setpage] = useState(0);
+  const [msgEmail,setMsgEmail] = useState()
   const handleRegister = (e) => {
     const { name, value } = e.target;
     setUserRegister({ ...userRegister, [name]: value });
@@ -20,6 +22,24 @@ export const Register = () => {
   const continuar = () => {
     setpage(page + 1);
   };
+  console.log
+  const continuarEmail =  async ()=>{
+    try{
+      const res = await axios.post("http://localhost:4000/api/users/emailValidator",userRegister)
+      
+      if(res.data[0]){
+        setMsgEmail("Este email ya esta en uso")
+      }else{
+        setpage(page + 1)
+      }
+      
+
+      
+    }catch(err){
+      console.log(err)
+    }
+  }
+
   const volver = () => {
     setpage(page - 1);
   };
@@ -37,30 +57,6 @@ export const Register = () => {
     "Noviembre",
     "Diciembre",
   ];
-/*   const days = (month) => {
-    let day = "";
-    if (
-      month == "Enero" ||
-      month == "Marzo" ||
-      month == "Mayo" ||
-      month == "Julio" ||
-      month == "Agosto" ||
-      month == "Octubre" ||
-      month == "Diciembre"
-    ) {
-      day = 31;
-    } else if (
-      month == "Abril" ||
-      month == "Junio" ||
-      month == "Septiembre" ||
-      month == "Noviembre"
-    ) {
-      day = 30;
-    } else if (month == "Febrero") {
-      day = 28;
-    }
-    return day;
-  }; */
   const range = (start, end, step = 1) => {
     let output = [];
     for (let i = start; i < end; i += step) {
@@ -71,16 +67,6 @@ export const Register = () => {
   const [defaultDate,setDefaultDate] = useState(new Date())
   const [startDate, setStartDate] = useState(new Date());
   const years = range(1990, getYear(new Date()) + 1, 1);
-  /* const [birthDate, setBirthDate] = useState({}); */
- /*  const handleBirthDate = (e) => {
-    const { name, value } = e.target;
-    setBirthDate({ ...birthDate, [name]: value });
-  }; */
-  /* const getDays = Array.from(
-    { length: days(birthDate?.month) },
-    (_, i) => i + 1
-  ); */
-  /* const getYEars = Array.from({ length: 100 }, (_, i) => i + 1 + 1924); */
   const continuarBirthDate = () => {
     setpage(page + 1);
     const Date = format(startDate, `dd-MM-yyyy`);
@@ -127,6 +113,7 @@ export const Register = () => {
           <>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email</Form.Label>
+              {msgEmail? <p>{msgEmail}</p> : null}
               <Form.Control
                 type="email"
                 placeholder="Enter email"
@@ -139,7 +126,7 @@ export const Register = () => {
             {!userRegister.email ? (
               <Button className="button-color">Continuar</Button>
             ) : (
-              <Button onClick={continuar}>Continuar</Button>
+              <Button onClick={continuarEmail}>Continuar</Button>
             )}
           </>
         ) : null}
