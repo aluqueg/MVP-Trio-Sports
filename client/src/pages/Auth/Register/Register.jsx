@@ -2,7 +2,7 @@ import { useState } from "react";
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
-import axios from "axios"
+import axios from "axios";
 import "./register.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,14 +11,13 @@ import { setDefaultLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
 import { useNavigate } from "react-router-dom";
 setDefaultLocale("es");
-import axios from 'axios'
 
 export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
   const [page, setpage] = useState(0);
   const navigate = useNavigate();
 
-  const [msgEmail,setMsgEmail] = useState()
+  const [msgEmail, setMsgEmail] = useState();
   const handleRegister = (e) => {
     const { name, value } = e.target;
     setUserRegister({ ...userRegister, [name]: value });
@@ -26,23 +25,23 @@ export const Register = () => {
   const continuar = () => {
     setpage(page + 1);
   };
-  console.log
-  const continuarEmail =  async ()=>{
-    try{
-      const res = await axios.post("http://localhost:4000/api/users/emailValidator",userRegister)
-      
-      if(res.data[0]){
-        setMsgEmail("Este email ya esta en uso")
-      }else{
-        setpage(page + 1)
-      }
-      
+  console.log;
+  const continuarEmail = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:4000/api/users/emailValidator",
+        userRegister
+      );
 
-      
-    }catch(err){
-      console.log(err)
+      if (res.data[0]) {
+        setMsgEmail("Este email ya esta en uso");
+      } else {
+        setpage(page + 1);
+      }
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   const volver = () => {
     setpage(page - 1);
@@ -68,7 +67,7 @@ export const Register = () => {
     }
     return output;
   };
-  const [defaultDate,setDefaultDate] = useState(new Date())
+  const [defaultDate, setDefaultDate] = useState(new Date());
   const [startDate, setStartDate] = useState(new Date());
   const years = range(1990, getYear(new Date()) + 1, 1);
   const continuarBirthDate = () => {
@@ -112,15 +111,17 @@ export const Register = () => {
 
   /* ENVIAR DATOS REGISTER */
 
-  const onSubmit = async ()=>{
-    try{
-      const res = await axios.post("http://localhost:4000/api/users/createUser", {userRegister, lastLogDate})
+  const onSubmit = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:4000/api/users/createUser",
+        { userRegister, lastLogDate }
+      );
       navigate("/login");
-    }catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
-  console.log(lastLogDate);
+  };
   console.log(userRegister);
   return (
     <>
@@ -129,7 +130,7 @@ export const Register = () => {
           <>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email</Form.Label>
-              {msgEmail? <p>{msgEmail}</p> : null}
+              {msgEmail ? <p>{msgEmail}</p> : null}
               <Form.Control
                 type="email"
                 placeholder="Enter email"
@@ -256,7 +257,8 @@ export const Register = () => {
               onChange={(date) => setStartDate(date)}
             />
             <Button onClick={volver}>Volver</Button>
-            {format(startDate, `dd-MM-yyyy`) === format(defaultDate, `dd-MM-yyyy`) ? (
+            {format(startDate, `dd-MM-yyyy`) ===
+            format(defaultDate, `dd-MM-yyyy`) ? (
               <Button className="button-color">Continuar</Button>
             ) : (
               <Button onClick={continuarBirthDate}>Continuar</Button>
@@ -348,7 +350,6 @@ export const Register = () => {
                   </>
                 );
               })}
-
             </ListGroup>
             <Button onClick={volver}>Volver</Button>
             {sports.length > 5 || sports.length < 1 ? (
@@ -364,8 +365,8 @@ export const Register = () => {
         {page == 6 ? (
           <>
             <ListGroup as="ul">
-            <Button onClick={volver}>Volver</Button>
-            <Button onClick={onSubmit}>Enviar Datos</Button>
+              <Button onClick={volver}>Volver</Button>
+              <Button onClick={onSubmit}>Enviar Datos</Button>
             </ListGroup>
           </>
         ) : null}
