@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-/*import { Form, Button, Container, Alert } from "react-bootstrap"; se puede estilar directamente o traer un from de react-boostrap*/
 import axios from "axios";
 
 export const AddSport = () => {
@@ -18,7 +17,7 @@ export const AddSport = () => {
     setError("");
     setSuccess("");
 
-    console.log("Enviando deporte:", sportName); // Verificar datos enviados
+    console.log("Enviando deporte:", sportName);
 
     try {
       const response = await axios.post(
@@ -26,19 +25,20 @@ export const AddSport = () => {
         { sport_name: sportName }
       );
 
-      console.log("Respuesta del servidor:", response); // Verificar respuesta
+      console.log("Respuesta del servidor:", response);
 
       if (response.status === 201) {
         setSuccess("Deporte creado con éxito");
+        // Redirigir al formulario de crear actividad después de un breve retraso
         setTimeout(() => {
           navigate("/addActivity");
         }, 2000);
       }
     } catch (error) {
-      console.log("Error en la solicitud:", error.response || error); // Verificar errores
+      console.log("Error en la solicitud:", error.response || error);
 
       if (error.response && error.response.data) {
-        setError(error.response.data);
+        setError(error.response.data.error || "Error al crear el deporte.");
       } else {
         setError("Error al crear el deporte. Inténtalo de nuevo.");
       }
@@ -48,8 +48,8 @@ export const AddSport = () => {
   return (
     <div>
       <h2>Crear Nuevo Deporte</h2>
-      {error && <div>{error}</div>}
-      {success && <div>{success}</div>}
+      {error && <div style={{ color: "red" }}>{error}</div>}
+      {success && <div style={{ color: "green" }}>{success}</div>}
       <form onSubmit={handleSubmit}>
         <div>
           <label>Nombre del Deporte:</label>
@@ -57,7 +57,8 @@ export const AddSport = () => {
             type="text"
             name="sportName"
             value={sportName}
-            onChange={handleChange} // handleChange para actualizar el estado
+            onChange={handleChange}
+            required // Asegurarse de que el campo es obligatorio
           />
         </div>
         <button type="submit">Crear Deporte</button>

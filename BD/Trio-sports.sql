@@ -36,6 +36,7 @@ CREATE TABLE sport (
     sport_name VARCHAR(50) NOT NULL UNIQUE
     -- añadimos columna/campo is_disabled -----
      -- añadimos columna/campo sport_img "newsport.jpg" 
+)
 
 CREATE TABLE practice (
 	sport_id INT UNSIGNED NOT NULL,
