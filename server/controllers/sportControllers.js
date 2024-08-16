@@ -4,14 +4,13 @@ class SportController {
   createSport = (req, res) => {
     let { sport_name } = req.body;
 
-    // 1.- Convertir el nombre del deporte a minúsculas
+    // Convertir el nombre del deporte a minúsculas y luego hacer que la primera letra sea mayúscula
     sport_name = sport_name.toLowerCase();
+    sport_name = sport_name.charAt(0).toUpperCase() + sport_name.slice(1);
 
     const sport_img = "newsport.jpg";
 
-    //console.log("Nombre del deporte recibido:", sport_name);  Verificar el valor recibido
-
-    // 2.- Comprobar si ya existe un deporte (en minúsculas)
+    // Comprobar si ya existe un deporte con ese nombre
     let sql = `SELECT * FROM sport WHERE sport_name = ?`;
     connection.query(sql, [sport_name], (error, result) => {
       if (error) {
@@ -19,22 +18,34 @@ class SportController {
         return res.status(500).json({ error: "Error al verificar deporte" });
       }
 
-      //console.log("Resultado de la consulta de verificación:", result); Verificar resultado
-
       if (result.length !== 0) {
         console.log("El deporte ya existe"); // Depurar si ya existe
         return res.status(401).json("El deporte ya existe");
       }
 
-      // 3.- Insertar un deporte con la imagen por defecto
+      // validación varchar
+      if (sport_name.length > 50) {
+        return res.status(400).json({
+          error: "El nombre del deporte no puede tener más de 50 caracteres.",
+        });
+      }
+
+      // Validación: Campo vacío
+      if (!sport_name || sport_name.trim() === "") {
+        return res
+          .status(400)
+          .json({ error: "El nombre del deporte no puede estar vacío." });
+      }
+
+      // Insertar un deporte con la imagen por defecto
       let sql2 = `INSERT INTO sport (sport_name, sport_img) VALUES (?, ?)`;
       connection.query(sql2, [sport_name, sport_img], (errIns, result2) => {
         if (errIns) {
-          //console.log("Error en la inserción:", errIns); // Depurar errores de inserción
+          console.log("Error en la inserción:", errIns); // Depurar errores de inserción
           return res.status(500).json({ error: "Error al insertar deporte" });
         }
 
-        //console.log("Deporte insertado correctamente:", result2); // Verificar inserción exitosa
+        console.log("Deporte insertado correctamente:", result2); // Verificar inserción exitosa
         return res.status(201).json({
           sport_id: result2.insertId,
           sport_name: sport_name,
@@ -43,6 +54,21 @@ class SportController {
       });
     });
   };
+
+
+  getAllSports = (req, res) => {
+    const sql = `SELECT sport_id, sport_name FROM sport ORDER BY sport_name ASC`;
+
+    connection.query(sql, (error, results) => {
+      if (error) {
+        console.error("Error al obtener los deportes:", error);
+        return res.status(500).json({ error: "Error al obtener los deportes" });
+      }
+
+      res.json(results);
+    });
+  };
 }
+
 
 module.exports = new SportController();
