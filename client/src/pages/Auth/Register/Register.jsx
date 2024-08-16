@@ -6,7 +6,7 @@ import axios from "axios";
 import "./register.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { getMonth, getYear, format } from "date-fns";
+import { getMonth, getYear, format, subYears, addYears } from "date-fns";
 import { setDefaultLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
 import { useNavigate } from "react-router-dom";
@@ -16,8 +16,10 @@ export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
   const [page, setpage] = useState(0);
   const navigate = useNavigate();
-     //manejo de errores nuevo
-     const [formErrors, setFormErrors] = useState({});
+  //manejo de errores nuevo
+  const [formErrors, setFormErrors] = useState({});
+  const [validateEmail, setValidateEmail] = useState(false);
+  const [validatePassword, setValidatePassword] = useState(false);
 
   const [msgEmail, setMsgEmail] = useState();
   const handleRegister = (e) => {
@@ -25,75 +27,121 @@ export const Register = () => {
     setUserRegister({ ...userRegister, [name]: value });
   };
 
-
   // const continuar = () => {
   //   setpage(page + 1);
   // };
 
-     //validación de campos
-     const validateField = (name, value) => {
-      let error = '';
+  //validación de campos
+  const validateField = (name, value) => {
+    let error = "";
 
-      switch (name) {
-          case 'name':
-              if (!value) {
-                  error = 'El nombre es obligatorio';
-              }
-              break;
-          case 'email':
-              if (!value) {
-                  error = 'El email es obligatorio';
-              } else if (!/\S+@\S+\.\S+/.test(value)) {
-                  error = 'El email no es válido';
-              }
-              break;
-          // otras validaciones...
-          default:
-              break;
-      }
+    switch (name) {
+      case "user_name":
+        if (!value) {
+          error = "El nombre es obligatorio";
+        }else if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/.test(value)){
+          error = "El nombre ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."
+        }
+        break;
+      case "last_name":
+        if (!value) {
+          error = "El apellido es obligatorio"
+        }else if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/.test(value)){
+          error = "El nombre ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."
+        }
+        break;
+      
+      // case "email":
+      //   if (!value) {
+      //     error = "El email es obligatorio";
+      //   } else if (!/\S+@\S+\.\S+/.test(value)) {
+      //     error = "El email no es válido";
+      //   }
+      //   break;
+      // otras validaciones...
+      default:
+        break;
+    }
 
-      setFormErrors({ ...formErrors, [name]: error });
+    setFormErrors({ ...formErrors, [name]: error });
 
-      // Retorna true si no hay errores
-      return error === '';
+    // Retorna true si no hay errores
+    return error === "";
   };
 
 
-const continuarEmail = async () => {
-  try {
-    const res = await axios.post(
-      "http://localhost:4000/api/users/emailValidator",
-      userRegister
-    );
-    console.log("continuar res", res);
-    
-    if (res.data[0]) {
-      setFormErrors({...formErrors, ["email"]:"Este email ya esta en uso" });
-    }else if (!/\S+@\S+\.\S+/.test(userRegister.email)){
-      setFormErrors({ ...formErrors, ["email"]: "Formato de email incorrecto" });
-    }else{
-      setpage(page +1)
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const continuar = () => {
-  // Validar los campos de la página actual
-  const isValid = Object.keys(userRegister).every((key) => validateField(key, userRegister[key]));
-  console.log("valid",isValid);
+  const continuarEmail = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:4000/api/users/emailValidator",
+        userRegister
+      );
+      console.log("continuar res", res);
   
-  if (isValid) {
+      let emailIsValid = false;
+      let passwordIsValid = false;
+      let emailError = "";
+      let passwordError = "";
+  
+      if (!/\S+@\S+\.\S+/.test(userRegister.email)) {   
+        emailError = "Formato de email incorrecto";
+        console.log("error 1");
+        
+      } else if (res.data[0]) {
+        emailError = "Este email ya esta en uso"
+        console.log("error 2");
+        
+      }else{
+        emailIsValid = true
+      }      
+  
+      if (!userRegister.password) {
+        passwordError = "La contraseña es obligatoria"
+      } else if (
+        !/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/.test(
+          userRegister.password
+        )
+      ) {
+        passwordError = "Contaseña no segura"
+      }else{
+        passwordIsValid = true
+      }
+      
+      setFormErrors({
+        ...formErrors,
+        ["email"]: emailError ,
+        ["password"]: passwordError
+      });
+
+      setValidateEmail(emailIsValid);
+      setValidatePassword(passwordIsValid);
+  
+      if (emailIsValid && passwordIsValid) {
+        setpage(page + 1);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+  console.log("validate mail",validateEmail);
+  console.log("validate pass",validatePassword);
+  
+  
+
+  const continuar = () => {
+    // Validar los campos de la página actual
+    const isValid = Object.keys(userRegister).every((key) =>
+      validateField(key, userRegister[key])
+    );
+    console.log("valid", isValid);
+
+    if (isValid) {
       // Avanza a la siguiente página si la validación es exitosa
       setpage(page + 1);
-      setFormErrors({})
-  }
-};
-
-
-
-  
+      setFormErrors({});
+    }
+  };
 
   const volver = () => {
     setpage(page - 1);
@@ -120,7 +168,8 @@ const continuar = () => {
     return output;
   };
   const [defaultDate, setDefaultDate] = useState(new Date());
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(subYears(new Date(), 18));
+  const maxDate = subYears(new Date(), 18);
   const years = range(1990, getYear(new Date()) + 1, 1);
   const lastLogDate = format(startDate, `yyyy-MM-dd HH-mm-ss`);
   const continuarBirthDate = () => {
@@ -176,6 +225,8 @@ const continuar = () => {
     }
   };
   console.log(userRegister);
+  console.log(formErrors);
+
   return (
     <>
       <Form action="">
@@ -183,19 +234,19 @@ const continuar = () => {
           <>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email</Form.Label>
-              {formErrors.email && <span>{formErrors.email}</span>}
+              {formErrors.email ? <span>{formErrors.email}</span> : null}
               <Form.Control
                 type="email"
                 placeholder="Enter email"
                 name="email"
                 onChange={handleRegister}
                 value={userRegister?.email}
-                />
+              />
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Contraseña</Form.Label>
-                {formErrors.password && <span>{formErrors.password}</span>}
+              {formErrors.password ? <span>{formErrors.password}</span> : null}
               <Form.Control
                 type="password"
                 placeholder="Enter password"
@@ -234,7 +285,7 @@ const continuar = () => {
                   placeholder="Enter name"
                   name="last_name"
                   onChange={handleRegister}
-                  value={userRegister?.lastName}
+                  value={userRegister?.last_name}
                 />
               </Form.Group>
               <Form.Text className="text-muted"></Form.Text>{" "}
@@ -252,7 +303,10 @@ const continuar = () => {
         {page === 2 ? (
           <>
             <DatePicker
+
+              showIcon
               locale={es}
+              maxDate={maxDate}
               renderCustomHeader={({
                 date,
                 changeYear,
@@ -270,6 +324,7 @@ const continuar = () => {
                   }}
                 >
                   <button
+                  type="button"
                     onClick={decreaseMonth}
                     disabled={prevMonthButtonDisabled}
                   >
@@ -300,6 +355,7 @@ const continuar = () => {
                   </select>
 
                   <button
+                    type="button"
                     onClick={increaseMonth}
                     disabled={nextMonthButtonDisabled}
                   >
@@ -308,7 +364,7 @@ const continuar = () => {
                 </div>
               )}
               selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              onChange={(date) => setStartDate(date)}              
             />
             <Button onClick={volver}>Volver</Button>
             {format(startDate, `dd-MM-yyyy`) ===
