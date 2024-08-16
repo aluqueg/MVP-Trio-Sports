@@ -70,10 +70,11 @@ export const Register = () => {
   const [defaultDate, setDefaultDate] = useState(new Date());
   const [startDate, setStartDate] = useState(new Date());
   const years = range(1990, getYear(new Date()) + 1, 1);
+  const lastLogDate = format(startDate, `yyyy-MM-dd HH:mm:ss `);
   const continuarBirthDate = () => {
     setpage(page + 1);
-    const Date = format(startDate, `dd-MM-yyyy`);
-    setUserRegister({ ...userRegister, date: Date });
+    /*     const Date = format(startDate, `dd-MM-yyyy`); */
+    setUserRegister({ ...userRegister, birth_date: lastLogDate });
   };
 
   /* GENERO */
@@ -110,19 +111,27 @@ export const Register = () => {
   };
 
   /* ENVIAR DATOS REGISTER */
-
-  const onSubmit = async () => {
-    try {
-      const res = await axios.post(
-        "http://localhost:4000/api/users/createUser",
-        { userRegister, lastLogDate }
-      );
-      navigate("/login");
-    } catch (err) {
-      console.log(err);
-    }
+  const [file, setFile] = useState({});
+  const handleFile = (e) => {
+    setFile(e.target.files[0]);
   };
-  console.log(userRegister);
+
+  const onSubmit = () => {
+    const newFormData = new FormData();
+    newFormData.append("userRegister", JSON.stringify(userRegister));
+    newFormData.append("last_log_date", lastLogDate);
+    if (file) {
+      newFormData.append("file", file);
+    }
+
+    axios
+      .post("http://localhost:4000/api/users/createUser", newFormData)
+      .then((res) => {
+        console.log(res);
+        navigate("/login");
+      })
+      .catch((err) => console.log(err));
+  };
   return (
     <>
       <Form action="">
@@ -140,7 +149,7 @@ export const Register = () => {
               />
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Group className="mb-3" controlId="password">
               <Form.Label>Contraseña</Form.Label>
               <Form.Control
                 type="password"
@@ -361,16 +370,25 @@ export const Register = () => {
             )}
           </>
         ) : null}
-        {/* GENERO */}
-        {page == 6 ? (
-          <>
-            <ListGroup as="ul">
-              <Button onClick={volver}>Volver</Button>
-              <Button onClick={onSubmit}>Enviar Datos</Button>
-            </ListGroup>
-          </>
-        ) : null}
+        {/* FOTO */}
       </Form>
+      {page == 6 ? (
+        <>
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="file">Sube una foto</Form.Label>
+            <Form.Control
+              id="file"
+              type="file"
+              name="user_img"
+              placeholder="Enter city"
+              hidden
+              onChange={handleFile}
+            />
+          </Form.Group>
+          <Button onClick={volver}>Volver</Button>
+          <Button onClick={onSubmit}>Enviar</Button>
+        </>
+      ) : null}
     </>
   );
 };
