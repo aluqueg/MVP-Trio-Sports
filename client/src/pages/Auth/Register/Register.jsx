@@ -123,11 +123,11 @@ const continuar = () => {
   const [startDate, setStartDate] = useState(new Date());
   const years = range(1990, getYear(new Date()) + 1, 1);
   const lastLogDate = format(startDate, `yyyy-MM-dd HH-mm-ss`);
-  const lastLogDate = format(startDate, `yyyy-MM-dd HH:mm:ss `);
   const continuarBirthDate = () => {
     setpage(page + 1);
-    /*     const Date = format(startDate, `dd-MM-yyyy`); */
-    setUserRegister({ ...userRegister, birth_date: lastLogDate });
+    const Date = format(startDate, `yyyy-MM-dd`);
+    setUserRegister({ ...userRegister, birth_date: Date });
+    
   };
 
   /* GENERO */
