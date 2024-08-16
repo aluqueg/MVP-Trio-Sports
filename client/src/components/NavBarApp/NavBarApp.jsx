@@ -2,8 +2,11 @@ import { Container, Nav, Navbar, Offcanvas } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import logo from '../../assets/images/logo.png'
 import './navBarApp.css'
+import { useContext } from "react"
+import { TrioContext } from "../../context/TrioContextProvider";
 
 export const NavBarApp = () => {
+  const { user, setUser , setToken} = useContext(TrioContext);
   const navigate = useNavigate();
   return (
     <>
@@ -31,10 +34,11 @@ export const NavBarApp = () => {
                 <Nav.Link as={Link} to="/profile">Perfil</Nav.Link>
               </Nav>
               <Nav className="d-flex">
+                {user? <button className="login-btn">Cerrar Sesion</button>:
                 <button
-                  onClick={()=>navigate('/login')}
-                  className="login-btn"
-                >Iniciar Sesión</button>
+                onClick={()=>navigate('/login')}
+                className="login-btn"
+              >Iniciar Sesión</button>}
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
