@@ -16,32 +16,84 @@ export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
   const [page, setpage] = useState(0);
   const navigate = useNavigate();
+     //manejo de errores nuevo
+     const [formErrors, setFormErrors] = useState({});
 
   const [msgEmail, setMsgEmail] = useState();
   const handleRegister = (e) => {
     const { name, value } = e.target;
     setUserRegister({ ...userRegister, [name]: value });
   };
-  const continuar = () => {
-    setpage(page + 1);
-  };
-  console.log;
-  const continuarEmail = async () => {
-    try {
-      const res = await axios.post(
-        "http://localhost:4000/api/users/emailValidator",
-        userRegister
-      );
 
-      if (res.data[0]) {
-        setMsgEmail("Este email ya esta en uso");
-      } else {
-        setpage(page + 1);
+
+  // const continuar = () => {
+  //   setpage(page + 1);
+  // };
+
+     //validación de campos
+     const validateField = (name, value) => {
+      let error = '';
+
+      switch (name) {
+          case 'name':
+              if (!value) {
+                  error = 'El nombre es obligatorio';
+              }
+              break;
+          case 'email':
+              if (!value) {
+                  error = 'El email es obligatorio';
+              } else if (!/\S+@\S+\.\S+/.test(value)) {
+                  error = 'El email no es válido';
+              }
+              break;
+          // otras validaciones...
+          default:
+              break;
       }
-    } catch (err) {
-      console.log(err);
-    }
+
+      setFormErrors({ ...formErrors, [name]: error });
+
+      // Retorna true si no hay errores
+      return error === '';
   };
+
+
+const continuarEmail = async () => {
+  try {
+    const res = await axios.post(
+      "http://localhost:4000/api/users/emailValidator",
+      userRegister
+    );
+    console.log("continuar res", res);
+    
+    if (res.data[0]) {
+      setFormErrors({...formErrors, ["email"]:"Este email ya esta en uso" });
+    }else if (!/\S+@\S+\.\S+/.test(userRegister.email)){
+      setFormErrors({ ...formErrors, ["email"]: "Formato de email incorrecto" });
+    }else{
+      setpage(page +1)
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const continuar = () => {
+  // Validar los campos de la página actual
+  const isValid = Object.keys(userRegister).every((key) => validateField(key, userRegister[key]));
+  console.log("valid",isValid);
+  
+  if (isValid) {
+      // Avanza a la siguiente página si la validación es exitosa
+      setpage(page + 1);
+      setFormErrors({})
+  }
+};
+
+
+
+  
 
   const volver = () => {
     setpage(page - 1);
@@ -70,6 +122,7 @@ export const Register = () => {
   const [defaultDate, setDefaultDate] = useState(new Date());
   const [startDate, setStartDate] = useState(new Date());
   const years = range(1990, getYear(new Date()) + 1, 1);
+  const lastLogDate = format(startDate, `yyyy-MM-dd HH-mm-ss`);
   const lastLogDate = format(startDate, `yyyy-MM-dd HH:mm:ss `);
   const continuarBirthDate = () => {
     setpage(page + 1);
@@ -139,18 +192,19 @@ export const Register = () => {
           <>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email</Form.Label>
-              {msgEmail ? <p>{msgEmail}</p> : null}
+              {formErrors.email && <span>{formErrors.email}</span>}
               <Form.Control
                 type="email"
                 placeholder="Enter email"
                 name="email"
                 onChange={handleRegister}
                 value={userRegister?.email}
-              />
+                />
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Contraseña</Form.Label>
+                {formErrors.password && <span>{formErrors.password}</span>}
               <Form.Control
                 type="password"
                 placeholder="Enter password"
