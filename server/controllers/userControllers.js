@@ -6,33 +6,57 @@ require("dotenv").config();
 
 class userController {
   createUser = (req, res) => {
-    const {user_name, last_name, birth_date, gender, user_city, email, password} = req.body.userRegister;
+    console.log(req.file,"***** file")
+    let user = JSON.parse(req.body.userRegister);
+    console.log(user)
     console.log(req.body)
+    const {
+      user_name,
+      last_name,
+      birth_date,
+      gender,
+      user_city,
+      email,
+      password,
+    } = user;
+    console.log(user);
     let saltRounds = 8;
-    bcrypt.hash(password, saltRounds, (err, hash)=>{
-      if(err){
-        res.status(500).json(err)
-        console.log("error create user 1")
-      }else{
-        let data = [user_name, last_name, birth_date, gender, user_city, email, hash, req.body.lastLogDate]
-        let sql = `INSERT INTO user (user_name, last_name, birth_date, gender, user_city, email, password, last_log_date) VALUES (?,?,?,?,?,?,?,?)`;
-        connection.query(sql, data, (errIns, result)=>{
-          if(errIns){
-            res.status(500).json(errIns)
-            console.log("error create user 2")
-          }else{
-            res.status(201).json(result)
-          }
-        })
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+      if (err) {
+        console.log("error create user 1");
+      } else {
+        if (req.file) {
+          let data = [user_name,last_name,birth_date,gender,user_city,email,hash,req.body.last_log_date,req.file.filename]
+          let sql = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, last_log_date, user_img)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+          
+          connection.query(sql,data, (errIns, result) => {
+            if (errIns) {
+              res.status(500).json(errIns);
+            } else {
+              res.status(201).json(result);
+            }
+          });
+        }else{
+          let data2 = [user_name,last_name,birth_date,gender,user_city,email,hash,req.body.last_log_date]
+          let sql2 = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, last_log_date)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+          connection.query(sql2,data2, (errIns2, result2) => {
+            if (errIns2) {
+              res.status(500).json(errIns2);
+            } else {
+              res.status(201).json(result2);
+            }
+          });
+        }
       }
-    })
+    });
   };
 
   login = (req, res) => {
     const { email, password } = req.body;
     let sql = `SELECT * FROM user WHERE email="${email}" AND is_validated = 1 AND is_disabled = 0`;
     connection.query(sql, (err, result) => {
-
       if (err) {
         res.status(401).json("Credenciales incorrectas");
       } else {
@@ -49,10 +73,10 @@ class userController {
                   { id: result[0].user_id },
                   process.env.SECRET_KEY,
                   { expiresIn: "14d" }
-                )
-                res.status(200).json(token)
-              }else{
-                res.status(401).json("Credenciales incorrectas")
+                );
+                res.status(200).json(token);
+              } else {
+                res.status(401).json("Credenciales incorrectas");
               }
             }
           });
@@ -62,33 +86,36 @@ class userController {
   };
 
   profile = (req, res) => {
-    let token = req.headers.authorization.split(" ")[1]
-    let {id} = jwt.decode(token)
-    let sql = `SELECT * FROM user WHERE user_id = "${id}"`
-    connection.query(sql,(err,result)=>{
-      if(err){
-        res.status(500).json(err)
-      }else{
-        res.status(200).json(result[0])
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `SELECT * FROM user WHERE user_id = "${id}"`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result[0]);
       }
-    })
+    });
   };
 
   editUser = (req, res) => {
     res.send("editUser");
   };
 
-  emailValidation = (req,res) =>{
-    const {email} = req.body
-    let sql = `SELECT * FROM user WHERE email = "${email}"`
-    connection.query(sql,(err,result)=>{
-      if(err){
-        res.status(500).json(err)
-      }else{
-        res.status(200).json(result)
+  emailValidation = (req, res) => {
+    const { email } = req.body;
+    let sql = `SELECT * FROM user WHERE email = "${email}"`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
       }
-    })
-  }
+    });
+  };
+  prueba = (req, res) => {
+    console.log(req.file);
+  };
 }
 
 module.exports = new userController();
