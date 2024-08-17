@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, Alert } from "react-bootstrap";
 import axios from "axios";
 
 export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSports }) => {
   const [sportName, setSportName] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleChange = (e) => {
     setSportName(e.target.value);
@@ -14,12 +13,11 @@ export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSpo
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
 
-    //Verificar si el deporte ya existe en la lista
+    // Verificar si el deporte ya existe en la lista
     const sportExists = existingSports.some((sport) => sport.sport_name.toLowerCase() === sportName.toLowerCase());
 
-    if(sportExists) {
+    if (sportExists) {
       setError("El deporte ya existe");
       return;
     }
@@ -33,11 +31,9 @@ export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSpo
       console.log("Respuesta del servidor:", response);
 
       if (response.status === 201) {
-        setSuccess("Deporte creado con éxito");
-        closeModal();
-        //Llama a la función pasada como prop para actualizar la lista de deportes
-        onSportCreated(response.data);
-        closeModal();
+        onSportCreated(response.data); // Actualizar la lista de deportes
+        setSportName(""); // Limpiar el campo de entrada
+        closeModal(); // Cerrar el modal
       }
     } catch (error) {
       console.log("Error en la solicitud:", error.response || error);
@@ -51,37 +47,36 @@ export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSpo
   };
 
   return (
-    <>
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      {success && <div style={{ color: "green" }}>{success}</div>}
-      <Modal show={show} onHide={closeModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Crear nuevo deporte</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="sportName">
-              <Form.Control
-                type="text"
-                name="sportName"
-                placeholder="Introduce el nombre del nuevo deporte"
-                value={sportName}
-                onChange={handleChange}
-                required //Asegurarse de que el campo es obligatorio
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
+    <Modal show={show} onHide={closeModal}>
+      <Modal.Header closeButton>
+        <Modal.Title>Crear nuevo deporte</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="sportName">
+            <Form.Control
+              type="text"
+              name="sportName"
+              placeholder="Introduce el nombre del nuevo deporte"
+              value={sportName}
+              onChange={handleChange}
+              required // Asegurarse de que el campo es obligatorio
+            />
+            {/* Mostrar el mensaje de error justo debajo del input */}
+            {error && <Alert variant="danger" className="mt-2">{error}</Alert>}
+          </Form.Group>
+        </Form>
+      </Modal.Body>
 
-        <Modal.Footer>
-          <Button variant="secondary" onClick={closeModal}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={handleSubmit}>
-            Aceptar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={closeModal}>
+          Cancelar
+        </Button>
+        <Button variant="primary" onClick={handleSubmit}>
+          Aceptar
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
+

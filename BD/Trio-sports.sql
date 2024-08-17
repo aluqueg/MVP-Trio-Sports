@@ -33,9 +33,9 @@ CREATE TABLE message (
 
 CREATE TABLE sport (
 	sport_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    sport_name VARCHAR(50) NOT NULL UNIQUE
-    -- añadimos columna/campo is_disabled -----
-     -- añadimos columna/campo sport_img "newsport.jpg" 
+    sport_name VARCHAR(50) NOT NULL UNIQUE,
+    sport_img VARCHAR(255) NOT NULL DEFAULT 'newsport.jpg', --nuevo campo añadido
+    is_disabled BOOLEAN NOT NULL DEFAULT 0 --nuevo campo añadido
 );
 
 CREATE TABLE practice (
@@ -52,10 +52,12 @@ CREATE TABLE activity (
     limit_users INT,  -- null: senderismo | 4: tenis o pádel | 10: baloncesto
     text VARCHAR(255) NOT NULL,
     activity_city VARCHAR(50) NOT NULL,
+    activity_address VARCHAR(250) NOT NULL, --nuevo campo añadido
     details TINYTEXT,
     user_id INT UNSIGNED NOT NULL,
     sport_id INT UNSIGNED NOT NULL,
     maps_link VARCHAR(350),
+    
     -- num_asistentes - > usuarios que se han apuntado
     -- disabled  -> el admin deshabilita una actividad
 	CONSTRAINT fk_activity_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,

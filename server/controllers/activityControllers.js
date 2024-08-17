@@ -7,6 +7,7 @@ class ActivityController {
       limit_users,
       text,
       activity_city,
+      activity_address,  // Añadir activity_address aquí
       details,
       sport_id,
       user_id,
@@ -14,7 +15,7 @@ class ActivityController {
     } = req.body;
 
     // Validación de campos obligatorios
-    if (!date_time_activity || !text || !activity_city || !sport_id || !user_id) {
+    if (!date_time_activity || !text || !activity_city || !activity_address || !sport_id || !user_id) {
       return res.status(400).json({ error: "Todos los campos obligatorios deben completarse." });
     }
 
@@ -43,17 +44,33 @@ class ActivityController {
     }
 
     // Validación de límite de usuarios (debe ser un número positivo o nulo)
-    if (limit_users !== null && limit_users <= 1) { // Cambiado a 1 para asegurar al menos 2 jugadores
+    if (limit_users !== null && limit_users <= 1) {
       return res.status(400).json({ error: "El límite de usuarios debe ser al menos 2." });
     }
 
-    // Convertir el campo 'text' a minúsculas y luego hacer que la primera letra sea mayúscula
-    let formattedText = text.toLowerCase();
-    formattedText = formattedText.charAt(0).toUpperCase() + formattedText.slice(1);
+    // Validación de dirección (longitud máxima y no vacía)
+    if (activity_address.length > 250) {
+      return res.status(400).json({ error: "La dirección no puede tener más de 250 caracteres." });
+    }
+
+    // Validación del enlace de Google Maps (solo URL válida)
+    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+    if (maps_link && !urlPattern.test(maps_link)) {
+      return res.status(400).json({ error: "El enlace de Google Maps no es válido." });
+    }
+
+    // Convertir el campo 'text', 'activity_city' y 'activity_address' a minúsculas y luego hacer que la primera letra sea mayúscula
+    const formatText = (str) => {
+      return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+    };
+
+    let formattedText = formatText(text);
+    let formattedCity = formatText(activity_city);
+    let formattedAddress = formatText(activity_address);
 
     // Validación de actividad duplicada (misma fecha, ciudad y deporte)
     const sqlCheckDuplicate = `SELECT * FROM activity WHERE date_time_activity = ? AND activity_city = ? AND sport_id = ?`;
-    connection.query(sqlCheckDuplicate, [date_time_activity, activity_city, sport_id], (err, result) => {
+    connection.query(sqlCheckDuplicate, [date_time_activity, formattedCity, sport_id], (err, result) => {
       if (err) {
         console.error("Error al verificar actividad duplicada:", err);
         return res.status(500).json({ error: "Error al verificar actividad duplicada." });
@@ -64,8 +81,8 @@ class ActivityController {
       }
 
       // Crear la nueva actividad en la base de datos
-      const sql = `INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, sport_id, user_id, maps_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-      const values = [date_time_activity, limit_users || null, formattedText, activity_city, details, sport_id, user_id, maps_link || null];
+      const sql = `INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, sport_id, user_id, maps_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const values = [date_time_activity, limit_users || null, formattedText, formattedCity, formattedAddress, details, sport_id, user_id, maps_link || null];
 
       connection.query(sql, values, (err, result) => {
         if (err) {
@@ -85,17 +102,17 @@ class ActivityController {
   getAllActivities = (req, res) => {
     const sql = `
       SELECT a.activity_id, a.date_time_activity, a.limit_users, a.text, a.activity_city, 
-             a.details, a.maps_link, s.sport_name, s.sport_img
+             a.activity_address, a.details, a.maps_link, s.sport_name, s.sport_img
       FROM activity a
       JOIN sport s ON a.sport_id = s.sport_id
       ORDER BY a.date_time_activity DESC`;
-
+  
     connection.query(sql, (error, results) => {
       if (error) {
         console.error("Error al obtener las actividades:", error);
         return res.status(500).json({ error: "Error al obtener las actividades" });
       }
-
+      console.log(results); 
       res.status(200).json(results);
     });
   };
@@ -106,5 +123,6 @@ class ActivityController {
 }
 
 module.exports = new ActivityController();
+
 
 

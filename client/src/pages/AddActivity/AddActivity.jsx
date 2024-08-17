@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, Container, Alert, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Alert, Row, Col, InputGroup } from "react-bootstrap";
+import { BsCalendar3 } from 'react-icons/bs'; // Icono de calendario de Bootstrap desde react-icons
 import axios from "axios";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,12 +12,11 @@ import { ModalCreateSport } from "../../components/ModalCreateSport/ModalCreateS
 registerLocale("es", es);
 
 export const AddActivity = () => {
-  const [dateTimeActivity, setDateTimeActivity] = useState(
-    setHours(setMinutes(new Date(), 30), 16)
-  );
+  const [dateTimeActivity, setDateTimeActivity] = useState(null);
   const [limitUsers, setLimitUsers] = useState("");
   const [text, setText] = useState("");
   const [activityCity, setActivityCity] = useState("");
+  const [activityAddress, setActivityAddress] = useState("");  // Nuevo estado para la dirección específica
   const [details, setDetails] = useState("");
   const [sportId, setSportId] = useState("");
   const [sports, setSports] = useState([]); // Estado para la lista de deportes
@@ -24,15 +24,14 @@ export const AddActivity = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
+  
+  const navigate = useNavigate(); // Hook para navegar
 
   // Cargar la lista de deportes desde la base de datos al montar el componente
   useEffect(() => {
     const fetchSports = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:4000/api/sports/allSports"
-        );
+        const response = await axios.get("http://localhost:4000/api/sports/allSports");
         console.log("-------------------------", response.data);
         //ordenamos los deportes alfabéticamente
         const sortedSports = response.data.sort((a, b) => a.sport_name.localeCompare(b.sport_name));
@@ -56,22 +55,28 @@ export const AddActivity = () => {
     setSuccess("");
 
     try {
-      const formattedDateTime = dateTimeActivity
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " ");
+      // Extraer la fecha y hora en el formato 'YYYY-MM-DD HH:MM:SS' sin convertir a UTC
+      const year = dateTimeActivity.getFullYear();
+      const month = String(dateTimeActivity.getMonth() + 1).padStart(2, '0'); // Meses de 0 a 11
+      const day = String(dateTimeActivity.getDate()).padStart(2, '0');
+      const hours = String(dateTimeActivity.getHours()).padStart(2, '0');
+      const minutes = String(dateTimeActivity.getMinutes()).padStart(2, '0');
+      const seconds = '00'; // No necesitamos los segundos
+
+      const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
       const response = await axios.post(
         "http://localhost:4000/api/activity/createActivity",
         {
-          date_time_activity: formattedDateTime,
-          limit_users: limitUsers || null,
+          date_time_activity: formattedDateTime,  // Enviar la fecha en el formato correcto para DATETIME
+          limit_users: limitUsers || null,  // Enviar null si no hay límite de usuarios
           text,
           activity_city: activityCity,
+          activity_address: activityAddress,  // Añadir activity_address aquí
           details,
-          sport_id: sportId,
-          user_id: 1,
-          maps_link: mapsLink || null,
+          sport_id: Number(sportId),  // Convertir sport_id a número si es necesario
+          user_id: 1,  // Asegúrate de que este ID existe en la tabla `user`
+          maps_link: mapsLink || null,  // Enviar null si no hay enlace de Google Maps
         }
       );
 
@@ -88,6 +93,10 @@ export const AddActivity = () => {
         setError("Error al crear la actividad. Inténtalo de nuevo.");
       }
     }
+  };
+
+  const handleCancel = () => {
+    navigate("/allActivities"); // Navegar a la vista de todas las actividades
   };
 
   return (
@@ -141,7 +150,7 @@ export const AddActivity = () => {
                 type="number"
                 placeholder=""
                 value={limitUsers}
-                onChange={(e) => setLimitUsers(e.target.value)}
+                onChange={(e) => setLimitUsers(e.target.value < 0 ? 0 : e.target.value)} // Evitar números negativos
               />
             </Form.Group>
           </Col>
@@ -149,32 +158,49 @@ export const AddActivity = () => {
 
         <Form.Group controlId="formDateTimeActivity">
           <Form.Label>Día y Hora</Form.Label>
-          <DatePicker
-            selected={dateTimeActivity}
-            onChange={(date) => setDateTimeActivity(date)}
-            showTimeSelect
-            timeCaption="Hora"
-            excludeTimes={[
-              setHours(setMinutes(new Date(), 0), 17),
-              setHours(setMinutes(new Date(), 30), 18),
-              setHours(setMinutes(new Date(), 30), 19),
-              setHours(setMinutes(new Date(), 30), 17),
-            ]}
-            dateFormat="Pp"
-            locale="es"
-            placeholderText="Selecciona día y hora"
-            className="form-control"
+          <InputGroup>
+            <DatePicker
+              selected={dateTimeActivity}
+              onChange={(date) => setDateTimeActivity(date)}
+              showTimeSelect
+              timeCaption="Hora"
+              excludeTimes={[
+                setHours(setMinutes(new Date(), 0), 17),
+                setHours(setMinutes(new Date(), 30), 18),
+                setHours(setMinutes(new Date(), 30), 19),
+                setHours(setMinutes(new Date(), 30), 17),
+              ]}
+              minDate={new Date()}  // Deshabilitar fechas anteriores a hoy
+              dateFormat="Pp"
+              locale="es"
+              placeholderText="Selecciona día y hora"
+              className="form-control"
+              required
+            />
+            <InputGroup.Text>
+              <BsCalendar3 />
+            </InputGroup.Text>
+          </InputGroup>
+        </Form.Group>
+
+        <Form.Group controlId="formActivityCity">
+          <Form.Label>Ciudad</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Introduce la ciudad"
+            value={activityCity}
+            onChange={(e) => setActivityCity(e.target.value)}
             required
           />
         </Form.Group>
 
-        <Form.Group controlId="formActivityCity">
+        <Form.Group controlId="formActivityAddress">
           <Form.Label>Dirección</Form.Label>
           <Form.Control
             type="text"
             placeholder="Introduce la dirección"
-            value={activityCity}
-            onChange={(e) => setActivityCity(e.target.value)}
+            value={activityAddress}
+            onChange={(e) => setActivityAddress(e.target.value)}
             required
           />
         </Form.Group>
@@ -200,7 +226,7 @@ export const AddActivity = () => {
           />
         </Form.Group>
 
-        <Button variant="secondary" type="button" className="mt-3 me-3">
+        <Button variant="secondary" type="button" className="mt-3 me-3" onClick={handleCancel}>
           Cancelar
         </Button>
         <Button variant="primary" type="submit" className="mt-3">
@@ -218,3 +244,5 @@ export const AddActivity = () => {
     </Container>
   );
 };
+
+
