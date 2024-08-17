@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -41,25 +41,30 @@ export const Register = () => {
           error = "El nombre es obligatorio";
         }else if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/.test(value)){
           error = "El nombre ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."
+        }else{
+          error = ""
         }
         break;
       case "last_name":
         if (!value) {
           error = "El apellido es obligatorio"
         }else if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/.test(value)){
-          error = "El nombre ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."
+          error = "El apellido ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."
+        }else{
+          error = ""
         }
         break;
-      
-      // case "email":
-      //   if (!value) {
-      //     error = "El email es obligatorio";
-      //   } else if (!/\S+@\S+\.\S+/.test(value)) {
-      //     error = "El email no es válido";
-      //   }
-      //   break;
-      // otras validaciones...
-      default:
+      case "user_city":
+        if(!value){
+          error = "La ciudad es un campo obligatorio"
+        }else if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,200}$/.test(value)){
+          error = "La ciudad ingresada no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 200 caracteres."
+        }else{
+          error = ""
+        }
+        break;   
+    
+        default:
         break;
     }
 
@@ -181,8 +186,8 @@ export const Register = () => {
   /* GENERO */
 
   const [noBinario, setNoBinario] = useState(false);
-  const selectNobinario = () => setNoBinario(!noBinario);
-  const sportsList = ["Fútbol", "Baloncesto", "Tenis", "Natación"];
+  const selectNobinario = () => setNoBinario(!noBinario);  
+  // const sportsList = ["Fútbol", "Baloncesto", "Tenis", "Natación"];
   const generos = [
     "Hombre trans",
     "Mujer trans",
@@ -210,6 +215,18 @@ export const Register = () => {
     setpage(page + 1);
     setUserRegister({ ...userRegister, sports: array });
   };
+
+  useEffect(()=>{
+    const fetchSport = async () =>{
+      try{
+        const response = await axios.get('http://localhost:4000/api/users', {headers:{Authorization:`Bearer ${token}`}})
+        return response.data;
+    }catch(err){
+        handleError(err)
+
+    }
+    }
+  },[])
 
   /* ENVIAR DATOS REGISTER */
 
@@ -270,16 +287,35 @@ export const Register = () => {
           <>
             <Form.Group className="mb-3" controlId="user_name">
               <Form.Label>NOMBRE</Form.Label>
+              {formErrors.user_name ? <span>{formErrors.user_name}</span> : null}
               <Form.Control
                 type="text"
                 placeholder="Enter name"
                 name="user_name"
                 onChange={handleRegister}
                 value={userRegister?.user_name}
-              />
+              />             
+
+              <Form.Text className="text-muted"></Form.Text>{" "}
+            </Form.Group>
+            <Button onClick={volver}>Volver</Button>
+            {!userRegister.user_name ? (
+              <Button className="button-color">Continuar</Button>
+            ) : (
+              <Button onClick={continuar}>Continuar</Button>
+            )}
+          </>
+        ) : null}
+
+        
+          {/* APELLIDOS */}
+          {page == 2 ? (
+          <>
+            <Form.Group className="mb-3" controlId="user_name">            
               <Form.Text className="text-muted"></Form.Text>
               <Form.Group className="mb-3" controlId="last_name">
                 <Form.Label>APELLIDOS</Form.Label>
+                {formErrors.last_name ? <span>{formErrors.last_name}</span> : null}
                 <Form.Control
                   type="text"
                   placeholder="Enter name"
@@ -291,7 +327,7 @@ export const Register = () => {
               <Form.Text className="text-muted"></Form.Text>{" "}
             </Form.Group>
             <Button onClick={volver}>Volver</Button>
-            {!userRegister.user_name || !userRegister.last_name ? (
+            {!userRegister.last_name ? (
               <Button className="button-color">Continuar</Button>
             ) : (
               <Button onClick={continuar}>Continuar</Button>
@@ -300,7 +336,7 @@ export const Register = () => {
         ) : null}
 
         {/* CUMPLEAÑOS */}
-        {page === 2 ? (
+        {page === 3 ? (
           <>
             <DatePicker
 
@@ -377,10 +413,11 @@ export const Register = () => {
         ) : null}
 
         {/* CIUDAD */}
-        {page == 3 ? (
+        {page == 4 ? (
           <>
             <Form.Group className="mb-3" controlId="user_city">
               <Form.Label>CUAL ES TU CIUDAD</Form.Label>
+              {formErrors.user_city ? <span>{formErrors.user_city}</span> : null}              
               <Form.Control
                 type="text"
                 placeholder="cual es tu ciudad"
@@ -400,7 +437,7 @@ export const Register = () => {
         ) : null}
 
         {/* GENERO */}
-        {page == 4 ? (
+        {page == 5 ? (
           <>
             {noBinario ? (
               <div className="generos">
@@ -433,7 +470,7 @@ export const Register = () => {
             )}
           </>
         ) : null}
-        {page == 5 ? (
+        {page == 6 ? (
           <>
             <ListGroup as="ul" className="all_generos">
               {sportsList.map((e, idx) => {
@@ -472,7 +509,7 @@ export const Register = () => {
           </>
         ) : null}
         {/* GENERO */}
-        {page == 6 ? (
+        {page == 7 ? (
           <>
             <ListGroup as="ul">
               <Button onClick={volver}>Volver</Button>
