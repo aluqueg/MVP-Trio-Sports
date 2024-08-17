@@ -61,4 +61,4 @@ typings/
 .next
 
 # database images
-puclic/images/
+public/images
