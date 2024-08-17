@@ -29,12 +29,12 @@ export const NavBarApp = () => {
                 <Nav.Link as={Link} to="/allActivities">Actividades</Nav.Link>
                 <Nav.Link as={Link} to="/addActivity">Crear Actividad</Nav.Link>
                 <Nav.Link as={Link} to="/addSport">Crear Deporte</Nav.Link>
-                <Nav.Link as={Link} to="/allUsers">Busqueda</Nav.Link>
+                <Nav.Link as={Link} to="/allUsers">Búsqueda</Nav.Link>
                 <Nav.Link as={Link} to="/chats">Mensajes</Nav.Link>
                 <Nav.Link as={Link} to="/profile">Perfil</Nav.Link>
               </Nav>
               <Nav className="d-flex">
-                {user? <button className="login-btn">Cerrar Sesion</button>:
+                {user? <button className="login-btn">Cerrar Sesión</button>:
                 <button
                 onClick={()=>navigate('/login')}
                 className="login-btn"

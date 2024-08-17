@@ -6,6 +6,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { setHours, setMinutes } from "date-fns";
 import { es } from "date-fns/locale";
+import { ModalCreateSport } from "../../components/ModalCreateSport/ModalCreateSport";
 
 registerLocale("es", es);
 
@@ -22,15 +23,20 @@ export const AddActivity = () => {
   const [mapsLink, setMapsLink] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   // Cargar la lista de deportes desde la base de datos al montar el componente
   useEffect(() => {
     const fetchSports = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/sports/allSports");
-        console.log("-------------------------", response.data)
-        setSports(response.data); // Guardar los deportes en el estado
+        const response = await axios.get(
+          "http://localhost:4000/api/sports/allSports"
+        );
+        console.log("-------------------------", response.data);
+        //ordenamos los deportes alfabéticamente
+        const sortedSports = response.data.sort((a, b) => a.sport_name.localeCompare(b.sport_name));
+        setSports(sortedSports); // Guardar los deportes en el estado
       } catch (error) {
         console.error("Error al cargar los deportes:", error);
       }
@@ -38,6 +44,11 @@ export const AddActivity = () => {
 
     fetchSports();
   }, []); // El array vacío asegura que la función se ejecute solo una vez cuando el componente se monta
+
+  const handleSportCreated = (newSport) => {
+    setSports((prevSports) => [...prevSports, newSport]);
+    setSportId(newSport.sport_id); //Selecciona automáticamente el nuevo deporte
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,16 +61,19 @@ export const AddActivity = () => {
         .slice(0, 19)
         .replace("T", " ");
 
-      const response = await axios.post("http://localhost:4000/api/activity/createActivity", {
-        date_time_activity: formattedDateTime,
-        limit_users: limitUsers || null,
-        text,
-        activity_city: activityCity,
-        details,
-        sport_id: sportId,
-        user_id: 1,
-        maps_link: mapsLink || null,
-      });
+      const response = await axios.post(
+        "http://localhost:4000/api/activity/createActivity",
+        {
+          date_time_activity: formattedDateTime,
+          limit_users: limitUsers || null,
+          text,
+          activity_city: activityCity,
+          details,
+          sport_id: sportId,
+          user_id: 1,
+          maps_link: mapsLink || null,
+        }
+      );
 
       if (response.status === 201) {
         setSuccess("Actividad creada con éxito");
@@ -86,7 +100,7 @@ export const AddActivity = () => {
           <Form.Label>Título</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Encuentro de senderismo"
+            placeholder="Introduce un título para la actividad o evento"
             value={text}
             onChange={(e) => setText(e.target.value)}
             required
@@ -102,9 +116,7 @@ export const AddActivity = () => {
                 value={sportId}
                 onChange={(e) => {
                   if (e.target.value === "addSport") {
-                    navigate("/addSport", {
-                      state: { from: "/addActivity" },
-                    }); // Redirigir al formulario de añadir deporte
+                    setShowModal(true); //Abrir el modal para crear el deporte
                   } else {
                     setSportId(e.target.value);
                   }
@@ -117,7 +129,8 @@ export const AddActivity = () => {
                     {sport.sport_name}
                   </option>
                 ))}
-                <option value="addSport">Añadir deporte</option> {/* Opción para añadir deporte */}
+                <option value="addSport">Añadir deporte</option>{" "}
+                {/* Opción para añadir deporte */}
               </Form.Control>
             </Form.Group>
           </Col>
@@ -187,10 +200,21 @@ export const AddActivity = () => {
           />
         </Form.Group>
 
+        <Button variant="secondary" type="button" className="mt-3 me-3">
+          Cancelar
+        </Button>
         <Button variant="primary" type="submit" className="mt-3">
           Crear Actividad
         </Button>
       </Form>
+
+      {/* Modal para crear un nuevo deporte */}
+      <ModalCreateSport
+        show={showModal}
+        closeModal={() => setShowModal(false)}
+        onSportCreated={handleSportCreated}
+        existingSports={sports} //pasamos la lista de deportes existentes al modal
+      />
     </Container>
   );
 };
