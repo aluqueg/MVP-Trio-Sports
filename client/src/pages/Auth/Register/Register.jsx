@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
-import { Button } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
 import axios from "axios";
 import "./register.css";
@@ -10,12 +10,15 @@ import { getMonth, getYear, format, subYears } from "date-fns";
 import { setDefaultLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
 import { useNavigate } from "react-router-dom";
+import { ModalCreateSport } from "../../../components/ModalCreateSport/ModalCreateSport";
 setDefaultLocale("es");
 
 export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
   const [page, setpage] = useState(0);
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [sportId, setSportId] = useState("");
   //manejo de errores nuevo
   const [formErrors, setFormErrors] = useState({});
   const [validateEmail, setValidateEmail] = useState(false);
@@ -26,10 +29,6 @@ export const Register = () => {
     const { name, value } = e.target;
     setUserRegister({ ...userRegister, [name]: value });
   };
-
-  // const continuar = () => {
-  //   setpage(page + 1);
-  // };
 
   //validación de campos
   const validateField = (name, value) => {
@@ -129,11 +128,6 @@ export const Register = () => {
     }
   };
   
-  console.log("validate mail",validateEmail);
-  console.log("validate pass",validatePassword);
-  
-  
-
   const continuar = () => {
     // Validar los campos de la página actual
     const isValid = Object.keys(userRegister).every((key) =>
@@ -188,7 +182,6 @@ export const Register = () => {
 
   const [noBinario, setNoBinario] = useState(false);
   const selectNobinario = () => setNoBinario(!noBinario);  
-  const sportsList = ["Fútbol", "Baloncesto", "Tenis", "Natación"];
   const generos = [
     "Hombre trans",
     "Mujer trans",
@@ -217,17 +210,29 @@ export const Register = () => {
     setUserRegister({ ...userRegister, sports: array });
   };
 
-  useEffect(()=>{
-    const fetchSport = async () =>{
-      try{
-        const response = await axios.get('http://localhost:4000/api/users', {headers:{Authorization:`Bearer ${token}`}})
-        return response.data;
-    }catch(err){
-        handleError(err)
+  // Cargar la lista de deportes desde la base de datos al montar el componente
+  useEffect(() => {
+    const fetchSports = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:4000/api/sports/allSports"
+        );
+        console.log("useEffect deportes bd", response.data);
+        //ordenamos los deportes alfabéticamente
+        const sortedSports = response.data.sort((a, b) => a.sport_name.localeCompare(b.sport_name));
+        setSports(sortedSports); // Guardar los deportes en el estado
+      } catch (error) {
+        console.error("Error al cargar los deportes:", error);
+      }
+    };
 
-    }
-    }
-  },[])
+    fetchSports();
+  }, []);
+
+  const handleSportCreated = (newSport) => {
+    setSports((prevSports) => [...prevSports, newSport]);
+    setSportId(newSport.sport_id); //Selecciona automáticamente el nuevo deporte
+  };
 
   /* ENVIAR DATOS REGISTER */
   const [file, setFile] = useState({});
@@ -253,7 +258,7 @@ export const Register = () => {
   };
   
   return (
-    <>
+    <Container>
       <Form action="">
         {page == 0 ? (
           <>
@@ -289,7 +294,7 @@ export const Register = () => {
           </>
         ) : null}
 
-        {/* NOMBRE Y APELLIDOS */}
+        {/* NOMBRE */}
 
         {page == 1 ? (
           <>
@@ -480,32 +485,30 @@ export const Register = () => {
         ) : null}
         {page == 6 ? (
           <>
-            <ListGroup as="ul" className="all_generos">
-              {sportsList.map((e, idx) => {
-                return (
-                  <>
-                    {filterSports(e) == e ? (
-                      <ListGroup.Item
-                        as="li"
-                        key={idx}
-                        onClick={() => removeSports(e)}
-                        active
-                      >
-                        {e}
-                      </ListGroup.Item>
-                    ) : (
-                      <ListGroup.Item
-                        as="li"
-                        key={idx}
-                        onClick={() => addSports(e)}
-                      >
-                        {e}
-                      </ListGroup.Item>
-                    )}
-                  </>
-                );
-              })}
-            </ListGroup>
+            <Form.Group controlId="formSportId">
+              <Form.Label>Deporte</Form.Label>
+              <Form.Control
+                as="select"
+                value={sportId}
+                onChange={(e) => {
+                  if (e.target.value === "addSport") {
+                    setShowModal(true); //Abrir el modal para crear el deporte
+                  } else {
+                    setSportId(e.target.value);
+                  }
+                }}
+                required
+              >
+                <option value="">Elegir...</option>
+                {sports.map((sport) => (
+                  <option key={sport.sport_id} value={sport.sport_id}>
+                    {sport.sport_name}
+                  </option>
+                ))}
+                <option value="addSport">Añadir deporte</option>{" "}
+                {/* Opción para añadir deporte */}
+              </Form.Control>
+            </Form.Group>
             <Button onClick={volver}>Volver</Button>
             {sports.length > 5 || sports.length < 1 ? (
               <Button className="button-color">Continuar</Button>
@@ -517,7 +520,6 @@ export const Register = () => {
           </>
         ) : null}
         {/* FOTO */}
-      </Form>
       {page == 7 ? (
         <>
           <Form.Group className="mb-3">
@@ -535,6 +537,13 @@ export const Register = () => {
           <Button onClick={onSubmit}>Enviar</Button>
         </>
       ) : null}
-    </>
+      </Form>
+      <ModalCreateSport
+        show={showModal}
+        closeModal={() => setShowModal(false)}
+        onSportCreated={handleSportCreated}
+        existingSports={sports} //pasamos la lista de deportes existentes al modal
+      />
+    </Container>
   );
 };
