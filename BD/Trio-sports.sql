@@ -34,6 +34,8 @@ CREATE TABLE message (
 CREATE TABLE sport (
 	sport_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     sport_name VARCHAR(50) NOT NULL UNIQUE
+    -- añadimos columna/campo is_disabled -----
+     -- añadimos columna/campo sport_img "newsport.jpg" 
 );
 
 CREATE TABLE practice (
@@ -186,3 +188,4 @@ VALUES (3, 1, 4, 'La competencia de atletismo estuvo muy bien organizada. Las pr
 
 INSERT INTO comment (activity_id, comment_id, user_id, text)
 VALUES (4, 1, 1, 'El partido de fútbol fue muy divertido. Todos jugamos bien y la coordinación del equipo fue excelente.');
+
