@@ -54,9 +54,11 @@ CREATE TABLE activity (
     activity_city VARCHAR(50) NOT NULL,
     activity_address VARCHAR(250) NOT NULL, -- nuevo campo añadido
     details TINYTEXT,
+    num_assistants INT DEFAULT 0,  --nuevo campo añadido
     user_id INT UNSIGNED NOT NULL,
     sport_id INT UNSIGNED NOT NULL,
     maps_link VARCHAR(350),
+   
     
     -- num_asistentes - > usuarios que se han apuntado
     -- disabled  -> el admin deshabilita una actividad
