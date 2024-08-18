@@ -7,11 +7,11 @@ class ActivityController {
       limit_users,
       text,
       activity_city,
-      activity_address,  // Añadir activity_address aquí
+      activity_address,
       details,
       sport_id,
       user_id,
-      maps_link
+      maps_link,
     } = req.body;
 
     // Validación de campos obligatorios
@@ -32,8 +32,8 @@ class ActivityController {
       return res.status(400).json({ error: "El nombre de la ciudad no puede tener más de 50 caracteres." });
     }
 
-    // Validación de formato de la ciudad (solo letras y espacios)
-    const cityPattern = /^[a-zA-Z\s]+$/;
+    // Validación de formato de la ciudad (solo letras, acentos y espacios)
+    const cityPattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
     if (!cityPattern.test(activity_city)) {
       return res.status(400).json({ error: "El nombre de la ciudad contiene caracteres inválidos." });
     }
@@ -59,9 +59,9 @@ class ActivityController {
       return res.status(400).json({ error: "El enlace de Google Maps no es válido." });
     }
 
-    // Convertir el campo 'text', 'activity_city' y 'activity_address' a minúsculas y luego hacer que la primera letra sea mayúscula
+    // Formatear texto (solo la primera letra en mayúscula)
     const formatText = (str) => {
-      return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     };
 
     let formattedText = formatText(text);
@@ -95,17 +95,44 @@ class ActivityController {
     });
   };
 
-  editActivity = (req, res) => {
-    res.send("editActivity");
+  joinActivity = (req, res) => {
+    const { activity_id } = req.body;
+
+    const sqlGetActivity = `SELECT limit_users, num_assistants FROM activity WHERE activity_id = ?`;
+    connection.query(sqlGetActivity, [activity_id], (err, results) => {
+      if (err) {
+        console.error("Error al obtener la actividad:", err);
+        return res.status(500).json({ error: "Error al obtener la actividad." });
+      }
+
+      const { limit_users, num_assistants } = results[0];
+
+      if (limit_users && num_assistants >= limit_users) {
+        return res.status(400).json({ error: "La actividad ya está completa." });
+      }
+
+      const sqlUpdateAssistants = `UPDATE activity SET num_assistants = num_assistants + 1 WHERE activity_id = ?`;
+      connection.query(sqlUpdateAssistants, [activity_id], (err, result) => {
+        if (err) {
+          console.error("Error al actualizar la actividad:", err);
+          return res.status(500).json({ error: "Error al unirse a la actividad." });
+        }
+        res.status(200).json({ message: "Te has unido a la actividad." });
+      });
+    });
   };
 
   getAllActivities = (req, res) => {
     const sql = `
       SELECT a.activity_id, a.date_time_activity, a.limit_users, a.text, a.activity_city, 
-             a.activity_address, a.details, a.maps_link, s.sport_name, s.sport_img
+             a.activity_address, a.details, a.maps_link, a.num_assistants, s.sport_name, s.sport_img,
+             CASE
+               WHEN a.date_time_activity >= NOW() THEN 0
+               ELSE 1
+             END AS is_past
       FROM activity a
       JOIN sport s ON a.sport_id = s.sport_id
-      ORDER BY a.date_time_activity DESC`;
+      ORDER BY is_past ASC, a.date_time_activity ASC`;  // Mostrar primero las actividades futuras y luego las finalizadas.
   
     connection.query(sql, (error, results) => {
       if (error) {
@@ -116,13 +143,22 @@ class ActivityController {
       res.status(200).json(results);
     });
   };
+  
 
   getOneActivity = (req, res) => {
     res.send("getOneActivity");
   };
+
+  editActivity = (req, res) => {
+    res.send("getOneActivity");
+  };
+
+
 }
 
 module.exports = new ActivityController();
+
+
 
 
 
