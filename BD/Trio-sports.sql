@@ -7,7 +7,7 @@ CREATE TABLE user (
 	user_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     user_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
-    birth_date DATETIME,
+    birth_date DATE,
     gender VARCHAR(50),  
     user_img VARCHAR(200),
     user_city VARCHAR(200) NOT NULL,
@@ -34,8 +34,8 @@ CREATE TABLE message (
 CREATE TABLE sport (
 	sport_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     sport_name VARCHAR(50) NOT NULL UNIQUE,
-    sport_img VARCHAR(255) NOT NULL DEFAULT 'newsport.jpg', --nuevo campo añadido
-    is_disabled BOOLEAN NOT NULL DEFAULT 0 --nuevo campo añadido
+    sport_img VARCHAR(255) NOT NULL DEFAULT 'newsport.jpg', -- nuevo campo añadido
+    is_disabled BOOLEAN NOT NULL DEFAULT 0 -- nuevo campo añadido
 );
 
 CREATE TABLE practice (
@@ -52,7 +52,7 @@ CREATE TABLE activity (
     limit_users INT,  -- null: senderismo | 4: tenis o pádel | 10: baloncesto
     text VARCHAR(255) NOT NULL,
     activity_city VARCHAR(50) NOT NULL,
-    activity_address VARCHAR(250) NOT NULL, --nuevo campo añadido
+    activity_address VARCHAR(250) NOT NULL, -- nuevo campo añadido
     details TINYTEXT,
     user_id INT UNSIGNED NOT NULL,
     sport_id INT UNSIGNED NOT NULL,
@@ -151,17 +151,17 @@ VALUES (1, 4);
 
 -- Activity
 
-INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
-VALUES ('2024-08-16 09:00:00', 4, 'Partido amistoso de tenis en la cancha', 'Barcelona', 'Participa en un amistoso torneo de tenis. No olvides tu raqueta y pelotas.', 2, 3, 'https://maps.example.com/abc');
+-- INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
+-- VALUES ('2024-08-16 09:00:00', 4, 'Partido amistoso de tenis en la cancha', 'Barcelona', 'Participa en un amistoso torneo de tenis. No olvides tu raqueta y pelotas.', 2, 3, 'https://maps.example.com/abc');
 
-INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
-VALUES ('2024-08-17 07:00:00', NULL, 'Ruta en bicicleta por la montaña', 'Valencia', 'Acompáñanos en una ruta en bicicleta por los senderos de montaña. Lleva tu bicicleta en buen estado y equipo de protección.', 3, 2, 'https://maps.example.com/def');
+-- INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
+-- VALUES ('2024-08-17 07:00:00', NULL, 'Ruta en bicicleta por la montaña', 'Valencia', 'Acompáñanos en una ruta en bicicleta por los senderos de montaña. Lleva tu bicicleta en buen estado y equipo de protección.', 3, 2, 'https://maps.example.com/def');
 
-INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
-VALUES ('2024-08-19 10:00:00', 10, 'Competencia de atletismo en el estadio', 'Sevilla', 'Participa en una competencia de atletismo en el estadio local. Prepárate para las pruebas de velocidad y resistencia.', 4, 4, 'https://maps.example.com/ghi');
+-- INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
+-- VALUES ('2024-08-19 10:00:00', 10, 'Competencia de atletismo en el estadio', 'Sevilla', 'Participa en una competencia de atletismo en el estadio local. Prepárate para las pruebas de velocidad y resistencia.', 4, 4, 'https://maps.example.com/ghi');
 
-INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
-VALUES ('2024-08-19 10:00:00', 10, 'Partido de fútbol amistoso en el campo de deportes', 'Madrid', 'Únete a un divertido partido de fútbol en el campo de deportes. Asegúrate de llevar tu equipo y estar listo para jugar.', 1, 1, 'https://maps.example.com/jkl');
+-- INSERT INTO activity (date_time_activity, limit_users, text, activity_city, details, user_id, sport_id, maps_link)
+-- VALUES ('2024-08-19 10:00:00', 10, 'Partido de fútbol amistoso en el campo de deportes', 'Madrid', 'Únete a un divertido partido de fútbol en el campo de deportes. Asegúrate de llevar tu equipo y estar listo para jugar.', 1, 1, 'https://maps.example.com/jkl');
 
 -- Participate
 

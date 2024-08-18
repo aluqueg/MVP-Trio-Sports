@@ -16,7 +16,7 @@ class userController {
       user_city,
       email,
       password,
-      sports,
+      sport_id,
     } = user;
     console.log("user", user);
     let saltRounds = 8;
@@ -61,17 +61,17 @@ class userController {
               res.status(201).json(result2);
               userId = result2.insertId;
               
-              sports.forEach(e => {
-                let data2v2 = [e.sport_id, userId]
-                let sql2v2 = `INSERT INTO practice (sport_id, user_id) VALUES (?, ?)`
-                connection.query(sql2v2, data2v2, (errIns2v2, result2v2) => {
-                  if (errIns2v2) {
-                    res.status(500).json(errIns2v2);
-                  } else {
-                    res.status(201).json(result2v2);
-                  }
-                })
-              });
+              // sports.forEach(e => {
+              //   let data2v2 = [e.sport_id, userId]
+              //   let sql2v2 = `INSERT INTO practice (sport_id, user_id) VALUES (?, ?)`
+              //   connection.query(sql2v2, data2v2, (errIns2v2, result2v2) => {
+              //     if (errIns2v2) {
+              //       res.status(500).json(errIns2v2);
+              //     } else {
+              //       res.status(201).json(result2v2);
+              //     }
+              //   })
+              // });
             }
           });
         }

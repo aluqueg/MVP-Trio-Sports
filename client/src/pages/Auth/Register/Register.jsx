@@ -256,6 +256,7 @@ export const Register = () => {
       })
       .catch((err) => console.log(err));
   };
+  console.log("log de user register",userRegister);
   
   return (
     <Container>
@@ -489,12 +490,15 @@ export const Register = () => {
               <Form.Label>Deporte</Form.Label>
               <Form.Control
                 as="select"
-                value={sportId}
-                onChange={(e) => {
+                multiple
+                value={userRegister?.sport_id}
+                name="sport_id"
+                onChange={(e) => {                 
+                  const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);  // Esto convierte las opciones seleccionadas en un array de valores.
                   if (e.target.value === "addSport") {
                     setShowModal(true); //Abrir el modal para crear el deporte
                   } else {
-                    setSportId(e.target.value);
+                    setUserRegister({...userRegister, sport_id: selectedOptions});
                   }
                 }}
                 required
@@ -513,7 +517,7 @@ export const Register = () => {
             {sports.length > 5 || sports.length < 1 ? (
               <Button className="button-color">Continuar</Button>
             ) : (
-              <Button onClick={() => addUserSportsContinuar(sports)}>
+              <Button onClick={continuar}>
                 Continuar
               </Button>
             )}
