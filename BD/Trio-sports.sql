@@ -54,9 +54,11 @@ CREATE TABLE activity (
     activity_city VARCHAR(50) NOT NULL,
     activity_address VARCHAR(250) NOT NULL, -- nuevo campo añadido
     details TINYTEXT,
+    num_assistants INT DEFAULT 0,  --nuevo campo añadido
     user_id INT UNSIGNED NOT NULL,
     sport_id INT UNSIGNED NOT NULL,
     maps_link VARCHAR(350),
+   
     
     -- num_asistentes - > usuarios que se han apuntado
     -- disabled  -> el admin deshabilita una actividad
@@ -83,71 +85,71 @@ CREATE TABLE comment (
     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
     
-INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
-VALUES ('Juan', 'Pérez', '1990-05-15', 'Masculino', 'juan_perez.jpg', 'Madrid', 'juan.perez@example.com', 'password123', 'Amante de la tecnología y la programación.', '2024-08-13 12:00:00', 1, 0, 2);
+-- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
+-- VALUES ('Juan', 'Pérez', '1990-05-15', 'Masculino', 'juan_perez.jpg', 'Madrid', 'juan.perez@example.com', 'password123', 'Amante de la tecnología y la programación.', '2024-08-13 12:00:00', 1, 0, 2);
 
-INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
-VALUES ('María', 'López', '1985-10-20', 'Femenino', 'maria_lopez.jpg', 'Barcelona', 'maria.lopez@example.com', 'securepass456', 'Diseñadora gráfica apasionada por el arte.', '2024-08-13 12:30:00', 1, 0, 2);
+-- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
+-- VALUES ('María', 'López', '1985-10-20', 'Femenino', 'maria_lopez.jpg', 'Barcelona', 'maria.lopez@example.com', 'securepass456', 'Diseñadora gráfica apasionada por el arte.', '2024-08-13 12:30:00', 1, 0, 2);
 
-INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
-VALUES ('Carlos', 'González', '1978-03-12', 'Masculino', 'carlos_gonzalez.jpg', 'Valencia', 'carlos.gonzalez@example.com', 'mypassword789', 'Ingeniero en sistemas, apasionado por la música.', '2024-08-13 13:00:00', 1, 0, 2);
+-- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
+-- VALUES ('Carlos', 'González', '1978-03-12', 'Masculino', 'carlos_gonzalez.jpg', 'Valencia', 'carlos.gonzalez@example.com', 'mypassword789', 'Ingeniero en sistemas, apasionado por la música.', '2024-08-13 13:00:00', 1, 0, 2);
 
-INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
-VALUES ('Ana', 'Martínez', '1995-07-30', 'Femenino', 'ana_martinez.jpg', 'Sevilla', 'ana.martinez@example.com', 'ana_securepass', 'Administradora de empresas con interés en el marketing.', '2024-08-13 13:30:00', 0, 0, 2);
+-- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
+-- VALUES ('Ana', 'Martínez', '1995-07-30', 'Femenino', 'ana_martinez.jpg', 'Sevilla', 'ana.martinez@example.com', 'ana_securepass', 'Administradora de empresas con interés en el marketing.', '2024-08-13 13:30:00', 0, 0, 2);
     
 -- MENSAJES
     
-INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
-VALUES ('¿Te apuntas a la carrera de 10K el próximo domingo?', '2024-08-13 09:15:00', 1, 2, FALSE);
+-- INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
+-- VALUES ('¿Te apuntas a la carrera de 10K el próximo domingo?', '2024-08-13 09:15:00', 1, 2, FALSE);
 
-INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
-VALUES ('¡Claro! He estado entrenando duro. ¿Cómo va tu preparación?', '2024-08-13 09:30:00', 2, 1, TRUE);
+-- INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
+-- VALUES ('¡Claro! He estado entrenando duro. ¿Cómo va tu preparación?', '2024-08-13 09:30:00', 2, 1, TRUE);
 
-INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
-VALUES ('Bastante bien, ayer hice 50 km en bicicleta. ¿Y tú?', '2024-08-12 17:45:00', 3, 4, FALSE);
+-- INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
+-- VALUES ('Bastante bien, ayer hice 50 km en bicicleta. ¿Y tú?', '2024-08-12 17:45:00', 3, 4, FALSE);
 
-INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
-VALUES ('Yo estuve en el gimnasio, levantando pesas. Luego jugué un partido de tenis.', '2024-08-13 08:00:00', 4, 3, TRUE);
+-- INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
+-- VALUES ('Yo estuve en el gimnasio, levantando pesas. Luego jugué un partido de tenis.', '2024-08-13 08:00:00', 4, 3, TRUE);
     
 -- sport
 
-INSERT INTO sport (sport_name)
-VALUES ('Fútbol');
+-- INSERT INTO sport (sport_name)
+-- VALUES ('Fútbol');
 
-INSERT INTO sport (sport_name)
-VALUES ('Ciclismo');
+-- INSERT INTO sport (sport_name)
+-- VALUES ('Ciclismo');
 
-INSERT INTO sport (sport_name)
-VALUES ('Tenis');
+-- INSERT INTO sport (sport_name)
+-- VALUES ('Tenis');
 
-INSERT INTO sport (sport_name)
-VALUES ('Atletismo');
+-- INSERT INTO sport (sport_name)
+-- VALUES ('Atletismo');
 
 -- Practice
 
-INSERT INTO practice (sport_id, user_id)
-VALUES (1, 1);
+-- INSERT INTO practice (sport_id, user_id)
+-- VALUES (1, 1);
 
-INSERT INTO practice (sport_id, user_id)
-VALUES (2, 1);
+-- INSERT INTO practice (sport_id, user_id)
+-- VALUES (2, 1);
 
-INSERT INTO practice (sport_id, user_id)
-VALUES (2, 2);
+-- INSERT INTO practice (sport_id, user_id)
+-- VALUES (2, 2);
 
-INSERT INTO practice (sport_id, user_id)
-VALUES (3, 2);
+-- INSERT INTO practice (sport_id, user_id)
+-- VALUES (3, 2);
 
-INSERT INTO practice (sport_id, user_id)
-VALUES (3, 3);
+-- INSERT INTO practice (sport_id, user_id)
+-- VALUES (3, 3);
 
-INSERT INTO practice (sport_id, user_id)
-VALUES (4, 3);
+-- INSERT INTO practice (sport_id, user_id)
+-- VALUES (4, 3);
 
-INSERT INTO practice (sport_id, user_id)
-VALUES (4, 4);
+-- INSERT INTO practice (sport_id, user_id)
+-- VALUES (4, 4);
 
-INSERT INTO practice (sport_id, user_id)
-VALUES (1, 4);
+-- INSERT INTO practice (sport_id, user_id)
+-- VALUES (1, 4);
 
 -- Activity
 
@@ -165,29 +167,29 @@ VALUES (1, 4);
 
 -- Participate
 
-INSERT INTO participate (activity_id, user_id, date_time_participate)
-VALUES (1, 2, '2024-08-16 08:45:00');
+-- INSERT INTO participate (activity_id, user_id, date_time_participate)
+-- VALUES (1, 2, '2024-08-16 08:45:00');
 
-INSERT INTO participate (activity_id, user_id, date_time_participate)
-VALUES (2, 3, '2024-08-17 06:50:00');
+-- INSERT INTO participate (activity_id, user_id, date_time_participate)
+-- VALUES (2, 3, '2024-08-17 06:50:00');
 
-INSERT INTO participate (activity_id, user_id, date_time_participate)
-VALUES (3, 4, '2024-08-19 09:30:00');
+-- INSERT INTO participate (activity_id, user_id, date_time_participate)
+-- VALUES (3, 4, '2024-08-19 09:30:00');
 
-INSERT INTO participate (activity_id, user_id, date_time_participate)
-VALUES (4, 1, '2024-08-19 09:00:00');
+-- INSERT INTO participate (activity_id, user_id, date_time_participate)
+-- VALUES (4, 1, '2024-08-19 09:00:00');
 
 -- comment
 
-INSERT INTO comment (activity_id, comment_id, user_id, text)
-VALUES (1, 1, 2, '¡Fue un partido de tenis genial! La cancha estaba en excelentes condiciones y el ambiente muy competitivo.');
+-- INSERT INTO comment (activity_id, comment_id, user_id, text)
+-- VALUES (1, 1, 2, '¡Fue un partido de tenis genial! La cancha estaba en excelentes condiciones y el ambiente muy competitivo.');
 
-INSERT INTO comment (activity_id, comment_id, user_id, text)
-VALUES (2, 1, 3, 'La ruta en bicicleta fue increíble. Los senderos eran impresionantes, y el paisaje espectacular.');
+-- INSERT INTO comment (activity_id, comment_id, user_id, text)
+-- VALUES (2, 1, 3, 'La ruta en bicicleta fue increíble. Los senderos eran impresionantes, y el paisaje espectacular.');
 
-INSERT INTO comment (activity_id, comment_id, user_id, text)
-VALUES (3, 1, 4, 'La competencia de atletismo estuvo muy bien organizada. Las pruebas fueron emocionantes y el ambiente muy motivador.');
+-- INSERT INTO comment (activity_id, comment_id, user_id, text)
+-- VALUES (3, 1, 4, 'La competencia de atletismo estuvo muy bien organizada. Las pruebas fueron emocionantes y el ambiente muy motivador.');
 
-INSERT INTO comment (activity_id, comment_id, user_id, text)
-VALUES (4, 1, 1, 'El partido de fútbol fue muy divertido. Todos jugamos bien y la coordinación del equipo fue excelente.');
+-- INSERT INTO comment (activity_id, comment_id, user_id, text)
+-- VALUES (4, 1, 1, 'El partido de fútbol fue muy divertido. Todos jugamos bien y la coordinación del equipo fue excelente.');
 
