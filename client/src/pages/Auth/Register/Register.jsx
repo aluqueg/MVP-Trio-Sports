@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import { Button, Container } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -11,6 +11,7 @@ import { setDefaultLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
 import { useNavigate } from "react-router-dom";
 import { ModalCreateSport } from "../../../components/ModalCreateSport/ModalCreateSport";
+import { TrioContext } from "../../../context/TrioContextProvider";
 setDefaultLocale("es");
 
 export const Register = () => {
@@ -23,6 +24,9 @@ export const Register = () => {
   const [formErrors, setFormErrors] = useState({});
   const [validateEmail, setValidateEmail] = useState(false);
   const [validatePassword, setValidatePassword] = useState(false);
+  const {sports, setSports} = useContext(TrioContext)
+
+  
 
 
   const handleRegister = (e) => {
@@ -195,7 +199,7 @@ export const Register = () => {
 
   /* SPORTS */
 
-  const [sports, setSports] = useState([]);
+
   const addSports = (e) => {
     setSports([...sports, e]);
   };
@@ -211,23 +215,23 @@ export const Register = () => {
   };
 
   // Cargar la lista de deportes desde la base de datos al montar el componente
-  useEffect(() => {
-    const fetchSports = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:4000/api/sports/allSports"
-        );
-        console.log("useEffect deportes bd", response.data);
-        //ordenamos los deportes alfabéticamente
-        const sortedSports = response.data.sort((a, b) => a.sport_name.localeCompare(b.sport_name));
-        setSports(sortedSports); // Guardar los deportes en el estado
-      } catch (error) {
-        console.error("Error al cargar los deportes:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchSports = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "http://localhost:4000/api/sports/allSports"
+  //       );
+  //       console.log("useEffect deportes bd", response.data);
+  //       //ordenamos los deportes alfabéticamente
+  //       const sortedSports = response.data.sort((a, b) => a.sport_name.localeCompare(b.sport_name));
+  //       setSports(sortedSports); // Guardar los deportes en el estado
+  //     } catch (error) {
+  //       console.error("Error al cargar los deportes:", error);
+  //     }
+  //   };
 
-    fetchSports();
-  }, []);
+  //   fetchSports();
+  // }, []);
 
   const handleSportCreated = (newSport) => {
     setSports((prevSports) => [...prevSports, newSport]);

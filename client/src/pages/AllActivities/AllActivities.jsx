@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { TrioContext } from "../../context/TrioContextProvider";
+
 
 export const AllActivities = () => {
+  const {sports, setSports} = useContext(TrioContext)
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
