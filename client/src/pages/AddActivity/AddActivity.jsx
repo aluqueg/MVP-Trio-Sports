@@ -29,21 +29,16 @@ export const AddActivity = () => {
   const navigate = useNavigate(); // Hook para navegar
 
   // Cargar la lista de deportes desde la base de datos al montar el componente
-  // useEffect(() => {
-  //   const fetchSports = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:4000/api/sports/allSports");
-  //       console.log("-------------------------", response.data);
-  //       //ordenamos los deportes alfabéticamente
-  //       const sortedSports = response.data.sort((a, b) => a.sport_name.localeCompare(b.sport_name));
-  //       setSports(sortedSports); // Guardar los deportes en el estado
-  //     } catch (error) {
-  //       console.error("Error al cargar los deportes:", error);
-  //     }
-  //   };
-
-  //   fetchSports();
-  // }, []); // El array vacío asegura que la función se ejecute solo una vez cuando el componente se monta
+  useEffect(() => {
+    axios.get("http://localhost:4000/api/sports/allSports")
+      .then(res => {
+        setSports(res.data); // Guardar los deportes en el estado
+        console.log("sports")
+      })
+      .catch(error => {
+        console.error("Error al cargar los deportes:", error);
+      });
+  }, []);
 
   const handleSportCreated = (newSport) => {
     setSports((prevSports) => [...prevSports, newSport]);

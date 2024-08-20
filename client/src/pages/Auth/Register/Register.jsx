@@ -219,6 +219,18 @@ export const Register = () => {
     setUserRegister({ ...userRegister, sports: array });
   };
   
+  
+  useEffect(() => {
+    axios.get("http://localhost:4000/api/sports/allSports")
+      .then(res => {
+        setSports(res.data); 
+        console.log("sports")
+      })
+      .catch(error => {
+        console.log("Error al cargar los deportes:", error);
+      });
+  }, []);
+
   const handleSportCreated = (newSport) => {
     setSports((prevSports) => [...prevSports, newSport]);
     setSportId(newSport.sport_id); //Selecciona automáticamente el nuevo deporte
