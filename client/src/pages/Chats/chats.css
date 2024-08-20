@@ -1,0 +1,28 @@
+.messages {
+  width: 100%;
+  height: 80vh;
+  display: grid;
+  grid-template-rows: 80% 20%;
+  grid-template-columns: repeat(12, minmax(0,1fr));
+}
+.lateral-mensajes{
+  background-color: aquamarine;
+  grid-column: 1/4;
+  grid-row: 1/3;
+}
+.cuerpo-mensajes{
+  background-color: rgb(131, 127, 255);
+  grid-column: 4/13;
+  grid-row: 1/2;
+}
+.chat{
+  grid-column: 4/12;
+  grid-row: 2/3;
+  resize: none;
+}
+.izq{
+  text-align: left;
+}
+.dch{
+  text-align: right;
+}
