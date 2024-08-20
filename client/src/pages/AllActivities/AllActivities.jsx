@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row } from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
+import { Card, Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
-import { parseISO, isBefore } from "date-fns";
+import { es } from 'date-fns/locale';
+import { TrioContext } from "../../context/TrioContextProvider";
+import { format, parseISO, isBefore } from "date-fns";
 import { CardOneActivity } from "../../components/CardOneActivity/CardOneActivity";
 import "../AllActivities/allActivitiesStyle.css";
 
 export const AllActivities = () => {
+  const {sports, setSports} = useContext(TrioContext)
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
