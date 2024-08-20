@@ -6,8 +6,9 @@ require("dotenv").config();
 
 class userController {
   createUser = (req, res) => {
-    console.log(req.file,"***** file")
+    console.log(req.file, "***** file");
     let user = JSON.parse(req.body.userRegister);
+    let sports = req.body.sports.split(",").map(Number);
     const {
       user_name,
       last_name,
@@ -16,7 +17,7 @@ class userController {
       user_city,
       email,
       password,
-      sports,
+      sport_id,
     } = user;
     console.log("user", user);
     let saltRounds = 8;
@@ -26,49 +27,66 @@ class userController {
       } else {
         let userId = null;
         if (req.file) {
-          let data = [user_name,last_name,birth_date,gender,user_city,email,hash,req.body.last_log_date,req.file.filename]
+          let data = [
+            user_name,
+            last_name,
+            birth_date,
+            gender,
+            user_city,
+            email,
+            hash,
+            req.body.last_log_date,
+            req.file.filename,
+          ];
           let sql = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, last_log_date, user_img)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-          
-          connection.query(sql,data, (errIns, result) => {
+
+          connection.query(sql, data, (errIns, result) => {
             if (errIns) {
               res.status(500).json(errIns);
             } else {
-              res.status(201).json(result);
               userId = result.insertId;
-              
-                let sql1v2 = `INSERT INTO practice (sport_id, user_id) VALUES (?, ?)`
-                connection.query(sql1v2, [sports], (errIns1v2, result1v2) => {
-                  if (errIns1v2) {
-                    res.status(500).json(errIns1v2);
-                  } else {
-                    res.status(201).json(result1v2);
-                  }
-                })
-
+              let values = sports.map((sportId) => [sportId, userId]);
+              let practiceSql =
+                "INSERT INTO practice (sport_id, user_id) VALUES ?";
+              connection.query(practiceSql, [values], (errPrac, resPrac) => {
+                if (errPrac) {
+                  console.log("fdsafdsasdsa2")
+                  res.status(500).json(errPrac);
+                } else {
+                  res.status(201).json(resPrac)
+                }
+              });
             }
           });
-        }else{
-          let data2 = [user_name,last_name,birth_date,gender,user_city,email,hash,req.body.last_log_date]
+        } else {
+          let data2 = [
+            user_name,
+            last_name,
+            birth_date,
+            gender,
+            user_city,
+            email,
+            hash,
+            req.body.last_log_date,
+          ];
           let sql2 = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, last_log_date)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-          connection.query(sql2,data2, (errIns2, result2) => {
+          connection.query(sql2, data2, (errIns2, result2) => {
             if (errIns2) {
               res.status(500).json(errIns2);
             } else {
-              res.status(201).json(result2);
               userId = result2.insertId;
-              
-              sports.forEach(e => {
-                let data2v2 = [e.sport_id, userId]
-                let sql2v2 = `INSERT INTO practice (sport_id, user_id) VALUES (?, ?)`
-                connection.query(sql2v2, data2v2, (errIns2v2, result2v2) => {
-                  if (errIns2v2) {
-                    res.status(500).json(errIns2v2);
-                  } else {
-                    res.status(201).json(result2v2);
-                  }
-                })
+              let values = sports.map((sportId) => [sportId, userId]);
+              let practiceSql =
+                "INSERT INTO practice (sport_id, user_id) VALUES ?";
+              connection.query(practiceSql, [values], (errPrac2, resPrac2) => {
+                if (errPrac2) {
+                  console.log("fdsafds")
+                  res.status(500).json(errPrac2);
+                } else {
+                  res.status(201).json(resPrac2);
+                }
               });
             }
           });

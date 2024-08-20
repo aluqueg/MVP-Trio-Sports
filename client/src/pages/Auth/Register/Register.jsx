@@ -199,25 +199,31 @@ export const Register = () => {
 
   /* SPORTS */
 
+  const [modalAddSports,setModalAddSports] = useState(false)
+  const addSportStatus = () => setModalAddSports(!modalAddSports)
+  const [sports, setSports] = useState([]);
+  const [selectedSport, setSelectedSport] = useState([]);
+
   const addSports = (e) => {
-    setSports([...sports, e]);
+    setSelectedSport([...selectedSport, e]);
   };
+  
   const filterSports = (sportName) => {
-    return sports.filter((sport) => sport === sportName);
+    return selectedSport.filter((sport) => sport === sportName);
   };
-  const removeSports = (sportName) => {
-    setSports(sports.filter((sport) => sport !== sportName));
+  const removeSports = (e) => {
+    setSelectedSport(selectedSport.filter((sport) => sport !== e));
   };
   const addUserSportsContinuar = (array) => {
     setpage(page + 1);
     setUserRegister({ ...userRegister, sports: array });
   };
-
+  
   const handleSportCreated = (newSport) => {
     setSports((prevSports) => [...prevSports, newSport]);
     setSportId(newSport.sport_id); //Selecciona automáticamente el nuevo deporte
   };
-
+  console.log(sports)
   /* ENVIAR DATOS REGISTER */
   const [file, setFile] = useState({});
   const handleFile = (e) => {
@@ -228,6 +234,8 @@ export const Register = () => {
     const newFormData = new FormData();
     newFormData.append("userRegister", JSON.stringify(userRegister));
     newFormData.append("last_log_date", lastLogDate);
+    newFormData.append("sports",selectedSport)
+    console.log(selectedSport,"*************")
     if (file) {
       newFormData.append("file", file);
     }
@@ -241,7 +249,7 @@ export const Register = () => {
       .catch((err) => console.log(err));
   };
   console.log("log de user register",userRegister);
-  
+
   return (
     <Container>
       <Form action="">
@@ -471,36 +479,47 @@ export const Register = () => {
           <>
             <Form.Group controlId="formSportId">
               <Form.Label>Deporte</Form.Label>
-              <Form.Control
-                as="select"
-                multiple
-                value={userRegister?.sport_id}
-                name="sport_id"
-                onChange={(e) => {
-                  const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);  // Esto convierte las opciones seleccionadas en un array de valores.
-                  if (e.target.value === "addSport") {
-                    setShowModal(true); //Abrir el modal para crear el deporte
-                  } else {
-                    setUserRegister({...userRegister, sport_id: selectedOptions});
-                  }
-                }}
-                required
-              >
-                <option value="">Elegir...</option>
-                {sports.map((sport) => (
-                  <option key={sport.sport_id} value={sport.sport_id}>
-                    {sport.sport_name}
-                  </option>
-                ))}
-                <option value="addSport">Añadir deporte</option>{" "}
-                {/* Opción para añadir deporte */}
-              </Form.Control>
+              <ListGroup as="ul" className="all_generos">
+              {sports.map((e, idx) => {
+                return (
+                  <>
+                    {selectedSport.includes(e.sport_id) ? (
+                      <ListGroup.Item
+                        as="li"
+                        key={idx}
+                        onClick={() => removeSports(e.sport_id)}
+                        active
+                      >
+                        {e.sport_name}
+                      </ListGroup.Item>
+                    ) : (
+                      <ListGroup.Item
+                        as="li"
+                        key={idx}
+                        onClick={() => addSports(e.sport_id)}
+                      >
+                        {e.sport_name}
+                      </ListGroup.Item>
+                    )}
+                  </>
+                );
+              })}
+              <ListGroup.Item onClick={addSportStatus}>Añadir Deporte</ListGroup.Item>
+            </ListGroup>
             </Form.Group>
+            <ModalCreateSport
+        show={modalAddSports}
+        closeModal={addSportStatus}
+        onSportCreated={handleSportCreated}
+        existingSports={sports} //pasamos la lista de deportes existentes al modal
+      />
             <Button onClick={volver}>Volver</Button>
-            {sports.length > 5 || sports.length < 1 ? (
+            {selectedSport.length > 5 || selectedSport.length < 1 ? (
               <Button className="button-color">Continuar</Button>
             ) : (
-              <Button onClick={continuar}>
+
+              <Button onClick={()=>addUserSportsContinuar(selectedSport)}>
+
                 Continuar
               </Button>
             )}
@@ -526,6 +545,7 @@ export const Register = () => {
       ) : null}
       </Form>
       <ModalCreateSport
+        addSports = {addSports}
         show={showModal}
         closeModal={() => setShowModal(false)}
         onSportCreated={handleSportCreated}

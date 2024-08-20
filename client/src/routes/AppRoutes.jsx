@@ -25,7 +25,7 @@ export const AppRoutes = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/allActivities" element={<AllActivities />} />
-          <Route path="/activity" element={<Activity />} />
+          <Route path="/activity/:activity_id" element={<Activity />} />
           <Route path="/addSport" element={<AddSport />} />
           <Route path="/addActivity" element={<AddActivity />} />
           <Route path='/allUsers' element={<AllUsers />} />
