@@ -15,7 +15,8 @@ export const AllUsers = () => {
     const peticionUserSports = async () =>{
       try{
         const res = await axios.get('http://localhost:4000/api/users/getAllUsers', {headers: {Authorization: `Bearer ${token}`}})
-        setAllUsers(res.data)                
+        setAllUsers(res)
+        console.log("allUsers res", res)        
       }catch(err){
         console.log(err);        
       }
@@ -23,7 +24,7 @@ export const AllUsers = () => {
     peticionUserSports();
   },[])
 
-  
+  console.log("allUsers",allUsers)
   return (
     <div>
       <div className="d-flex">
@@ -49,11 +50,11 @@ export const AllUsers = () => {
       </div>
       <hr />
 
-          {allUsers ? {allUsers.map((e, index)=>{
+          {allUsers.map((e, index)=>{
             return(
               <CardOneUser key={index} data={e} /> 
             )
-          })}: null}
+          })}
     </div>
   );
 };

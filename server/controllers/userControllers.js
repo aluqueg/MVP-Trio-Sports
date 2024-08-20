@@ -16,7 +16,7 @@ class userController {
       user_city,
       email,
       password,
-      sport_id,
+      sports,
     } = user;
     console.log("user", user);
     let saltRounds = 8;
@@ -37,17 +37,15 @@ class userController {
               res.status(201).json(result);
               userId = result.insertId;
               
-              /* sports.forEach(e => {
-                let data1v2 = [e.sport_id, userId]
                 let sql1v2 = `INSERT INTO practice (sport_id, user_id) VALUES (?, ?)`
-                connection.query(sql1v2, data1v2, (errIns1v2, result1v2) => {
+                connection.query(sql1v2, [sports], (errIns1v2, result1v2) => {
                   if (errIns1v2) {
                     res.status(500).json(errIns1v2);
                   } else {
                     res.status(201).json(result1v2);
                   }
                 })
-              }); */
+
             }
           });
         }else{
@@ -61,17 +59,17 @@ class userController {
               res.status(201).json(result2);
               userId = result2.insertId;
               
-              // sports.forEach(e => {
-              //   let data2v2 = [e.sport_id, userId]
-              //   let sql2v2 = `INSERT INTO practice (sport_id, user_id) VALUES (?, ?)`
-              //   connection.query(sql2v2, data2v2, (errIns2v2, result2v2) => {
-              //     if (errIns2v2) {
-              //       res.status(500).json(errIns2v2);
-              //     } else {
-              //       res.status(201).json(result2v2);
-              //     }
-              //   })
-              // });
+              sports.forEach(e => {
+                let data2v2 = [e.sport_id, userId]
+                let sql2v2 = `INSERT INTO practice (sport_id, user_id) VALUES (?, ?)`
+                connection.query(sql2v2, data2v2, (errIns2v2, result2v2) => {
+                  if (errIns2v2) {
+                    res.status(500).json(errIns2v2);
+                  } else {
+                    res.status(201).json(result2v2);
+                  }
+                })
+              });
             }
           });
         }
@@ -114,7 +112,7 @@ class userController {
   profile = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT * FROM user WHERE user_id = "${id}"`;
+    let sql = `SELECT * FROM user WHERE user_id = ${id}`;
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -139,9 +137,40 @@ class userController {
       }
     });
   };
+
   prueba = (req, res) => {
     console.log(req.file);
   };
+
+  getUserActivities = (req, res) => {
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `SELECT * FROM activity WHERE user_id = ${id}`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  }
+
+  getUserParticipatedActivities = (req, res) => {
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `SELECT activity.* FROM activity JOIN participate
+    ON activity.activity_id = participate.activity_id
+    JOIN user ON participate.user_id = user.user_id
+    where user.user_id = ${id} ORDER BY date_time_activity DESC`;
+
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  }
 }
 
 module.exports = new userController();

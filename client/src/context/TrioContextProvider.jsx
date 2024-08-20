@@ -6,7 +6,7 @@ export const TrioContext = createContext()
 
 export const TrioContextProvider = ({children}) => {
 
-  const [user,setUser] = useState({})
+  const [user,setUser] = useState()
   const [token,setToken] = useState();
   const [sports, setSports] = useState([]);
 
