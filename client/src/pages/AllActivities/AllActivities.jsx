@@ -3,10 +3,10 @@ import { Card, Container, Row, Col, Button } from "react-bootstrap";
 import axios from "axios";
 import { format, parseISO, isBefore } from "date-fns";
 import { es } from "date-fns/locale";
-// Importa tu nuevo ícono
-import SportsIcon from "../../assets/activities/iconodeportes.png";  // Ajusta la ruta según corresponda
+// iconos
+import SportsIcon from "../../assets/activities/iconodeportes.png";  
 import { BsMap, BsClock } from "react-icons/bs";
-// Estilos
+// estilos
 import "../AllActivities/allActivitiesStyle.css";
 
 export const AllActivities = () => {

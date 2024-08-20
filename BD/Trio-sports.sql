@@ -54,13 +54,11 @@ CREATE TABLE activity (
     activity_city VARCHAR(50) NOT NULL,
     activity_address VARCHAR(250) NOT NULL, -- nuevo campo añadido
     details TINYTEXT,
-    num_assistants INT DEFAULT 0,  --nuevo campo añadido
+    num_assistants INT DEFAULT 0,  -- nuevo campo añadido usuarios que se han apuntado
     user_id INT UNSIGNED NOT NULL,
     sport_id INT UNSIGNED NOT NULL,
     maps_link VARCHAR(350),
    
-    
-    -- num_asistentes - > usuarios que se han apuntado
     -- disabled  -> el admin deshabilita una actividad
 	CONSTRAINT fk_activity_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_activity_sport FOREIGN KEY (sport_id) REFERENCES sport (sport_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -84,7 +82,94 @@ CREATE TABLE comment (
     CONSTRAINT fk_comment_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-    
+
+-- Inserciones de deportes que el CLIENTE quiere que aparezcan en la aplicación
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Fútbol', 'futbol.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Baloncesto', 'baloncesto.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Voleibol', 'voleibol.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Rugby', 'rugby.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Balonmano', 'balonmano.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Fútbol sala', 'futbol-sala.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Pádel', 'padel.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Natación', 'natacion.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Tenis', 'tenis.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Running', 'running.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Squash', 'squash.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Deportes de combate', 'deportes-de-combate.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Triatlon', 'triatlon.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Golf', 'golf.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Esquí', 'esqui.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Snowboarding', 'snowboarding.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Skateboarding', 'skateboarding.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Escalada deportiva', 'escalada-deportiva.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Karting', 'karting.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Buceo', 'buceo.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Kitesurf', 'kitesurf.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Windsurf', 'windsurf.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Piragüismo', 'piraguismo.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Senderismo/montañismo', 'senderismo-montanismo.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Trail running', 'trail-running.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Crossfit', 'crossfit.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Yoga', 'yoga.jpg');
+
+INSERT INTO sport (sport_name, sport_img)
+VALUES ('Pilates', 'pilates.jpg');
+
+
+
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
 -- VALUES ('Juan', 'Pérez', '1990-05-15', 'Masculino', 'juan_perez.jpg', 'Madrid', 'juan.perez@example.com', 'password123', 'Amante de la tecnología y la programación.', '2024-08-13 12:00:00', 1, 0, 2);
 
@@ -111,19 +196,6 @@ CREATE TABLE comment (
 -- INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
 -- VALUES ('Yo estuve en el gimnasio, levantando pesas. Luego jugué un partido de tenis.', '2024-08-13 08:00:00', 4, 3, TRUE);
     
--- sport
-
--- INSERT INTO sport (sport_name)
--- VALUES ('Fútbol');
-
--- INSERT INTO sport (sport_name)
--- VALUES ('Ciclismo');
-
--- INSERT INTO sport (sport_name)
--- VALUES ('Tenis');
-
--- INSERT INTO sport (sport_name)
--- VALUES ('Atletismo');
 
 -- Practice
 
