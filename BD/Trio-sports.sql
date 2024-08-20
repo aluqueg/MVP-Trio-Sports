@@ -83,6 +83,9 @@ CREATE TABLE comment (
     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+
+
+
 -- Inserciones de deportes que el CLIENTE quiere que aparezcan en la aplicación
 INSERT INTO sport (sport_name, sport_img)
 VALUES ('Fútbol', 'futbol.jpg');
@@ -167,6 +170,9 @@ VALUES ('Yoga', 'yoga.jpg');
 
 INSERT INTO sport (sport_name, sport_img)
 VALUES ('Pilates', 'pilates.jpg');
+
+
+
 
 
 

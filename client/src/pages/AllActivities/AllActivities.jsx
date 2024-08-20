@@ -1,12 +1,8 @@
-import { useEffect, useState } from "react";
-import { Card, Container, Row, Col, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Container, Row } from "react-bootstrap";
 import axios from "axios";
-import { format, parseISO, isBefore } from "date-fns";
-import { es } from "date-fns/locale";
-// iconos
-import SportsIcon from "../../assets/activities/iconodeportes.png";  
-import { BsMap, BsClock } from "react-icons/bs";
-// estilos
+import { parseISO, isBefore } from "date-fns";
+import { CardOneActivity } from "../../components/CardOneActivity/CardOneActivity";
 import "../AllActivities/allActivitiesStyle.css";
 
 export const AllActivities = () => {
@@ -21,7 +17,10 @@ export const AllActivities = () => {
         setActivities(response.data);
       } catch (error) {
         if (error.response) {
-          console.error("Error en la respuesta del servidor:", error.response.data);
+          console.error(
+            "Error en la respuesta del servidor:",
+            error.response.data
+          );
         } else if (error.request) {
           console.error("Error en la solicitud:", error.request);
         } else {
@@ -42,7 +41,10 @@ export const AllActivities = () => {
   };
 
   const isActivityFull = (activity) => {
-    return activity.limit_users !== null && activity.num_asistants >= activity.limit_users;
+    return (
+      activity.limit_users !== null &&
+      activity.num_asistants >= activity.limit_users
+    );
   };
 
   const isActivityPast = (activityDate) => {
@@ -66,11 +68,13 @@ export const AllActivities = () => {
 
   const handleJoinActivity = async (activityId) => {
     try {
-      const response = await axios.put("http://localhost:4000/api/activity/joinActivity", {
-        activity_id: activityId,
-      });
+      const response = await axios.put(
+        "http://localhost:4000/api/activity/joinActivity",
+        {
+          activity_id: activityId,
+        }
+      );
       console.log(response.data);
-      // Actualiza la lista de actividades después de unirse
       const updatedActivities = activities.map((activity) =>
         activity.activity_id === activityId
           ? { ...activity, num_asistants: activity.num_asistants + 1 }
@@ -86,84 +90,26 @@ export const AllActivities = () => {
     <Container>
       <Row>
         {activities
-          .filter(activity => !isActivityPast(parseISO(activity.date_time_activity)))  // Filtra actividades no finalizadas
-          .concat(activities.filter(activity => isActivityPast(parseISO(activity.date_time_activity))))  // Añade actividades finalizadas al final
-          .map((activity) => {
-            const activityDate = parseISO(activity.date_time_activity);
-            const formattedDate = format(activityDate, "dd/MM/yyyy HH:mm", {
-              locale: es,
-            });
-            const statusLabel = getStatusLabel(activity);
-
-            return (
-              <Col key={activity.activity_id} xs={12} md={6} className="mb-4">
-                <Card className="flex-column flex-md-row h-100">
-                  <Card.Img
-                    src={`/src/assets/activities/${activity.sport_img}`}
-                    alt={activity.text}
-                    className="card-img-custom"
-                    onError={(e) =>
-                      (e.target.src = "/src/assets/activities/newsport.jpg")
-                    } // imagen de fallback
-                  />
-
-                  <Card.Body>
-                    {activity.text && <Card.Title>{activity.text}</Card.Title>}
-
-                    <Card.Text>
-                      <img src={SportsIcon} alt="Deportes" style={{ width: "24px", marginRight: "8px" }} /> {activity.sport_name}
-                    </Card.Text>
-
-                    <Card.Text>
-                      <BsClock /> {formattedDate}
-                    </Card.Text>
-
-                    <Card.Text>
-                      <BsMap /> {activity.activity_address},{" "}
-                      {activity.activity_city}
-                    </Card.Text>
-
-                    {statusLabel && (
-                      <Card.Text className={statusLabel === "Completa" ? "text-danger" : "text-muted"}>
-                        <strong>{statusLabel}</strong>
-                      </Card.Text>
-                    )}
-
-                    <Row className="mt-3">
-                      <Col xs={12} md={6} className="mb-2 mb-md-0">
-                        <Button
-                          variant={
-                            isActivityFull(activity) || isActivityPast(activityDate)
-                              ? "danger"
-                              : "primary"
-                          }
-                          className="w-100"
-                          disabled={
-                            isActivityFull(activity) || isActivityPast(activityDate)
-                          }
-                          onClick={() => handleJoinActivity(activity.activity_id)}  // Unirse a la actividad
-                        >
-                          {getButtonLabel(activity)}
-                        </Button>
-                      </Col>
-                      <Col xs={12} md={6}>
-                        <Button variant="secondary" className="w-100">
-                          Añadir comentario
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Card.Body>
-                </Card>
-              </Col>
-            );
-          })}
+          .filter(
+            (activity) => !isActivityPast(parseISO(activity.date_time_activity))
+          )
+          .concat(
+            activities.filter((activity) =>
+              isActivityPast(parseISO(activity.date_time_activity))
+            )
+          )
+          .map((activity) => (
+            <CardOneActivity
+              key={activity.activity_id}
+              activity={activity}
+              handleJoinActivity={handleJoinActivity}
+              isActivityFull={isActivityFull}
+              isActivityPast={isActivityPast}
+              getButtonLabel={getButtonLabel}
+              getStatusLabel={getStatusLabel}
+            />
+          ))}
       </Row>
     </Container>
   );
 };
-
-
-
-
-
-
