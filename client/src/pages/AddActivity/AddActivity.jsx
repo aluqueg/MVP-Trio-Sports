@@ -30,6 +30,7 @@ export const AddActivity = () => {
 
   // Cargar la lista de deportes desde la base de datos al montar el componente
   useEffect(() => {
+    
     axios.get("http://localhost:4000/api/sports/allSports")
       .then(res => {
         setSports(res.data); // Guardar los deportes en el estado
