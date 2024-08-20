@@ -38,7 +38,6 @@ export const Chats = () => {
     const {value} = e.target;
     setCurrentMessage(value)
   }
-  console.log(user.user_id)
   const sendMessage = async (texto,time,userReceiver, user) =>{
     try{
       const res = await axios.post('http://localhost:4000/api/users/sendMessage', {message: texto,date: time, receiver: userReceiver, userID: user})
@@ -48,7 +47,6 @@ export const Chats = () => {
       console.log(err)
     }
   }
-  console.log(viewMessages)
   return (
     <>
     <div className="messages">
