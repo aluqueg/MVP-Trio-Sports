@@ -2,14 +2,13 @@ import { useState } from "react";
 import { Button, Modal, Form, Alert } from "react-bootstrap";
 import axios from "axios";
 
-export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSports }) => {
+export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSports, addSports }) => {
   const [sportName, setSportName] = useState("");
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setSportName(e.target.value);
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -34,6 +33,7 @@ export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSpo
         onSportCreated(response.data); // Actualizar la lista de deportes
         setSportName(""); // Limpiar el campo de entrada
         closeModal(); // Cerrar el modal
+        addSports(response.data.sport_name);
       }
     } catch (error) {
       console.log("Error en la solicitud:", error.response || error);

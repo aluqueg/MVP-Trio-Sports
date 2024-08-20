@@ -6,8 +6,9 @@ require("dotenv").config();
 
 class userController {
   createUser = (req, res) => {
-    console.log(req.file,"***** file")
+    console.log(req.file, "***** file");
     let user = JSON.parse(req.body.userRegister);
+    let sports = req.body.sports.split(",").map(Number);
     const {
       user_name,
       last_name,
@@ -26,52 +27,66 @@ class userController {
       } else {
         let userId = null;
         if (req.file) {
-          let data = [user_name,last_name,birth_date,gender,user_city,email,hash,req.body.last_log_date,req.file.filename]
+          let data = [
+            user_name,
+            last_name,
+            birth_date,
+            gender,
+            user_city,
+            email,
+            hash,
+            req.body.last_log_date,
+            req.file.filename,
+          ];
           let sql = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, last_log_date, user_img)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-          
-          connection.query(sql,data, (errIns, result) => {
+
+          connection.query(sql, data, (errIns, result) => {
             if (errIns) {
               res.status(500).json(errIns);
             } else {
-              res.status(201).json(result);
               userId = result.insertId;
-              
-              /* sports.forEach(e => {
-                let data1v2 = [e.sport_id, userId]
-                let sql1v2 = `INSERT INTO practice (sport_id, user_id) VALUES (?, ?)`
-                connection.query(sql1v2, data1v2, (errIns1v2, result1v2) => {
-                  if (errIns1v2) {
-                    res.status(500).json(errIns1v2);
-                  } else {
-                    res.status(201).json(result1v2);
-                  }
-                })
-              }); */
+              let values = sports.map((sportId) => [sportId, userId]);
+              let practiceSql =
+                "INSERT INTO practice (sport_id, user_id) VALUES ?";
+              connection.query(practiceSql, [values], (errPrac, resPrac) => {
+                if (errPrac) {
+                  console.log("fdsafdsasdsa2");
+                  res.status(500).json(errPrac);
+                } else {
+                  res.status(201).json(resPrac);
+                }
+              });
             }
           });
-        }else{
-          let data2 = [user_name,last_name,birth_date,gender,user_city,email,hash,req.body.last_log_date]
+        } else {
+          let data2 = [
+            user_name,
+            last_name,
+            birth_date,
+            gender,
+            user_city,
+            email,
+            hash,
+            req.body.last_log_date,
+          ];
           let sql2 = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, last_log_date)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-          connection.query(sql2,data2, (errIns2, result2) => {
+          connection.query(sql2, data2, (errIns2, result2) => {
             if (errIns2) {
               res.status(500).json(errIns2);
             } else {
-              res.status(201).json(result2);
               userId = result2.insertId;
-              
-              // sports.forEach(e => {
-              //   let data2v2 = [e.sport_id, userId]
-              //   let sql2v2 = `INSERT INTO practice (sport_id, user_id) VALUES (?, ?)`
-              //   connection.query(sql2v2, data2v2, (errIns2v2, result2v2) => {
-              //     if (errIns2v2) {
-              //       res.status(500).json(errIns2v2);
-              //     } else {
-              //       res.status(201).json(result2v2);
-              //     }
-              //   })
-              // });
+              let values = sports.map((sportId) => [sportId, userId]);
+              let practiceSql =
+                "INSERT INTO practice (sport_id, user_id) VALUES ?";
+              connection.query(practiceSql, [values], (errPrac2, resPrac2) => {
+                if (errPrac2) {
+                  res.status(500).json(errPrac2);
+                } else {
+                  res.status(201).json(resPrac2);
+                }
+              });
             }
           });
         }
@@ -114,7 +129,7 @@ class userController {
   profile = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT * FROM user WHERE user_id = "${id}"`;
+    let sql = `SELECT * FROM user WHERE user_id = ${id}`;
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -139,6 +154,7 @@ class userController {
       }
     });
   };
+
   prueba = (req, res) => {
     console.log(req.file);
   };
@@ -157,7 +173,130 @@ class userController {
       }
     })
   }
+  
+  allMessages = (req, res) => {
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `SELECT user.user_id,user.user_name,user.last_name,user.user_img,MAX(message.date_time) AS last_message_date FROM message JOIN user ON message.sender_user_id = user.user_id WHERE message.receiver_user_id = ${id} GROUP BY user.user_id, user.user_name, user.last_name, user.user_img ORDER BY last_message_date DESC`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  };
 
+  getUserActivities = (req, res) => {
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `SELECT * FROM activity WHERE user_id = ${id}`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  };
+
+  viewOneChat = (req, res) => {
+    const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
+
+    // Definir la consulta SQL usando parámetros
+    const sql = `
+      (
+    SELECT 
+        message.message_id,
+        message.text,
+        message.date_time,
+        message.opened,
+        sender.user_id AS sender_user_id,
+        sender.user_name AS sender_user_name,
+        sender.last_name AS sender_user_last_name,
+        sender.user_img AS sender_user_img,
+        sender.last_log_date AS sender_user_last_log_date,
+        sender.type AS sender_user_type,
+        'sent' AS message_type
+    FROM 
+        message
+    JOIN 
+        user sender ON message.sender_user_id = sender.user_id
+    WHERE 
+        message.sender_user_id = ${receiver} AND message.receiver_user_id = ${sender}
+      )
+    UNION ALL
+      (
+    SELECT 
+        message.message_id,
+        message.text,
+        message.date_time,
+        message.opened,
+        sender.user_id AS sender_user_id,
+        sender.user_name AS sender_user_name,
+        sender.last_name AS sender_user_last_name,
+        sender.user_img AS sender_user_img,
+        sender.last_log_date AS sender_user_last_log_date,
+        sender.type AS sender_user_type,
+        'received' AS message_type
+    FROM 
+        message
+    JOIN 
+        user sender ON message.sender_user_id = sender.user_id
+    WHERE 
+        message.sender_user_id = ${sender} AND message.receiver_user_id = ${receiver}
+      )
+    ORDER BY 
+    date_time;
+    `;
+
+    connection.query(sql, (err, result) => {
+      if (err) {
+        console.error("Error en la consulta SQL:", err);
+        return res
+          .status(500)
+          .json({
+            error: "Ocurrió un error en la consulta SQL.",
+            details: err.message,
+          });
+      }
+      res.status(200).json(result);
+    });
+  };
+  sendMessage = (req, res) => {
+    const { message, date, receiver, userID } = req.body;
+    let sql = `INSERT INTO message (text,date_time,sender_user_id,receiver_user_id) VALUES (?,?,?,?)`;
+    let data = [message, date, userID, receiver];
+    connection.query(sql, data, (err, result) => {
+      if (err) {
+        res
+          .status(500)
+          .json({
+            error: "Ocurrió un error en la consulta SQL.",
+            details: err.message,
+          });
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  };
+
+  getUserParticipatedActivities = (req, res) => {
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `SELECT activity.* FROM activity JOIN participate
+    ON activity.activity_id = participate.activity_id
+    JOIN user ON participate.user_id = user.user_id
+    where user.user_id = ${id} ORDER BY date_time_activity DESC`;
+
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  };
 }
 
 module.exports = new userController();

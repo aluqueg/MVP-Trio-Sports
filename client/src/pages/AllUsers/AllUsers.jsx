@@ -23,12 +23,14 @@ export const AllUsers = () => {
     const peticionUserSports = async () =>{
       try{
         const res = await axios.get('http://localhost:4000/api/users/getAllUsers', {headers: {Authorization: `Bearer ${token}`}})
+
         setAllUsers(res.data)
         console.log(res);                
         let userBirthDate = (res.data.birth_date)
         let today = new Date()
         let userAge = differenceInYears(today, userBirthDate)
         setAge(userAge)                               
+
       }catch(err){
         console.log(err);        
       }
@@ -53,8 +55,6 @@ export const AllUsers = () => {
     console.log(location)
   }
 
-
-  
   return (
     <div>
       <div className="d-flex justify-content-center gap-5">
@@ -100,6 +100,7 @@ export const AllUsers = () => {
               <CardOneUser key={index} data={e} /> 
             )
           }): null}
+
     </div>
   );
 };
