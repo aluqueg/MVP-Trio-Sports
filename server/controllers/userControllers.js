@@ -159,7 +159,6 @@ class userController {
     console.log(req.file);
   };
 
-
   allMessages = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
@@ -173,7 +172,7 @@ class userController {
     });
   };
 
-   getUserActivities = (req, res) => {
+  getUserActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
     let sql = `SELECT * FROM activity WHERE user_id = ${id}`;
@@ -185,7 +184,7 @@ class userController {
       }
     });
   };
-  
+
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
 
@@ -234,31 +233,38 @@ class userController {
       )
     ORDER BY 
     date_time;
-    `
-
+    `;
 
     connection.query(sql, (err, result) => {
       if (err) {
         console.error("Error en la consulta SQL:", err);
-        return res.status(500).json({ error: "Ocurrió un error en la consulta SQL.", details: err.message });
+        return res
+          .status(500)
+          .json({
+            error: "Ocurrió un error en la consulta SQL.",
+            details: err.message,
+          });
       }
       res.status(200).json(result);
     });
   };
-  sendMessage = (req,res) =>{
-    const {message,date,receiver,userID} = req.body
-    let sql =`INSERT INTO message (text,date_time,sender_user_id,receiver_user_id) VALUES (?,?,?,?)`
-    let data = [message,date,userID,receiver]
-    connection.query(sql,data,(err,result)=>{
-      if(err){
-        res.status(500).json({ error: "Ocurrió un error en la consulta SQL.", details: err.message })
-      }else{
+  sendMessage = (req, res) => {
+    const { message, date, receiver, userID } = req.body;
+    let sql = `INSERT INTO message (text,date_time,sender_user_id,receiver_user_id) VALUES (?,?,?,?)`;
+    let data = [message, date, userID, receiver];
+    connection.query(sql, data, (err, result) => {
+      if (err) {
+        res
+          .status(500)
+          .json({
+            error: "Ocurrió un error en la consulta SQL.",
+            details: err.message,
+          });
+      } else {
         res.status(200).json(result);
       }
-    })
-  }
-  
-  }
+    });
+  };
 
   getUserParticipatedActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
@@ -275,7 +281,7 @@ class userController {
         res.status(200).json(result);
       }
     });
-  }
+  };
 }
 
 module.exports = new userController();

@@ -26,22 +26,16 @@ export const TrioContextProvider = ({children}) => {
   },[])
 
   useEffect(() => {
-    const fetchSports = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:4000/api/sports/allSports"
-        );
-        console.log("useEffect deportes bd", response.data);
-        //ordenamos los deportes alfabéticamente
-        const sortedSports = response.data.sort((a, b) => a.sport_name.localeCompare(b.sport_name));
-        setSports(sortedSports); // Guardar los deportes en el estado
-      } catch (error) {
-        console.error("Error al cargar los deportes:", error);
-      }
-    };
-
-    fetchSports();
+    axios.get("http://localhost:4000/api/sports/allSports")
+      .then(res => {
+        setSports(res.data); 
+        console.log("sports")
+      })
+      .catch(error => {
+        console.log("Error al cargar los deportes:", error);
+      });
   }, []);
+
 
 
   return (
