@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Alert, Row, Col, InputGroup } from "react-bootstrap";
 import { BsCalendar3 } from 'react-icons/bs'; // Icono de calendario de Bootstrap desde react-icons
@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { setHours, setMinutes } from "date-fns";
 import { es } from "date-fns/locale";
 import { ModalCreateSport } from "../../components/ModalCreateSport/ModalCreateSport";
+import { TrioContext } from "../../context/TrioContextProvider";
 
 registerLocale("es", es);
 
@@ -19,11 +20,11 @@ export const AddActivity = () => {
   const [activityAddress, setActivityAddress] = useState("");  // Nuevo estado para la dirección específica
   const [details, setDetails] = useState("");
   const [sportId, setSportId] = useState("");
-  const [sports, setSports] = useState([]); // Estado para la lista de deportes
   const [mapsLink, setMapsLink] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const {sports, setSports} = useContext(TrioContext)
   
   const navigate = useNavigate(); // Hook para navegar
 
@@ -38,8 +39,6 @@ export const AddActivity = () => {
         console.error("Error al cargar los deportes:", error);
       });
   }, []);
-
-
 
   const handleSportCreated = (newSport) => {
     setSports((prevSports) => [...prevSports, newSport]);
@@ -94,8 +93,8 @@ export const AddActivity = () => {
 
   const handleCancel = () => {
     navigate("/allActivities"); // Navegar a la vista de todas las actividades
-  };
-
+  };  
+  
   return (
     <Container>
       <h2>Crear Nueva Actividad/Evento</h2>

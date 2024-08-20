@@ -129,7 +129,7 @@ class userController {
   profile = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT * FROM user WHERE user_id = "${id}"`;
+    let sql = `SELECT * FROM user WHERE user_id = ${id}`;
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -154,9 +154,11 @@ class userController {
       }
     });
   };
+
   prueba = (req, res) => {
     console.log(req.file);
   };
+
 
   allMessages = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
@@ -170,6 +172,20 @@ class userController {
       }
     });
   };
+
+   getUserActivities = (req, res) => {
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `SELECT * FROM activity WHERE user_id = ${id}`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  };
+  
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
 
@@ -242,6 +258,24 @@ class userController {
     })
   }
   
+  }
+
+  getUserParticipatedActivities = (req, res) => {
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `SELECT activity.* FROM activity JOIN participate
+    ON activity.activity_id = participate.activity_id
+    JOIN user ON participate.user_id = user.user_id
+    where user.user_id = ${id} ORDER BY date_time_activity DESC`;
+
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  }
 }
 
 module.exports = new userController();

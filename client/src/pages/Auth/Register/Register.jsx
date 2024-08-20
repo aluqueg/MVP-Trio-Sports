@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import { Button, Container } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -11,6 +11,7 @@ import { setDefaultLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
 import { useNavigate } from "react-router-dom";
 import { ModalCreateSport } from "../../../components/ModalCreateSport/ModalCreateSport";
+import { TrioContext } from "../../../context/TrioContextProvider";
 setDefaultLocale("es");
 
 export const Register = () => {
@@ -23,6 +24,9 @@ export const Register = () => {
   const [formErrors, setFormErrors] = useState({});
   const [validateEmail, setValidateEmail] = useState(false);
   const [validatePassword, setValidatePassword] = useState(false);
+  const {sports, setSports} = useContext(TrioContext)
+
+  
 
 
   const handleRegister = (e) => {
@@ -87,7 +91,7 @@ export const Register = () => {
       let emailError = "";
       let passwordError = "";
   
-      if (!/\S+@\S+\.\S+/.test(userRegister.email)) {   
+      if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(userRegister.email)) {   
         emailError = "Formato de email incorrecto";
         console.log("error 1");
         
@@ -194,10 +198,12 @@ export const Register = () => {
   };
 
   /* SPORTS */
+
   const [modalAddSports,setModalAddSports] = useState(false)
   const addSportStatus = () => setModalAddSports(!modalAddSports)
   const [sports, setSports] = useState([]);
   const [selectedSport, setSelectedSport] = useState([]);
+
   const addSports = (e) => {
     setSelectedSport([...selectedSport, e]);
   };
@@ -213,7 +219,6 @@ export const Register = () => {
     setUserRegister({ ...userRegister, sports: array });
   };
   
-
   
   useEffect(() => {
     axios.get("http://localhost:4000/api/sports/allSports")
@@ -256,7 +261,7 @@ export const Register = () => {
       .catch((err) => console.log(err));
   };
   console.log("log de user register",userRegister);
-  console.log(selectedSport)
+
   return (
     <Container>
       <Form action="">
@@ -264,7 +269,6 @@ export const Register = () => {
           <>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email</Form.Label>
-              {formErrors.email ? <span>{formErrors.email}</span> : null}
               <Form.Control
                 type="email"
                 placeholder="Enter email"
@@ -272,11 +276,11 @@ export const Register = () => {
                 onChange={handleRegister}
                 value={userRegister?.email}
               />
+              {formErrors.email ? <span className="error-msg">{formErrors.email}</span> : null}
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Contraseña</Form.Label>
-              {formErrors.password ? <span>{formErrors.password}</span> : null}
               <Form.Control
                 type="password"
                 placeholder="Enter password"
@@ -284,6 +288,7 @@ export const Register = () => {
                 onChange={handleRegister}
                 value={userRegister?.password}
               />
+              {formErrors.password ? <span className="error-msg">{formErrors.password}</span> : null}
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
             {!userRegister.email || !userRegister.password ? (
@@ -300,7 +305,6 @@ export const Register = () => {
           <>
             <Form.Group className="mb-3" controlId="user_name">
               <Form.Label>NOMBRE</Form.Label>
-              {formErrors.user_name ? <span>{formErrors.user_name}</span> : null}
               <Form.Control
                 type="text"
                 placeholder="Enter name"
@@ -308,7 +312,7 @@ export const Register = () => {
                 onChange={handleRegister}
                 value={userRegister?.user_name}
               />             
-
+              {formErrors.user_name ? <span className="error-msg">{formErrors.user_name}</span> : null}
               <Form.Text className="text-muted"></Form.Text>{" "}
             </Form.Group>
             <Button onClick={volver}>Volver</Button>
@@ -328,7 +332,6 @@ export const Register = () => {
               <Form.Text className="text-muted"></Form.Text>
               <Form.Group className="mb-3" controlId="last_name">
                 <Form.Label>APELLIDOS</Form.Label>
-                {formErrors.last_name ? <span>{formErrors.last_name}</span> : null}
                 <Form.Control
                   type="text"
                   placeholder="Enter name"
@@ -336,6 +339,7 @@ export const Register = () => {
                   onChange={handleRegister}
                   value={userRegister?.last_name}
                 />
+                {formErrors.last_name ? <span className="error-msg">{formErrors.last_name}</span> : null}
               </Form.Group>
               <Form.Text className="text-muted"></Form.Text>{" "}
             </Form.Group>
@@ -429,8 +433,7 @@ export const Register = () => {
         {page == 4 ? (
           <>
             <Form.Group className="mb-3" controlId="user_city">
-              <Form.Label>CUAL ES TU CIUDAD</Form.Label>
-              {formErrors.user_city ? <span>{formErrors.user_city}</span> : null}              
+              <Form.Label>CUAL ES TU CIUDAD</Form.Label>              
               <Form.Control
                 type="text"
                 placeholder="cual es tu ciudad"
@@ -438,6 +441,7 @@ export const Register = () => {
                 onChange={handleRegister}
                 value={userRegister?.user_city}
               />
+              {formErrors.user_city ? <span className="error-msg">{formErrors.user_city}</span> : null}
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
             <Button onClick={volver}>Volver</Button>
@@ -525,7 +529,9 @@ export const Register = () => {
             {selectedSport.length > 5 || selectedSport.length < 1 ? (
               <Button className="button-color">Continuar</Button>
             ) : (
+
               <Button onClick={()=>addUserSportsContinuar(selectedSport)}>
+
                 Continuar
               </Button>
             )}

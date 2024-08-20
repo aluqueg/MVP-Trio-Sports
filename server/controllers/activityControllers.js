@@ -15,8 +15,17 @@ class ActivityController {
     } = req.body;
 
     // Validación de campos obligatorios
-    if (!date_time_activity || !text || !activity_city || !activity_address || !sport_id || !user_id) {
-      return res.status(400).json({ error: "Todos los campos obligatorios deben completarse." });
+    if (
+      !date_time_activity ||
+      !text ||
+      !activity_city ||
+      !activity_address ||
+      !sport_id ||
+      !user_id
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Todos los campos obligatorios deben completarse." });
     }
 
     // Validación de fecha y hora (debe ser futura)
@@ -24,39 +33,62 @@ class ActivityController {
     const activityDateTime = new Date(date_time_activity);
 
     if (activityDateTime <= currentDateTime) {
-      return res.status(400).json({ error: "La fecha y hora de la actividad deben ser en el futuro." });
+      return res
+        .status(400)
+        .json({
+          error: "La fecha y hora de la actividad deben ser en el futuro.",
+        });
     }
 
     // Validación de longitud de la ciudad
     if (activity_city.length > 50) {
-      return res.status(400).json({ error: "El nombre de la ciudad no puede tener más de 50 caracteres." });
+      return res
+        .status(400)
+        .json({
+          error: "El nombre de la ciudad no puede tener más de 50 caracteres.",
+        });
     }
 
     // Validación de formato de la ciudad (solo letras, acentos y espacios)
     const cityPattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
     if (!cityPattern.test(activity_city)) {
-      return res.status(400).json({ error: "El nombre de la ciudad contiene caracteres inválidos." });
+      return res
+        .status(400)
+        .json({
+          error: "El nombre de la ciudad contiene caracteres inválidos.",
+        });
     }
 
     // Validación de texto de la actividad (longitud máxima)
     if (text.length > 255) {
-      return res.status(400).json({ error: "La descripción de la actividad no puede tener más de 255 caracteres." });
+      return res
+        .status(400)
+        .json({
+          error:
+            "La descripción de la actividad no puede tener más de 255 caracteres.",
+        });
     }
 
     // Validación de límite de usuarios (debe ser un número positivo o nulo)
     if (limit_users !== null && limit_users <= 1) {
-      return res.status(400).json({ error: "El límite de usuarios debe ser al menos 2." });
+      return res
+        .status(400)
+        .json({ error: "El límite de usuarios debe ser al menos 2." });
     }
 
     // Validación de dirección (longitud máxima y no vacía)
     if (activity_address.length > 250) {
-      return res.status(400).json({ error: "La dirección no puede tener más de 250 caracteres." });
+      return res
+        .status(400)
+        .json({ error: "La dirección no puede tener más de 250 caracteres." });
     }
 
     // Validación del enlace de Google Maps (solo URL válida)
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     if (maps_link && !urlPattern.test(maps_link)) {
-      return res.status(400).json({ error: "El enlace de Google Maps no es válido." });
+      return res
+        .status(400)
+        .json({ error: "El enlace de Google Maps no es válido." });
     }
 
     // Formatear texto (solo la primera letra en mayúscula)
@@ -70,29 +102,57 @@ class ActivityController {
 
     // Validación de actividad duplicada (misma fecha, ciudad y deporte)
     const sqlCheckDuplicate = `SELECT * FROM activity WHERE date_time_activity = ? AND activity_city = ? AND sport_id = ?`;
-    connection.query(sqlCheckDuplicate, [date_time_activity, formattedCity, sport_id], (err, result) => {
-      if (err) {
-        console.error("Error al verificar actividad duplicada:", err);
-        return res.status(500).json({ error: "Error al verificar actividad duplicada." });
-      }
-
-      if (result.length > 0) {
-        return res.status(400).json({ error: "Ya existe una actividad similar programada en la misma fecha y lugar." });
-      }
-
-      // Crear la nueva actividad en la base de datos
-      const sql = `INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, sport_id, user_id, maps_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      const values = [date_time_activity, limit_users || null, formattedText, formattedCity, formattedAddress, details, sport_id, user_id, maps_link || null];
-
-      connection.query(sql, values, (err, result) => {
+    connection.query(
+      sqlCheckDuplicate,
+      [date_time_activity, formattedCity, sport_id],
+      (err, result) => {
         if (err) {
-          console.error("Error al crear la actividad:", err);
-          return res.status(500).json({ error: "Error al crear la actividad." });
+          console.error("Error al verificar actividad duplicada:", err);
+          return res
+            .status(500)
+            .json({ error: "Error al verificar actividad duplicada." });
         }
 
-        res.status(201).json({ message: "Actividad creada con éxito", activity_id: result.insertId });
-      });
-    });
+        if (result.length > 0) {
+          return res
+            .status(400)
+            .json({
+              error:
+                "Ya existe una actividad similar programada en la misma fecha y lugar.",
+            });
+        }
+
+        // Crear la nueva actividad en la base de datos
+        const sql = `INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, sport_id, user_id, maps_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const values = [
+          date_time_activity,
+          limit_users || null,
+          formattedText,
+          formattedCity,
+          formattedAddress,
+          details,
+          sport_id,
+          user_id,
+          maps_link || null,
+        ];
+
+        connection.query(sql, values, (err, result) => {
+          if (err) {
+            console.error("Error al crear la actividad:", err);
+            return res
+              .status(500)
+              .json({ error: "Error al crear la actividad." });
+          }
+
+          res
+            .status(201)
+            .json({
+              message: "Actividad creada con éxito",
+              activity_id: result.insertId,
+            });
+        });
+      }
+    );
   };
 
   joinActivity = (req, res) => {
@@ -102,20 +162,26 @@ class ActivityController {
     connection.query(sqlGetActivity, [activity_id], (err, results) => {
       if (err) {
         console.error("Error al obtener la actividad:", err);
-        return res.status(500).json({ error: "Error al obtener la actividad." });
+        return res
+          .status(500)
+          .json({ error: "Error al obtener la actividad." });
       }
 
       const { limit_users, num_assistants } = results[0];
 
       if (limit_users && num_assistants >= limit_users) {
-        return res.status(400).json({ error: "La actividad ya está completa." });
+        return res
+          .status(400)
+          .json({ error: "La actividad ya está completa." });
       }
 
       const sqlUpdateAssistants = `UPDATE activity SET num_assistants = num_assistants + 1 WHERE activity_id = ?`;
       connection.query(sqlUpdateAssistants, [activity_id], (err, result) => {
         if (err) {
           console.error("Error al actualizar la actividad:", err);
-          return res.status(500).json({ error: "Error al unirse a la actividad." });
+          return res
+            .status(500)
+            .json({ error: "Error al unirse a la actividad." });
         }
         res.status(200).json({ message: "Te has unido a la actividad." });
       });
@@ -132,33 +198,66 @@ class ActivityController {
              END AS is_past
       FROM activity a
       JOIN sport s ON a.sport_id = s.sport_id
-      ORDER BY is_past ASC, a.date_time_activity ASC`;  // Mostrar primero las actividades futuras y luego las finalizadas.
-  
+      ORDER BY is_past ASC, a.date_time_activity ASC`; // Mostrar primero las actividades futuras y luego las finalizadas.
+
     connection.query(sql, (error, results) => {
       if (error) {
         console.error("Error al obtener las actividades:", error);
-        return res.status(500).json({ error: "Error al obtener las actividades" });
+        return res
+          .status(500)
+          .json({ error: "Error al obtener las actividades" });
       }
-      console.log(results); 
+      console.log(results);
       res.status(200).json(results);
+    });
+  };
+
+  // En tu controlador (activityController.js)
+  getOneActivity = (req, res) => {
+    const { activity_id } = req.params;
+
+    // Obtener la actividad por ID
+    // Esto es solo un ejemplo, necesitarás conectar esto con tu base de datos
+    const activity = activities.find(
+      (activity) => activity.id === parseInt(activity_id)
+    );
+
+    if (activity) {
+      res.json(activity);
+    } else {
+      res.status(404).json({ message: "Actividad no encontrada" });
+    }
+  };
+
+  getOneActivity = (req, res) => {
+    const { activity_id } = req.params;
+    
+    const sqlGetActivity = `
+      SELECT a.*, s.sport_name, s.sport_img 
+      FROM activity a
+      JOIN sport s ON a.sport_id = s.sport_id
+      WHERE a.activity_id = ?
+    `;
+    
+    connection.query(sqlGetActivity, [activity_id], (err, result) => {
+      if (err) {
+        console.error("Error al obtener la actividad:", err);
+        return res.status(500).json({ error: "Error al obtener la actividad." });
+      }
+  
+      if (result.length > 0) {
+        res.json(result[0]);
+      } else {
+        res.status(404).json({ message: "Actividad no encontrada" });
+      }
     });
   };
   
 
-  getOneActivity = (req, res) => {
-    res.send("getOneActivity");
-  };
-
-  editActivity = (req, res) => {
-    res.send("getOneActivity");
-  };
-
+editActivity = (req, res) => {
+  res.send("getOneActivity");
+};
 
 }
 
 module.exports = new ActivityController();
-
-
-
-
-
