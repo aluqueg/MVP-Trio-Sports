@@ -99,15 +99,15 @@ class userController {
     let sql = `SELECT * FROM user WHERE email="${email}" AND is_validated = 1 AND is_disabled = 0`;
     connection.query(sql, (err, result) => {
       if (err) {
-        res.status(401).json("Credenciales incorrectas");        
+        res.status(401).json("Credenciales incorrectas");
       } else {
         if (!result || result.length === 0) {
-          res.status(401).json("Credenciales incorrectas");          
+          res.status(401).json("Credenciales incorrectas");
         } else {
           const hash = result[0].password;
           bcrypt.compare(password, hash, (err2, response) => {
             if (err2) {
-              res.status(500).json(err2);              
+              res.status(500).json(err2);
             } else {
               if (response) {
                 const token = jwt.sign(
@@ -117,7 +117,7 @@ class userController {
                 );
                 res.status(200).json(token);
               } else {
-                res.status(401).json("Credenciales incorrectas");                
+                res.status(401).json("Credenciales incorrectas");
               }
             }
           });
