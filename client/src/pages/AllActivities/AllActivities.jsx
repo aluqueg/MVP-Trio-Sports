@@ -42,7 +42,7 @@ export const AllActivities = () => {
     fetchActivities();
   }, []);
 
-  const handleShowModal = (activity) => {
+    const handleShowModal = (activity) => {
     setSelectedActivity(activity);
     setShowModal(true);
   };

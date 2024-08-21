@@ -12,7 +12,6 @@ export const Profile = () => {
   let today = parseInt(format(new Date(), "yyyy-MM-dd"));
   let age = today - userBirthDate;
 
-  console.log("user", user);
   return (
     <Container fluid="xxl">
       <Row className="my-3">

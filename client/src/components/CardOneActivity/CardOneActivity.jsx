@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import { BsTrophy, BsMap, BsClock } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import { format, parseISO } from "date-fns";
+import { format, isBefore, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
+import axios from "axios";
 
 export const CardOneActivity = ({
   activity,
