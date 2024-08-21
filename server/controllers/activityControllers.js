@@ -246,6 +246,7 @@ class ActivityController {
   editActivity = (req, res) => {
     res.send("getOneActivity");
   };
+
 }
 
 module.exports = new ActivityController();

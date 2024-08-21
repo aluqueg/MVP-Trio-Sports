@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Row, Col, Table, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import axios from "axios";
 import { BsTrophy, BsMap, BsClock, BsCalendar3 } from "react-icons/bs";
 import { MdLocationOn } from "react-icons/md";
 import "../Activity/activityStyle.css";
+import ModalCreateComment from "../../components/ModalCreateComment/ModalCreateComment";
 
 export const Activity = () => {
   const { activity_id } = useParams();
@@ -12,15 +13,20 @@ export const Activity = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const response = await axios.get(
+        const activityResponse = await axios.get(
           `http://localhost:4000/api/activity/getOneActivity/${activity_id}`
         );
-        setActivity(response.data);
+        const commentsResponse = await axios.get(
+          `http://localhost:4000/api/comments/getCommentsByActivity/${activity_id}`
+        );
+
+        setActivity(activityResponse.data);
+        setComments(commentsResponse.data); // Cargar comentarios desde la base de datos
         setLoading(false);
       } catch (error) {
         setError("Error al cargar la actividad");
@@ -31,18 +37,36 @@ export const Activity = () => {
     fetchActivity();
   }, [activity_id]);
 
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (newComment.trim() !== "") {
-      const comment = {
-        user: "Usuario", // Simulación de usuario 
-        text: newComment,
-        date: new Date(),
-      };
-      setComments([comment, ...comments]); // Añadir el nuevo comentario al inicio de la lista
-      setNewComment(""); // Limpiar el campo de texto
+  const handleCommentSubmit = async (commentText) => {
+    try {
+      // Envía el comentario al backend para guardarlo en la base de datos
+      const response = await axios.post(
+        "http://localhost:4000/api/comments/addComment",
+        {
+          activity_id: activity_id,
+          text: commentText,
+        }
+      );
+
+      if (response.status === 201) {
+        // Si se guarda el comentario, actualiza la lista de comentarios
+        const newComment = {
+          user: "Usuario", // Simulación de usuario 
+          text: commentText,
+          date: new Date(),
+        };
+        setComments([newComment, ...comments]);
+        setShowModal(false); // Cerrar el modal
+      } else {
+        console.error("Error al crear el comentario");
+      }
+    } catch (error) {
+      console.error("Error al enviar el comentario:", error);
     }
   };
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
 
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>{error}</div>;
@@ -144,33 +168,24 @@ export const Activity = () => {
       <Row className="justify-content-center mt-4">
         <Col xs={12} md={8} className="activity-buttons">
           <Button variant="primary" className="me-2 btn-large">
-            Unirse 1/2
+            Unirse 1 / 2
           </Button>
-          <Button variant="secondary" className="btn-large">
+          <Button variant="secondary" className="btn-large" onClick={handleOpenModal}>
             Añadir comentario
           </Button>
         </Col>
       </Row>
+
+      {/* Modal para añadir comentario */}
+      <ModalCreateComment
+        show={showModal}
+        handleClose={handleCloseModal}
+        handleCommentSubmit={handleCommentSubmit}
+      />
       
       {/* Comentarios */}
       <Row className="justify-content-center mt-4">
-        <Col xs={12} md={8}>
-          <Form onSubmit={handleCommentSubmit} className="d-flex">
-            <Form.Control
-              type="text"
-              placeholder="Deja aquí tu comentario..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className="me-2"
-            />
-            <Button type="submit" variant="primary">
-              Enviar
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-      <Row className="justify-content-center mt-4">
-        <Col xs={12} md={8}>
+        <Col xs={12}>
           {comments.map((comment, index) => (
             <div key={index} className="comment-box mb-3 p-3">
               <div className="comment-header d-flex justify-content-between">
@@ -191,6 +206,8 @@ export const Activity = () => {
     </Container>
   );
 };
+
+
 
 
 

@@ -1,15 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { es } from 'date-fns/locale';
 import { TrioContext } from "../../context/TrioContextProvider";
 import { format, parseISO, isBefore } from "date-fns";
+
 import { CardOneActivity } from "../../components/CardOneActivity/CardOneActivity";
+import ModalCreateComment from "../../components/ModalCreateComment/ModalCreateComment";
 import "../AllActivities/allActivitiesStyle.css";
 
 export const AllActivities = () => {
   const {sports, setSports} = useContext(TrioContext)
   const [activities, setActivities] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState(null);
+
+  const navigate = useNavigate(); // Hook para redireccionar
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -35,11 +42,41 @@ export const AllActivities = () => {
     fetchActivities();
   }, []);
 
+  const handleShowModal = (activity) => {
+    setSelectedActivity(activity);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedActivity(null);
+  };
+
+  const handleCommentSubmit = async (comment) => {
+    try {
+      // Envía el comentario al backend
+      const response = await axios.post("http://localhost:4000/api/comments/addComment", {
+        activity_id: selectedActivity.activity_id,
+        text: comment,
+      });
+  
+      if (response.status === 201) {
+        // Si el comentario se ha guardado correctamente, redirige a la vista de la actividad
+        navigate(`/activity/${selectedActivity.activity_id}`);
+      } else {
+        console.error("Error al crear el comentario");
+      }
+    } catch (error) {
+      console.error("Error al enviar el comentario:", error);
+    }
+  };
+  
+
   const getButtonLabel = (activity) => {
     if (activity.limit_users === null) {
-      return "Unirse"; // Si no hay límite, solo muestra "Unirse"
+      return "Unirse";
     }
-    const numAsistants = activity.num_asistants || 1; // El creador de la actividad ya está contado
+    const numAsistants = activity.num_asistants || 1;
     return `Unirse ${numAsistants} / ${activity.limit_users}`;
   };
 
@@ -110,9 +147,16 @@ export const AllActivities = () => {
               isActivityPast={isActivityPast}
               getButtonLabel={getButtonLabel}
               getStatusLabel={getStatusLabel}
+              handleShowModal={handleShowModal}
             />
           ))}
       </Row>
+
+      <ModalCreateComment
+        show={showModal}
+        handleClose={handleCloseModal}
+        handleCommentSubmit={handleCommentSubmit}
+      />
     </Container>
   );
 };
