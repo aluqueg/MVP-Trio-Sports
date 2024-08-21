@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Alert, Row, Col, InputGroup } from "react-bootstrap";
 import { BsCalendar3 } from 'react-icons/bs'; // Icono de calendario de Bootstrap desde react-icons
@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { setHours, setMinutes } from "date-fns";
 import { es } from "date-fns/locale";
 import { ModalCreateSport } from "../../components/ModalCreateSport/ModalCreateSport";
+import { TrioContext } from "../../context/TrioContextProvider";
 
 registerLocale("es", es);
 
@@ -19,30 +20,26 @@ export const AddActivity = () => {
   const [activityAddress, setActivityAddress] = useState("");  // Nuevo estado para la dirección específica
   const [details, setDetails] = useState("");
   const [sportId, setSportId] = useState("");
-  const [sports, setSports] = useState([]); // Estado para la lista de deportes
   const [mapsLink, setMapsLink] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const {sports, setSports} = useContext(TrioContext)
   
   const navigate = useNavigate(); // Hook para navegar
 
   // Cargar la lista de deportes desde la base de datos al montar el componente
   useEffect(() => {
-    const fetchSports = async () => {
-      try {
-        const response = await axios.get("http://localhost:4000/api/sports/allSports");
-        console.log("-------------------------", response.data);
-        //ordenamos los deportes alfabéticamente
-        const sortedSports = response.data.sort((a, b) => a.sport_name.localeCompare(b.sport_name));
-        setSports(sortedSports); // Guardar los deportes en el estado
-      } catch (error) {
+    
+    axios.get("http://localhost:4000/api/sports/allSports")
+      .then(res => {
+        setSports(res.data); // Guardar los deportes en el estado
+        console.log("sports")
+      })
+      .catch(error => {
         console.error("Error al cargar los deportes:", error);
-      }
-    };
-
-    fetchSports();
-  }, []); // El array vacío asegura que la función se ejecute solo una vez cuando el componente se monta
+      });
+  }, []);
 
   const handleSportCreated = (newSport) => {
     setSports((prevSports) => [...prevSports, newSport]);
@@ -97,8 +94,8 @@ export const AddActivity = () => {
 
   const handleCancel = () => {
     navigate("/allActivities"); // Navegar a la vista de todas las actividades
-  };
-
+  };  
+  
   return (
     <Container>
       <h2>Crear Nueva Actividad/Evento</h2>

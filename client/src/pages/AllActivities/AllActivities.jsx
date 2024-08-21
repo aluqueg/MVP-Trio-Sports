@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row } from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
+import { Card, Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { parseISO, isBefore } from "date-fns";
+import { es } from 'date-fns/locale';
+import { TrioContext } from "../../context/TrioContextProvider";
+import { format, parseISO, isBefore } from "date-fns";
+
 import { CardOneActivity } from "../../components/CardOneActivity/CardOneActivity";
 import ModalCreateComment from "../../components/ModalCreateComment/ModalCreateComment";
 import "../AllActivities/allActivitiesStyle.css";
 
 export const AllActivities = () => {
+  const {sports, setSports} = useContext(TrioContext)
   const [activities, setActivities] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);

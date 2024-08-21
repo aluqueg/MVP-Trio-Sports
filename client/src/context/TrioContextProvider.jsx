@@ -6,8 +6,10 @@ export const TrioContext = createContext()
 
 export const TrioContextProvider = ({children}) => {
 
-  const [user,setUser] = useState({})
+  const [user,setUser] = useState()
   const [token,setToken] = useState();
+  const [sports, setSports] = useState([]);
+
   useEffect(()=>{
     const tokenLocal = localStorage.getItem("token")
     if(tokenLocal){
@@ -22,9 +24,23 @@ export const TrioContextProvider = ({children}) => {
       })
     }
   },[])
+
+  useEffect(() => {
+    axios.get("http://localhost:4000/api/sports/allSports")
+      .then(res => {
+        setSports(res.data); 
+        console.log("sports")
+      })
+      .catch(error => {
+        console.log("Error al cargar los deportes:", error);
+      });
+  }, []);
+
+
+
   return (
     <>
-      <TrioContext.Provider value={{user,setUser,token,setToken}}>
+      <TrioContext.Provider value={{user,setUser,token,setToken, sports, setSports}}>
         {children}
       </TrioContext.Provider>
     </>
