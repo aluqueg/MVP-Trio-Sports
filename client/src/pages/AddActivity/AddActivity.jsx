@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Alert, Row, Col, InputGroup } from "react-bootstrap";
-import { BsCalendar3 } from 'react-icons/bs'; // Icono de calendario de Bootstrap desde react-icons
+import { BsCalendar3 } from 'react-icons/bs'; 
 import axios from "axios";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -13,37 +13,39 @@ import { TrioContext } from "../../context/TrioContextProvider";
 registerLocale("es", es);
 
 export const AddActivity = () => {
+  const { token, sports, setSports } = useContext(TrioContext); 
   const [dateTimeActivity, setDateTimeActivity] = useState(null);
   const [limitUsers, setLimitUsers] = useState("");
   const [text, setText] = useState("");
   const [activityCity, setActivityCity] = useState("");
-  const [activityAddress, setActivityAddress] = useState("");  // Nuevo estado para la dirección específica
+  const [activityAddress, setActivityAddress] = useState(""); 
   const [details, setDetails] = useState("");
   const [sportId, setSportId] = useState("");
   const [mapsLink, setMapsLink] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const {sports, setSports} = useContext(TrioContext)
   
-  const navigate = useNavigate(); // Hook para navegar
+  const navigate = useNavigate(); 
 
-  // Cargar la lista de deportes desde la base de datos al montar el componente
+  // Cargar la lista de deportes solo si no se han cargado antes
   useEffect(() => {
-    
-    axios.get("http://localhost:4000/api/sports/allSports")
+    if (!sports.length) {
+      axios.get("http://localhost:4000/api/sports/allSports", {
+        headers: { Authorization: `Bearer ${token}` }, //  token 
+      })
       .then(res => {
-        setSports(res.data); // Guardar los deportes en el estado
-        console.log("sports")
+        setSports(res.data); 
       })
       .catch(error => {
         console.error("Error al cargar los deportes:", error);
       });
-  }, []);
+    }
+  }, [sports, setSports, token]);
 
   const handleSportCreated = (newSport) => {
     setSports((prevSports) => [...prevSports, newSport]);
-    setSportId(newSport.sport_id); //Selecciona automáticamente el nuevo deporte
+    setSportId(newSport.sport_id); 
   };
 
   const handleSubmit = async (e) => {
@@ -52,28 +54,30 @@ export const AddActivity = () => {
     setSuccess("");
 
     try {
-      // Extraer la fecha y hora en el formato 'YYYY-MM-DD HH:MM:SS' sin convertir a UTC
       const year = dateTimeActivity.getFullYear();
-      const month = String(dateTimeActivity.getMonth() + 1).padStart(2, '0'); // Meses de 0 a 11
+      const month = String(dateTimeActivity.getMonth() + 1).padStart(2, '0');
       const day = String(dateTimeActivity.getDate()).padStart(2, '0');
       const hours = String(dateTimeActivity.getHours()).padStart(2, '0');
       const minutes = String(dateTimeActivity.getMinutes()).padStart(2, '0');
-      const seconds = '00'; // No necesitamos los segundos
+      const seconds = '00'; 
 
       const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
       const response = await axios.post(
         "http://localhost:4000/api/activity/createActivity",
         {
-          date_time_activity: formattedDateTime,  // Enviar la fecha en el formato correcto para DATETIME
-          limit_users: limitUsers || null,  // Enviar null si no hay límite de usuarios
+          date_time_activity: formattedDateTime,
+          limit_users: limitUsers || null,
           text,
           activity_city: activityCity,
-          activity_address: activityAddress,  // Añadir activity_address aquí
+          activity_address: activityAddress,
           details,
-          sport_id: Number(sportId),  // Convertir sport_id a número si es necesario
-          user_id: 1,  // Asegúrate de que este ID existe en la tabla `user`
-          maps_link: mapsLink || null,  // Enviar null si no hay enlace de Google Maps
+          sport_id: Number(sportId),
+          user_id: 1, 
+          maps_link: mapsLink || null,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }, // token 
         }
       );
 
@@ -93,9 +97,9 @@ export const AddActivity = () => {
   };
 
   const handleCancel = () => {
-    navigate("/allActivities"); // Navegar a la vista de todas las actividades
-  };  
-  
+    navigate("/allActivities"); 
+  };
+
   return (
     <Container>
       <h2>Crear Nueva Actividad/Evento</h2>
@@ -122,7 +126,7 @@ export const AddActivity = () => {
                 value={sportId}
                 onChange={(e) => {
                   if (e.target.value === "addSport") {
-                    setShowModal(true); //Abrir el modal para crear el deporte
+                    setShowModal(true); 
                   } else {
                     setSportId(e.target.value);
                   }
@@ -135,8 +139,7 @@ export const AddActivity = () => {
                     {sport.sport_name}
                   </option>
                 ))}
-                <option value="addSport">Añadir deporte</option>{" "}
-                {/* Opción para añadir deporte */}
+                <option value="addSport">Añadir deporte</option>
               </Form.Control>
             </Form.Group>
           </Col>
@@ -145,9 +148,8 @@ export const AddActivity = () => {
               <Form.Label>Número de Participantes</Form.Label>
               <Form.Control
                 type="number"
-                placeholder=""
                 value={limitUsers}
-                onChange={(e) => setLimitUsers(e.target.value < 0 ? 0 : e.target.value)} // Evitar números negativos
+                onChange={(e) => setLimitUsers(e.target.value < 0 ? 0 : e.target.value)}
               />
             </Form.Group>
           </Col>
@@ -167,7 +169,7 @@ export const AddActivity = () => {
                 setHours(setMinutes(new Date(), 30), 19),
                 setHours(setMinutes(new Date(), 30), 17),
               ]}
-              minDate={new Date()}  // Deshabilitar fechas anteriores a hoy
+              minDate={new Date()}
               dateFormat="Pp"
               locale="es"
               placeholderText="Selecciona día y hora"
@@ -236,10 +238,11 @@ export const AddActivity = () => {
         show={showModal}
         closeModal={() => setShowModal(false)}
         onSportCreated={handleSportCreated}
-        existingSports={sports} //pasamos la lista de deportes existentes al modal
+        existingSports={sports}
       />
     </Container>
   );
 };
+
 
 
