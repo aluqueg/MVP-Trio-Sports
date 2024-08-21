@@ -99,15 +99,15 @@ class userController {
     let sql = `SELECT * FROM user WHERE email="${email}" AND is_validated = 1 AND is_disabled = 0`;
     connection.query(sql, (err, result) => {
       if (err) {
-        res.status(401).json("Credenciales incorrectas");        
+        res.status(401).json("Credenciales incorrectas");
       } else {
         if (!result || result.length === 0) {
-          res.status(401).json("Credenciales incorrectas");          
+          res.status(401).json("Credenciales incorrectas");
         } else {
           const hash = result[0].password;
           bcrypt.compare(password, hash, (err2, response) => {
             if (err2) {
-              res.status(500).json(err2);              
+              res.status(500).json(err2);
             } else {
               if (response) {
                 const token = jwt.sign(
@@ -117,7 +117,7 @@ class userController {
                 );
                 res.status(200).json(token);
               } else {
-                res.status(401).json("Credenciales incorrectas");                
+                res.status(401).json("Credenciales incorrectas");
               }
             }
           });
@@ -159,21 +159,21 @@ class userController {
     console.log(req.file);
   };
 
-//revisar
+  //revisar
   getAllUsers = (req, res) => {
     // let token = req.headers.authorization.split(" ")[1]    
-    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE is_validated = 1 AND user.is_disabled = 0 AND	user.type = 2 GROUP BY user.user_name ORDER BY user.user_name;`
-    connection.query(sql, (error, result)=>{
-      if(error){
-        res.status(500).json(error)
-        console.log(error);                
-      }else{
-        res.status(200).json(result)
-        console.log(result);        
+    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE is_validated = 1 AND user.is_disabled = 0 AND	user.type = 2 GROUP BY user.user_name ORDER BY user.user_name;`;
+    connection.query(sql, (error, result) => {
+      if (error) {
+        res.status(500).json(error);
+        console.log(error);
+      } else {
+        res.status(200).json(result);
+        console.log(result);
       }
-    })
-  }
-  
+    });
+  };
+
   allMessages = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
@@ -253,12 +253,10 @@ class userController {
     connection.query(sql, (err, result) => {
       if (err) {
         console.error("Error en la consulta SQL:", err);
-        return res
-          .status(500)
-          .json({
-            error: "Ocurrió un error en la consulta SQL.",
-            details: err.message,
-          });
+        return res.status(500).json({
+          error: "Ocurrió un error en la consulta SQL.",
+          details: err.message,
+        });
       }
       res.status(200).json(result);
     });
@@ -269,12 +267,10 @@ class userController {
     let data = [message, date, userID, receiver];
     connection.query(sql, data, (err, result) => {
       if (err) {
-        res
-          .status(500)
-          .json({
-            error: "Ocurrió un error en la consulta SQL.",
-            details: err.message,
-          });
+        res.status(500).json({
+          error: "Ocurrió un error en la consulta SQL.",
+          details: err.message,
+        });
       } else {
         res.status(200).json(result);
       }
