@@ -12,6 +12,7 @@ export const CardOneActivity = ({
   isActivityPast,
   getButtonLabel,
   getStatusLabel,
+  handleShowModal, // Recibe la función para abrir el modal
 }) => {
   const activityDate = parseISO(activity.date_time_activity);
   const formattedDate = format(activityDate, "dd/MM/yyyy HH:mm", {
@@ -60,10 +61,8 @@ export const CardOneActivity = ({
               </Card.Text>
             )}
 
-         
             <div style={{ flexGrow: 1 }}></div>
 
-            {/* Contenedor para los botones */}
             <Row className="mt-3">
               <Col xs={12} md={6} className="mb-2 mb-md-0">
                 <Button
@@ -85,7 +84,14 @@ export const CardOneActivity = ({
                 </Button>
               </Col>
               <Col xs={12} md={6}>
-                <Button variant="secondary" className="w-100">
+                <Button
+                  variant="secondary"
+                  className="w-100"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleShowModal(activity); // Abre el modal 
+                  }}
+                >
                   Añadir comentario
                 </Button>
               </Col>
@@ -96,3 +102,4 @@ export const CardOneActivity = ({
     </Col>
   );
 };
+

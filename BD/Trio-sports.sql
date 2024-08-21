@@ -78,6 +78,7 @@ CREATE TABLE comment (
 	comment_id MEDIUMINT UNSIGNED NOT NULL ,
 	user_id INT UNSIGNED NOT NULL,
     text TINYTEXT NOT NULL,
+    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, ----nuevo campo añadido
     PRIMARY KEY (comment_id,activity_id),
     CONSTRAINT fk_comment_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE

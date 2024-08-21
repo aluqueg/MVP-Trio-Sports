@@ -81,19 +81,25 @@ html, body {
   .activity-buttons {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 300px;
     margin-top: 20px;
   }
   
   .btn-large {
-    font-size: 1.25rem;
-    padding: 10px 20px;
+    font-size: 1.1rem;
+    padding: 10px 15px;
     width: 200px; 
+    margin-bottom: 50px;
   }
   
   .comment-box {
     background-color: #f0f0f0;
     border-radius: 8px;
+    padding: 20px;
+    width: 100%; /* Ocupa todo el ancho disponible */
+    margin-bottom: 20px;
+    word-wrap: break-word; /* Permite que las palabras largas se partan en varias líneas */
+    overflow-wrap: break-word; /* Alternativa para navegadores que no soportan word-wrap */
   }
   
   .comment-header {
@@ -101,8 +107,11 @@ html, body {
   }
   
   .comment-text {
-    margin-top: 50px;
-    font-size: 1.25rem;
+    margin-top: 20px; /* Ajusta el margen superior */
+    font-size: 1.1rem;
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
   }
+  
   
   
