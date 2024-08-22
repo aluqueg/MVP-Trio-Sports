@@ -293,6 +293,28 @@ class userController {
       }
     });
   };
+
+  recoverPassword = (req, res) => {
+    const {email} = req.body;
+    let sql = `SELECT id FROM user WHERE email = ${email}`
+    connection.query(sql, (err, result)=>{
+      if(err){
+        res.status(401).json("Email incorrecto")
+      }else{
+        if(!result || result.length === 0){
+          res.status(401).json("Email incorrecto")
+        }else{
+          const recoverToken = jwt.sign(
+              {id: result},
+              process.env.SECRET_KEY,
+              {expiresIn: "1h"}
+          )
+          res.status(200).json(recoverToken)
+        }
+      }
+    })
+  }
+
 }
 
 module.exports = new userController();

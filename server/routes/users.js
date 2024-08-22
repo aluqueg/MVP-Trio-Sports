@@ -17,5 +17,6 @@ router.post('/viewOneChat',userController.viewOneChat)
 router.post('/sendMessage',userController.sendMessage)
 router.get('/getUserActivities',verifyToken, userController.getUserActivities)
 router.get('/getUserParticipatedActivities',verifyToken, userController.getUserParticipatedActivities)
+router.post('/recoverPassword', userController.recoverPassword)
 
 module.exports = router;
