@@ -10,6 +10,8 @@ import { es } from "date-fns/locale";
 import { ModalCreateSport } from "../../components/ModalCreateSport/ModalCreateSport";
 import { TrioContext } from "../../context/TrioContextProvider";
 
+import "../AddActivity/addActivityStyle.css"
+
 registerLocale("es", es);
 
 export const AddActivity = () => {
@@ -157,7 +159,7 @@ export const AddActivity = () => {
 
         <Form.Group controlId="formDateTimeActivity">
           <Form.Label>Día y Hora</Form.Label>
-          <InputGroup>
+          <div className="add-activity-datepicker-container">
             <DatePicker
               selected={dateTimeActivity}
               onChange={(date) => setDateTimeActivity(date)}
@@ -173,13 +175,11 @@ export const AddActivity = () => {
               dateFormat="Pp"
               locale="es"
               placeholderText="Selecciona día y hora"
-              className="form-control"
+              className="form-control add-activity-datepicker"
               required
             />
-            <InputGroup.Text>
-              <BsCalendar3 />
-            </InputGroup.Text>
-          </InputGroup>
+            <BsCalendar3 className="add-activity-calendar-icon" />
+          </div>
         </Form.Group>
 
         <Form.Group controlId="formActivityCity">

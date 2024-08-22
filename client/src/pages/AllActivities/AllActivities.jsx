@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -38,6 +38,9 @@ export const AllActivities = () => {
       fetchActivities();
     }
   }, [token]);
+
+//filtros deportes, fecha, ciudad
+
   const handleFilter = (filters) => {
     const filtered = activities.filter((activity) => {
       const normalizedActivityCity = activity.activity_city
@@ -48,21 +51,35 @@ export const AllActivities = () => {
       const matchesSport = filters.sport ? activity.sport_name === filters.sport : true;
       const matchesCity = filters.city ? normalizedActivityCity.includes(filters.city.toLowerCase()) : true;
   
+     
       const activityDate = new Date(activity.date_time_activity.split(" ")[0]);
-      const filterDate = new Date(filters.date);
+      let filterDate = filters.date ? new Date(filters.date) : null;
   
-      // Comparar rango de fechas
-      const matchesDate = filters.date ? activityDate >= filterDate : true;
+      
+      activityDate.setHours(0, 0, 0, 0);
+  
+      // Sumar un día a la filterDate para ajustar la diferencia
+      if (filterDate) {
+        filterDate.setDate(filterDate.getDate() + 1);
+        filterDate.setHours(0, 0, 0, 0);
+      }
+  
+      console.log("Activity Date:", activityDate);
+      console.log("Filter Date:", filterDate);
+  
+   
+      const matchesDate = filters.date ? activityDate.getTime() === filterDate?.getTime() : true;
+  
+      console.log("Matches Date:", matchesDate);
   
       return matchesSport && matchesCity && matchesDate;
     });
   
+    console.log("Filtered Activities:", filtered);
     setFilteredActivities(filtered);
   };
   
   
-  
-
   const handleReset = () => {
     setFilteredActivities(activities); // Restablecer todas las actividades
   };
@@ -159,32 +176,36 @@ export const AllActivities = () => {
 
   return (
     <Container>
-    {/* Filtro de actividades */}
-    <ActivityFilter onFilter={handleFilter} onReset={handleReset} />
-    <div className="custom-divider"></div>
-    {/* Actividades filtradas */}
-    <Row>
-      {filteredActivities.map((activity) => (
-        <CardOneActivity
-          key={activity.activity_id}
-          activity={activity}
-          handleJoinActivity={handleJoinActivity}
-          isActivityFull={isActivityFull}
-          isActivityPast={isActivityPast}
-          getButtonLabel={getButtonLabel}
-          getStatusLabel={getStatusLabel}
-          handleShowModal={handleShowModal}
-        />
-      ))}
-    </Row>
- 
-    {/* Modal para añadir comentarios */}
-    <ModalCreateComment
-      show={showModal}
-      handleClose={handleCloseModal}
-      handleCommentSubmit={handleCommentSubmit}
-    />
-  </Container>
+      {/* Filtro de actividades */}
+      <ActivityFilter onFilter={handleFilter} onReset={handleReset} />
+      <div className="custom-divider"></div>
+      {/* Actividades filtradas */}
+      <Row>
+        {filteredActivities.length > 0 ? (
+          filteredActivities.map((activity) => (
+            <CardOneActivity
+              key={activity.activity_id}
+              activity={activity}
+              handleJoinActivity={handleJoinActivity}
+              isActivityFull={isActivityFull}
+              isActivityPast={isActivityPast}
+              getButtonLabel={getButtonLabel}
+              getStatusLabel={getStatusLabel}
+              handleShowModal={handleShowModal}
+            />
+          ))
+        ) : (
+          <p className="no-results-message">No hay actividades disponibles para los criterios de búsqueda.</p>
+        )}
+      </Row>
+  
+      {/* Modal para añadir comentarios */}
+      <ModalCreateComment
+        show={showModal}
+        handleClose={handleCloseModal}
+        handleCommentSubmit={handleCommentSubmit}
+      />
+    </Container>
  
   );
 };
