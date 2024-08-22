@@ -29,7 +29,6 @@ export const TrioContextProvider = ({children}) => {
     axios.get("http://localhost:4000/api/sports/allSports")
       .then(res => {
         setSports(res.data); 
-        console.log("sports")
       })
       .catch(error => {
         console.log("Error al cargar los deportes:", error);
