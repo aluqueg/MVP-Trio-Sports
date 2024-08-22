@@ -139,8 +139,106 @@ class userController {
     });
   };
 
+  getPracticeSports = (req, res) => {
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `SELECT sport.sport_name, sport.sport_id FROM sport JOIN practice ON sport.sport_id = practice.sport_id WHERE practice.user_id = ${id}`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  };
+
   editUser = (req, res) => {
-    res.send("editUser");
+    console.log("editUser", req.body);
+    const { user_id, user_name, last_name, birth_date, gender, user_city, description, sports } =
+      req.body;
+
+    let data = [
+      user_name,
+      last_name,
+      birth_date,
+      gender,
+      user_city,
+      description,
+    ];
+
+    let sqlEditUser = `UPDATE user SET user_name = ?, last_name = ?, birth_date = ?, gender = ?, user_city = ?, description = ? WHERE user_id = ${user_id}`;
+
+    connection.query(sqlEditUser, data, (errEditUser, resultEditUser)=>{
+      if(errEditUser){
+        res.status(500).json(errEditUser);
+      }else{
+        let sqlDBSports = "SELECT sport_id FROM practice WHERE user_id = ?";
+        connection.query(sqlDBSports, [user_id], (err, results) => {
+          if (err) {
+            res.status(500).json(errDel);
+          } else {
+            const currentSportIds = results.map((row) => row.sport_id);
+            console.log("sports-----------------",sports)
+            // Paso 2: Eliminar deportes desmarcados
+            const toRemove = currentSportIds.filter(
+              (id) => !sports.includes(id)
+            );
+            if (toRemove.length > 0) {
+              let sqlDelSports =
+                "DELETE FROM practice WHERE user_id = ? AND sport_id IN (?)";
+              connection.query(
+                sqlDelSports,
+                [user_id, toRemove],
+                (errDel, resultDel) => {
+                  if (err) {
+                    res.status(500).json(errDel);
+                  } else {
+                    // Paso 3: Añadir nuevos deportes
+                    const toAdd = sports.filter(
+                      (id) => !currentSportIds.includes(id)
+                    );
+                    if (toAdd.length > 0) {
+                      const values = toAdd.map((id) => [user_id, id]);
+                      let sqlAddSports =
+                        "INSERT INTO practice (user_id, sport_id) VALUES ?";
+                      connection.query(sqlAddSports, [values], (errAdd, resAdd) => {
+                        if (err) {
+                          res.status(500).json(errAdd);
+                        } else {
+                          res.status(201).json(resAdd);
+                        }
+                      });
+                    } else {
+                      connection.end();
+                    }
+                  }
+                }
+              );
+            } else {
+              // Solo añadir si no hay deportes a eliminar
+              const toAdd = sports.filter(
+                (id) => !currentSportIds.includes(id)
+              );
+              if (toAdd.length > 0) {
+                const values = toAdd.map((id) => [user_id, id]);
+                let sqlAddSports2 =
+                  "INSERT INTO practice (user_id, sport_id) VALUES ?";
+                connection.query(sqlAddSports2, [values], (errAdd2, resAdd2) => {
+                  if (errAdd2) {
+                    res.status(500).json(errAdd2);
+                  } else {
+                    res.status(201).json(resAdd2);
+                  }
+                });
+              } else {
+                connection.end(resultEditUser);
+              }
+            }
+          }
+        });
+        res.status(201).json(resultEditUser);
+      }
+    })
   };
 
   emailValidation = (req, res) => {
@@ -161,7 +259,7 @@ class userController {
 
   //revisar
   getAllUsers = (req, res) => {
-    // let token = req.headers.authorization.split(" ")[1]    
+    // let token = req.headers.authorization.split(" ")[1]
     let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE is_validated = 1 AND user.is_disabled = 0 AND	user.type = 2 GROUP BY user.user_name ORDER BY user.user_name;`;
     connection.query(sql, (error, result) => {
       if (error) {
@@ -261,6 +359,7 @@ class userController {
       res.status(200).json(result);
     });
   };
+
   sendMessage = (req, res) => {
     const { message, date, receiver, userID } = req.body;
     let sql = `INSERT INTO message (text,date_time,sender_user_id,receiver_user_id) VALUES (?,?,?,?)`;

@@ -5,11 +5,12 @@ import { Col, Container, Row } from "react-bootstrap";
 import { CardOneActivity } from "../../../components/CardOneActivity/CardOneActivity";
 import { isBefore, parseISO } from "date-fns";
 import ModalCreateComment from "../../../components/ModalCreateComment/ModalCreateComment";
+import { useNavigate } from "react-router-dom";
 
 export const UserActivities = () => {
   const { token } = useContext(TrioContext);
   const [userActivities, setUserActivities] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(()=>{
     const userActivities = async () => {
       try{
@@ -112,8 +113,6 @@ export const UserActivities = () => {
       console.error("Error al unirse a la actividad:", error);
     }
   };
-
-  console.log("userActivities", userActivities)
 
   return (
     <Container fluid={"md"}>

@@ -8,7 +8,8 @@ const verifyToken = require('../middlewares/verifyToken');
 router.post('/createUser',multerSingle("users"), userController.createUser);
 router.post('/login', userController.login)
 router.get('/profile',verifyToken, userController.profile)
-router.put('/editUser', userController.editUser)
+router.get('/getPracticeSports',verifyToken, userController.getPracticeSports)
+router.put('/editUser',verifyToken, userController.editUser)
 router.post('/emailValidator', userController.emailValidation)
 router.post('/prueba',multerSingle("users"), userController.prueba)
 router.get('/getAllUsers', userController.getAllUsers)
