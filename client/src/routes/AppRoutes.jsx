@@ -14,6 +14,7 @@ import { Register } from "../pages/Auth/Register/Register";
 import { AddSport } from "../pages/AddSport/AddSport";
 import { UserActivities } from "../pages/Profile/UserActivities/UserActivities";
 import { UserParticipatedActivities } from "../pages/Profile/UserParticipatedActivities/UserParticipatedActivities";
+import { Validation } from "../pages/Validation/Validation";
 import { RecoverPassword } from "../pages/RecoverPassword/RecoverPassword";
 import { useContext } from "react";
 import { TrioContext } from "../context/TrioContextProvider";
@@ -25,7 +26,7 @@ export const AppRoutes = () => {
       <Row>
         <NavBarApp />
       </Row>
-      <Container fluid="xl">
+      <Container fluid="xl" className="Chats">
         <Routes>
           <Route path="/" element={<Home />} />
           {user && <Route path="/allActivities" element={<AllActivities />} />}
@@ -43,6 +44,7 @@ export const AppRoutes = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/recoverPassword" element={<RecoverPassword />}/>
           <Route path="*" element={<ErrorPage />} />
+          <Route path = "/validation/:token" element={<Validation/>}/>
         </Routes>
       </Container>
     </BrowserRouter>
