@@ -2,6 +2,7 @@ const connection = require("../config/db");
 const bcrypt = require("bcrypt");
 const { json } = require("express");
 const jwt = require("jsonwebtoken");
+const sendMail = require("../services/emailValidator");
 require("dotenv").config();
 
 class userController {
@@ -18,6 +19,7 @@ class userController {
       email,
       password,
       sport_id,
+      description,
     } = user;
     console.log("user", user);
     let saltRounds = 8;
@@ -35,11 +37,12 @@ class userController {
             user_city,
             email,
             hash,
+            description,
             req.body.last_log_date,
             req.file.filename,
           ];
-          let sql = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, last_log_date, user_img)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+          let sql = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, description, last_log_date, user_img)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
           connection.query(sql, data, (errIns, result) => {
             if (errIns) {
@@ -51,10 +54,15 @@ class userController {
                 "INSERT INTO practice (sport_id, user_id) VALUES ?";
               connection.query(practiceSql, [values], (errPrac, resPrac) => {
                 if (errPrac) {
-                  console.log("fdsafdsasdsa2");
                   res.status(500).json(errPrac);
                 } else {
-                  res.status(201).json(resPrac);
+                  const token = jwt.sign(
+                    { id: email },
+                    process.env.SECRET_KEY,
+                    { expiresIn: "14d" }
+                  );
+                  sendMail(email,user_name,token)
+                  res.status(201).json(resPrac2);
                 }
               });
             }
@@ -68,10 +76,11 @@ class userController {
             user_city,
             email,
             hash,
+            description,
             req.body.last_log_date,
           ];
-          let sql2 = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, last_log_date)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+          let sql2 = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password,description, last_log_date)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
           connection.query(sql2, data2, (errIns2, result2) => {
             if (errIns2) {
               res.status(500).json(errIns2);
@@ -84,6 +93,12 @@ class userController {
                 if (errPrac2) {
                   res.status(500).json(errPrac2);
                 } else {
+                  const token = jwt.sign(
+                    { id: email },
+                    process.env.SECRET_KEY,
+                    { expiresIn: "14d" }
+                  );
+                  sendMail(email,user_name,token)
                   res.status(201).json(resPrac2);
                 }
               });
@@ -93,6 +108,26 @@ class userController {
       }
     });
   };
+
+  validationUser = (req,res) =>{
+    try {
+      const token = req.params.token;
+      const decoded = jwt.verify(token, process.env.SECRET_KEY); 
+      console.log("*********", decoded);
+      let sql = `UPDATE user SET is_validated = 1 WHERE email = "${decoded.id}"`
+      connection.query(sql,(err,dbres)=>{
+        if(err){
+          console.log("rompe aqui",decoded.id)
+          res.status(500).json(err)
+        }else{
+          res.status(200).json({ message: "Token validado", data: decoded });
+        }
+      })
+    } catch (err) {
+      console.error("Error al verificar el token:", err.message);
+      res.status(400).json({ message: "Token inválido" });
+    }
+  }
 
   login = (req, res) => {
     const { email, password } = req.body;
