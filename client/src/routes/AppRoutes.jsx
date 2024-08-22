@@ -16,12 +16,10 @@ import { UserActivities } from "../pages/Profile/UserActivities/UserActivities";
 import { UserParticipatedActivities } from "../pages/Profile/UserParticipatedActivities/UserParticipatedActivities";
 import { Validation } from "../pages/Validation/Validation";
 import { RecoverPassword } from "../pages/RecoverPassword/RecoverPassword";
-<<<<<<< HEAD
 import { EditPassword } from "../pages/EditPassword/EditPassword";
-=======
 import { useContext } from "react";
 import { TrioContext } from "../context/TrioContextProvider";
->>>>>>> 89ab3cf907ba891ce93b9bfeff7df38823902bb3
+
 
 export const AppRoutes = () => {
   const {user} = useContext(TrioContext)
