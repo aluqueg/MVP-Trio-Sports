@@ -2,7 +2,13 @@ import { useState } from "react";
 import { Button, Modal, Form, Alert } from "react-bootstrap";
 import axios from "axios";
 
-export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSports, addSports }) => {
+export const ModalCreateSport = ({
+  show,
+  closeModal,
+  onSportCreated,
+  existingSports,
+  addSports,
+}) => {
   const [sportName, setSportName] = useState("");
   const [error, setError] = useState("");
 
@@ -14,7 +20,9 @@ export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSpo
     setError("");
 
     // Verificar si el deporte ya existe en la lista
-    const sportExists = existingSports.some((sport) => sport.sport_name.toLowerCase() === sportName.toLowerCase());
+    const sportExists = existingSports.some(
+      (sport) => sport.sport_name.toLowerCase() === sportName.toLowerCase()
+    );
 
     if (sportExists) {
       setError("El deporte ya existe");
@@ -30,9 +38,9 @@ export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSpo
       console.log("Respuesta del servidor:", response);
 
       if (response.status === 201) {
-        onSportCreated(response.data); // Actualizar la lista de deportes
-        setSportName(""); // Limpiar el campo de entrada
-        closeModal(); // Cerrar el modal
+        onSportCreated(response.data);
+        setSportName("");
+        closeModal();
         addSports(response.data.sport_name);
       }
     } catch (error) {
@@ -60,10 +68,14 @@ export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSpo
               placeholder="Introduce el nombre del nuevo deporte"
               value={sportName}
               onChange={handleChange}
-              required // Asegurarse de que el campo es obligatorio
+              required
             />
-            {/* Mostrar el mensaje de error justo debajo del input */}
-            {error && <Alert variant="danger" className="mt-2">{error}</Alert>}
+            {/* Mostrar el mensaje de error  debajo del input */}
+            {error && (
+              <Alert variant="danger" className="mt-2">
+                {error}
+              </Alert>
+            )}
           </Form.Group>
         </Form>
       </Modal.Body>
@@ -79,4 +91,3 @@ export const ModalCreateSport = ({ show, closeModal, onSportCreated, existingSpo
     </Modal>
   );
 };
-

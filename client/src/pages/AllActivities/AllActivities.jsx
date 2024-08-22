@@ -1,45 +1,128 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Card, Container, Row, Col } from "react-bootstrap";
+import { useContext, useEffect, useState } from "react";
+import { Container, Row } from "react-bootstrap";
 import axios from "axios";
-import { es } from 'date-fns/locale';
+import { useNavigate } from "react-router-dom";
 import { TrioContext } from "../../context/TrioContextProvider";
-import { format, parseISO, isBefore } from "date-fns";
+import { parseISO, isBefore } from "date-fns";
 import { CardOneActivity } from "../../components/CardOneActivity/CardOneActivity";
+import { ActivityFilter } from "../../components/ActivityFilter/ActivityFilter";
+import ModalCreateComment from "../../components/ModalCreateComment/ModalCreateComment";
 import "../AllActivities/allActivitiesStyle.css";
 
 export const AllActivities = () => {
-  const {sports, setSports} = useContext(TrioContext)
+  const { token, user } = useContext(TrioContext);
   const [activities, setActivities] = useState([]);
+  const [filteredActivities, setFilteredActivities] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchActivities = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/activity/getAllActivities"
+          "http://localhost:4000/api/activity/getAllActivities",
+          {
+            headers: { Authorization: `Bearer ${token}` }, // token
+          }
         );
         setActivities(response.data);
+        setFilteredActivities(response.data); // Inicialmente, muestra todas las actividades
       } catch (error) {
-        if (error.response) {
-          console.error(
-            "Error en la respuesta del servidor:",
-            error.response.data
-          );
-        } else if (error.request) {
-          console.error("Error en la solicitud:", error.request);
-        } else {
-          console.error("Error desconocido:", error.message);
-        }
+        console.error("Error al cargar actividades:", error);
       }
     };
 
-    fetchActivities();
-  }, []);
+    if (token) {
+      fetchActivities();
+    }
+  }, [token]);
+
+//filtros deportes, fecha, ciudad
+
+  const handleFilter = (filters) => {
+    const filtered = activities.filter((activity) => {
+      const normalizedActivityCity = activity.activity_city
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+  
+      const matchesSport = filters.sport ? activity.sport_name === filters.sport : true;
+      const matchesCity = filters.city ? normalizedActivityCity.includes(filters.city.toLowerCase()) : true;
+  
+     
+      const activityDate = new Date(activity.date_time_activity.split(" ")[0]);
+      let filterDate = filters.date ? new Date(filters.date) : null;
+  
+      
+      activityDate.setHours(0, 0, 0, 0);
+  
+      // Sumar un día a la filterDate para ajustar la diferencia
+      if (filterDate) {
+        filterDate.setDate(filterDate.getDate() + 1);
+        filterDate.setHours(0, 0, 0, 0);
+      }
+  
+      console.log("Activity Date:", activityDate);
+      console.log("Filter Date:", filterDate);
+  
+   
+      const matchesDate = filters.date ? activityDate.getTime() === filterDate?.getTime() : true;
+  
+      console.log("Matches Date:", matchesDate);
+  
+      return matchesSport && matchesCity && matchesDate;
+    });
+  
+    console.log("Filtered Activities:", filtered);
+    setFilteredActivities(filtered);
+  };
+  
+  
+  const handleReset = () => {
+    setFilteredActivities(activities); // Restablecer todas las actividades
+  };
+
+    const handleShowModal = (activity) => {
+    setSelectedActivity(activity);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedActivity(null);
+  };
+
+  const handleCommentSubmit = async (comment) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/comments/addComment",
+        {
+          activity_id: selectedActivity.activity_id,
+          user_id: user.user_id, // user_id
+          text: comment,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }, // token
+        }
+      );
+  
+      if (response.status === 201) {
+        navigate(`/activity/${selectedActivity.activity_id}`);
+      } else {
+        console.error("Error al crear el comentario");
+      }
+    } catch (error) {
+      console.error("Error al enviar el comentario:", error);
+    }
+  };
 
   const getButtonLabel = (activity) => {
     if (activity.limit_users === null) {
-      return "Unirse"; // Si no hay límite, solo muestra "Unirse"
+      return "Unirse";
     }
-    const numAsistants = activity.num_asistants || 1; // El creador de la actividad ya está contado
+    const numAsistants = activity.num_asistants || 1;
     return `Unirse ${numAsistants} / ${activity.limit_users}`;
   };
 
@@ -75,15 +158,17 @@ export const AllActivities = () => {
         "http://localhost:4000/api/activity/joinActivity",
         {
           activity_id: activityId,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }, // token
         }
       );
-      console.log(response.data);
       const updatedActivities = activities.map((activity) =>
         activity.activity_id === activityId
           ? { ...activity, num_asistants: activity.num_asistants + 1 }
           : activity
       );
-      setActivities(updatedActivities);
+      setFilteredActivities(updatedActivities);
     } catch (error) {
       console.error("Error al unirse a la actividad:", error);
     }
@@ -91,17 +176,13 @@ export const AllActivities = () => {
 
   return (
     <Container>
+      {/* Filtro de actividades */}
+      <ActivityFilter onFilter={handleFilter} onReset={handleReset} />
+      <div className="custom-divider"></div>
+      {/* Actividades filtradas */}
       <Row>
-        {activities
-          .filter(
-            (activity) => !isActivityPast(parseISO(activity.date_time_activity))
-          )
-          .concat(
-            activities.filter((activity) =>
-              isActivityPast(parseISO(activity.date_time_activity))
-            )
-          )
-          .map((activity) => (
+        {filteredActivities.length > 0 ? (
+          filteredActivities.map((activity) => (
             <CardOneActivity
               key={activity.activity_id}
               activity={activity}
@@ -110,9 +191,21 @@ export const AllActivities = () => {
               isActivityPast={isActivityPast}
               getButtonLabel={getButtonLabel}
               getStatusLabel={getStatusLabel}
+              handleShowModal={handleShowModal}
             />
-          ))}
+          ))
+        ) : (
+          <p className="no-results-message">No hay actividades disponibles para los criterios de búsqueda.</p>
+        )}
       </Row>
+  
+      {/* Modal para añadir comentarios */}
+      <ModalCreateComment
+        show={showModal}
+        handleClose={handleCloseModal}
+        handleCommentSubmit={handleCommentSubmit}
+      />
     </Container>
+ 
   );
 };

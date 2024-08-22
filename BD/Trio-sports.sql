@@ -75,9 +75,10 @@ CREATE TABLE participate (
 
 CREATE TABLE comment (
 	activity_id BIGINT UNSIGNED NOT NULL,
-	comment_id MEDIUMINT UNSIGNED NOT NULL ,
+	comment_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,  ----modify campo a auto_increment
 	user_id INT UNSIGNED NOT NULL,
     text TINYTEXT NOT NULL,
+    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, ----nuevo campo añadido
     PRIMARY KEY (comment_id,activity_id),
     CONSTRAINT fk_comment_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -171,6 +172,7 @@ VALUES ('Yoga', 'yoga.jpg');
 INSERT INTO sport (sport_name, sport_img)
 VALUES ('Pilates', 'pilates.jpg');
 
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 
 

@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { TrioContext } from "../../context/TrioContextProvider";
 
 export const AddSport = () => {
+  const { token } = useContext(TrioContext);
   const [sportName, setSportName] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -22,7 +24,10 @@ export const AddSport = () => {
     try {
       const response = await axios.post(
         "http://localhost:4000/api/sports/createSport",
-        { sport_name: sportName }
+        { sport_name: sportName },
+        {
+          headers: { Authorization: `Bearer ${token}` }, // token
+        }
       );
 
       console.log("Respuesta del servidor:", response);
@@ -58,7 +63,7 @@ export const AddSport = () => {
             name="sportName"
             value={sportName}
             onChange={handleChange}
-            required // Asegurarse de que el campo es obligatorio
+            required
           />
         </div>
         <button type="submit">Crear Deporte</button>

@@ -10,6 +10,7 @@ var usersRouter = require("./routes/users");
 var activityRouter = require("./routes/activity");
 var adminRouter = require("./routes/admin");
 var sportsRouter = require("./routes/sports");
+var commentsRouter = require("./routes/comments");  
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/activity", activityRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/sports", sportsRouter);
+app.use("/api/comments", commentsRouter);  
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
