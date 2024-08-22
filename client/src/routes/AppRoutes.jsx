@@ -14,6 +14,7 @@ import { Register } from "../pages/Auth/Register/Register";
 import { AddSport } from "../pages/AddSport/AddSport";
 import { UserActivities } from "../pages/Profile/UserActivities/UserActivities";
 import { UserParticipatedActivities } from "../pages/Profile/UserParticipatedActivities/UserParticipatedActivities";
+import { RecoverPassword } from "../pages/RecoverPassword/RecoverPassword";
 import { useContext } from "react";
 import { TrioContext } from "../context/TrioContextProvider";
 
@@ -40,6 +41,7 @@ export const AppRoutes = () => {
           
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/recoverPassword" element={<RecoverPassword />}/>
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Container>

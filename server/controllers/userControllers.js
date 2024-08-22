@@ -161,7 +161,7 @@ class userController {
 
   //revisar
   getAllUsers = (req, res) => {
-    // let token = req.headers.authorization.split(" ")[1]    
+    // let token = req.headers.authorization.split(" ")[1]
     let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE is_validated = 1 AND user.is_disabled = 0 AND	user.type = 2 GROUP BY user.user_name ORDER BY user.user_name;`;
     connection.query(sql, (error, result) => {
       if (error) {
@@ -290,6 +290,27 @@ class userController {
         res.status(500).json(err);
       } else {
         res.status(200).json(result);
+      }
+    });
+  };
+
+  recoverPassword = (req, res) => {
+    const { email } = req.body;
+    let sql = `SELECT id FROM user WHERE email = ${email}`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(401).json("Email incorrecto");
+      } else {
+        if (!result || result.length === 0) {
+          res.status(401).json("Email incorrecto");
+        } else {
+          const recoverToken = jwt.sign(
+            { id: result },
+            process.env.SECRET_KEY,
+            { expiresIn: "1h" }
+          );
+          res.status(200).json(recoverToken);
+        }
       }
     });
   };
