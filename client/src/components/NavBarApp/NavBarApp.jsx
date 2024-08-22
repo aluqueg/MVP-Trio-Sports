@@ -15,7 +15,7 @@ export const NavBarApp = () => {
     setUser();
     navigate("/");
   };
-  console.log("user", user)
+
   return (
     <>
       <Navbar expand="md" className="bg-body-tertiary mb-3">
@@ -40,24 +40,26 @@ export const NavBarApp = () => {
                 defaultActiveKey="/allActivities"
                 className="justify-content-start flex-grow-1 pe-3"
               >
-                <Nav.Link as={Link} to="/allActivities">
-                  Actividades
-                </Nav.Link>
-                <Nav.Link as={Link} to="/addActivity">
-                  Crear Actividad
-                </Nav.Link>
-                <Nav.Link as={Link} to="/addSport">
-                  Crear Deporte
-                </Nav.Link>
-                <Nav.Link as={Link} to="/allUsers">
-                  Búsqueda
-                </Nav.Link>
-                <Nav.Link as={Link} to="/chats">
-                  Mensajes
-                </Nav.Link>
-                <Nav.Link as={Link} to="/profile">
-                  Perfil
-                </Nav.Link>
+                {user && <div className="d-flex">
+                  <Nav.Link as={Link} to="/allActivities">
+                    Actividades
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/addActivity">
+                    Crear Actividad
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/addSport">
+                    Crear Deporte
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/allUsers">
+                    Búsqueda
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/chats">
+                    Mensajes
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/profile">
+                    Perfil
+                  </Nav.Link>
+                </div>}
               </Nav>
               <Nav className="d-flex">
                 {!user ? (

@@ -75,7 +75,7 @@ CREATE TABLE participate (
 
 CREATE TABLE comment (
 	activity_id BIGINT UNSIGNED NOT NULL,
-	comment_id MEDIUMINT UNSIGNED NOT NULL ,
+	comment_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,  ----modify campo a auto_increment
 	user_id INT UNSIGNED NOT NULL,
     text TINYTEXT NOT NULL,
     date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, ----nuevo campo añadido

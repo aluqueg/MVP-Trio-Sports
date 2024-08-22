@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
-import { BsTrophy, BsMap, BsClock } from "react-icons/bs";
+import { BsTrophy, BsMap, BsCalendar3 } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import { format, parseISO } from "date-fns";
+import { format, isBefore, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
+import axios from "axios";
 
 export const CardOneActivity = ({
   activity,
@@ -12,7 +13,7 @@ export const CardOneActivity = ({
   isActivityPast,
   getButtonLabel,
   getStatusLabel,
-  handleShowModal, // Recibe la función para abrir el modal
+  handleShowModal,
 }) => {
   const activityDate = parseISO(activity.date_time_activity);
   const formattedDate = format(activityDate, "dd/MM/yyyy HH:mm", {
@@ -44,7 +45,7 @@ export const CardOneActivity = ({
             </Card.Text>
 
             <Card.Text>
-              <BsClock /> {formattedDate}
+              < BsCalendar3/> {formattedDate}
             </Card.Text>
 
             <Card.Text>
@@ -89,7 +90,7 @@ export const CardOneActivity = ({
                   className="w-100"
                   onClick={(e) => {
                     e.preventDefault();
-                    handleShowModal(activity); // Abre el modal 
+                    handleShowModal(activity);
                   }}
                 >
                   Añadir comentario
@@ -102,4 +103,3 @@ export const CardOneActivity = ({
     </Col>
   );
 };
-
