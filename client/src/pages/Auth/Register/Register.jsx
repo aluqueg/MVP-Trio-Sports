@@ -219,7 +219,6 @@ export const Register = () => {
     setSports((prevSports) => [...prevSports, newSport]);
     setSportId(newSport.sport_id); //Selecciona automáticamente el nuevo deporte
   };
-  console.log(sports);
   /* ENVIAR DATOS REGISTER */
   const [file, setFile] = useState({});
   const handleFile = (e) => {
@@ -244,8 +243,6 @@ export const Register = () => {
       })
       .catch((err) => console.log(err));
   };
-  console.log("log de user register", userRegister);
-
   return (
     <Container>
       <Form action="">
@@ -451,18 +448,18 @@ export const Register = () => {
             {noBinario ? (
               <div className="generos">
                 <ListGroup as="ul" className="all_generos">
-                  {generos.map((e, idx) => {
-                    return (
-                      <ListGroup.Item
-                        as="li"
-                        key={idx}
-                        onClick={() => gender(e)}
-                      >
-                        {e}
-                      </ListGroup.Item>
-                    );
-                  })}
+                  {generos.map((e, idx) => (
+                    <ListGroup.Item
+                      as="li"
+                      key={idx}
+                      onClick={() => gender(e)}
+                      className={e === userRegister?.gender ? "active" : ""}
+                    >
+                      {e}
+                    </ListGroup.Item>
+                  ))}
                 </ListGroup>
+                <Button onClick={()=>setNoBinario(false)}>Atras</Button>
               </div>
             ) : (
               <div className="generos">
@@ -530,8 +527,25 @@ export const Register = () => {
             )}
           </>
         ) : null}
-        {/* FOTO */}
+        {/* DESCRIPCION */}
         {page == 7 ? (
+          <>
+            <Form.Group className="mb-3">
+              <Form.Label>Describete</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Enter your text here"
+                onChange={handleRegister}
+                name="description"
+              />
+            </Form.Group>
+            <Button onClick={volver}>Volver</Button>
+            <Button onClick={continuar}>Continuar</Button>
+          </>
+        ) : null}
+        {/* FOTO */}
+        {page == 8 ? (
           <>
             <Form.Group className="mb-3">
               <Form.Label htmlFor="file">Sube una foto</Form.Label>
@@ -545,7 +559,7 @@ export const Register = () => {
               />
             </Form.Group>
             <Button onClick={volver}>Volver</Button>
-            <Button onClick={onSubmit}>Enviar</Button>
+            <Button onClick={onSubmit}>Continuar</Button>
           </>
         ) : null}
       </Form>
