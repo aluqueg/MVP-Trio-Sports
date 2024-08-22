@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
-import { BsTrophy, BsMap, BsClock } from "react-icons/bs";
+import { BsTrophy, BsMap, BsCalendar3 } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import { format, parseISO } from "date-fns";
+import { format, isBefore, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
+import axios from "axios";
 
 export const CardOneActivity = ({
   activity,
@@ -12,6 +13,7 @@ export const CardOneActivity = ({
   isActivityPast,
   getButtonLabel,
   getStatusLabel,
+  handleShowModal,
 }) => {
   const activityDate = parseISO(activity.date_time_activity);
   const formattedDate = format(activityDate, "dd/MM/yyyy HH:mm", {
@@ -43,7 +45,7 @@ export const CardOneActivity = ({
             </Card.Text>
 
             <Card.Text>
-              <BsClock /> {formattedDate}
+              < BsCalendar3/> {formattedDate}
             </Card.Text>
 
             <Card.Text>
@@ -60,10 +62,8 @@ export const CardOneActivity = ({
               </Card.Text>
             )}
 
-         
             <div style={{ flexGrow: 1 }}></div>
 
-            {/* Contenedor para los botones */}
             <Row className="mt-3">
               <Col xs={12} md={6} className="mb-2 mb-md-0">
                 <Button
@@ -85,7 +85,14 @@ export const CardOneActivity = ({
                 </Button>
               </Col>
               <Col xs={12} md={6}>
-                <Button variant="secondary" className="w-100">
+                <Button
+                  variant="secondary"
+                  className="w-100"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleShowModal(activity);
+                  }}
+                >
                   Añadir comentario
                 </Button>
               </Col>

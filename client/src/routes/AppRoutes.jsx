@@ -15,8 +15,12 @@ import { AddSport } from "../pages/AddSport/AddSport";
 import { UserActivities } from "../pages/Profile/UserActivities/UserActivities";
 import { UserParticipatedActivities } from "../pages/Profile/UserParticipatedActivities/UserParticipatedActivities";
 import { Validation } from "../pages/Validation/Validation";
+import { RecoverPassword } from "../pages/RecoverPassword/RecoverPassword";
+import { useContext } from "react";
+import { TrioContext } from "../context/TrioContextProvider";
 
 export const AppRoutes = () => {
+  const {user} = useContext(TrioContext)
   return (
     <BrowserRouter>
       <Row>
@@ -25,18 +29,20 @@ export const AppRoutes = () => {
       <Container fluid="xl" className="Chats">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/allActivities" element={<AllActivities />} />
-          <Route path="/activity/:activity_id" element={<Activity />} />
-          <Route path="/addSport" element={<AddSport />} />
-          <Route path="/addActivity" element={<AddActivity />} />
-          <Route path='/allUsers' element={<AllUsers />} />
-          <Route path="/chats" element={<Chats />} />
-          <Route path="/profile" element={<Profile />}>
+          {user && <Route path="/allActivities" element={<AllActivities />} />}
+          {user && <Route path="/activity/:activity_id" element={<Activity />} /> }
+          {user && <Route path="/addSport" element={<AddSport />} /> }
+          {user && <Route path="/addActivity" element={<AddActivity />} /> }
+          {user && <Route path='/allUsers' element={<AllUsers />} /> }
+          {user && <Route path="/chats" element={<Chats />} /> }
+          {user && <Route path="/profile" element={<Profile />}>
             <Route index element={<UserActivities />} />
             <Route path="1" element={<UserParticipatedActivities />} />
-          </Route>
+          </Route> }
+          
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/recoverPassword" element={<RecoverPassword />}/>
           <Route path="*" element={<ErrorPage />} />
           <Route path = "/validation/:token" element={<Validation/>}/>
         </Routes>

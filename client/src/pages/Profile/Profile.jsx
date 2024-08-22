@@ -8,11 +8,10 @@ import "./profile.css";
 export const Profile = () => {
   const navigate = useNavigate();
   const { user } = useContext(TrioContext);
-  let userBirthDate = parseInt(user.birth_date);
+  let userBirthDate = parseInt(user?.birth_date);
   let today = parseInt(format(new Date(), "yyyy-MM-dd"));
   let age = today - userBirthDate;
 
-  console.log("user", user);
   return (
     <Container fluid="xxl">
       <Row className="my-3">
@@ -21,7 +20,7 @@ export const Profile = () => {
             className="profile-pic"
             src={
               user?.user_img
-                ? `http://localhost:4000/images/users/${user.user_img}`
+                ? `http://localhost:4000/images/users/${user?.user_img}`
                 : `../../src/assets/images/default_user_img.png`
             }
             alt="profile picture"
