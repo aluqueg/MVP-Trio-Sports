@@ -18,7 +18,7 @@ export const NavBarApp = () => {
   console.log("user", user)
   return (
     <>
-      <Navbar expand="md" className="bg-body-tertiary mb-3">
+      <Navbar expand="md" className="bg-body-tertiary ">
         <Container fluid="xl">
           <Navbar.Brand as={Link} to="/allActivities">
             <img className="nav-logo" src={logo} alt="logo" />

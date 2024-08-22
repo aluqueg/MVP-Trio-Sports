@@ -14,6 +14,7 @@ import { Register } from "../pages/Auth/Register/Register";
 import { AddSport } from "../pages/AddSport/AddSport";
 import { UserActivities } from "../pages/Profile/UserActivities/UserActivities";
 import { UserParticipatedActivities } from "../pages/Profile/UserParticipatedActivities/UserParticipatedActivities";
+import { Validation } from "../pages/Validation/Validation";
 
 export const AppRoutes = () => {
   return (
@@ -21,7 +22,7 @@ export const AppRoutes = () => {
       <Row>
         <NavBarApp />
       </Row>
-      <Container fluid="xl">
+      <Container fluid="xl" className="Chats">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/allActivities" element={<AllActivities />} />
@@ -37,6 +38,7 @@ export const AppRoutes = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<ErrorPage />} />
+          <Route path = "/validation/:token" element={<Validation/>}/>
         </Routes>
       </Container>
     </BrowserRouter>
