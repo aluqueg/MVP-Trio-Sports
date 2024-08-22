@@ -36,5 +36,13 @@ body, html {
   border-radius: 2px; 
 }
 
+.no-results-message {
+  text-align: center;
+  color: #ff5733;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+
 
 

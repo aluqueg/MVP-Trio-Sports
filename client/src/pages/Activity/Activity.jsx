@@ -15,7 +15,7 @@ export const Activity = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [comments, setComments] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); 
 
   useEffect(() => {
     if (token) {
@@ -114,9 +114,7 @@ export const Activity = () => {
             src={`/src/assets/activities/${activity.sport_img}`}
             alt={activity.sport_name}
             className="activity-image"
-            onError={(e) =>
-              (e.target.src = "/src/assets/activities/newsport.jpg")
-            }
+            onError={(e) => (e.target.src = "/src/assets/activities/newsport.jpg")}
           />
         </Col>
         <Col xs={12} md={6} className="activity-details-wrapper">
@@ -141,9 +139,7 @@ export const Activity = () => {
                   <BsCalendar3 className="icon" />
                 </td>
                 <td className="text-large">
-                  {new Date(activity.date_time_activity).toLocaleDateString(
-                    "es-ES"
-                  )}
+                  {new Date(activity.date_time_activity).toLocaleDateString("es-ES")}
                 </td>
               </tr>
               <tr className="table-separator">
@@ -151,40 +147,30 @@ export const Activity = () => {
                   <BsClock className="icon" />
                 </td>
                 <td className="text-large">
-                  {new Date(activity.date_time_activity).toLocaleTimeString(
-                    "es-ES",
-                    {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }
-                  )}
+                  {new Date(activity.date_time_activity).toLocaleTimeString("es-ES", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </td>
               </tr>
-              <tr className="table-separator">
-                <td>
-                  <MdLocationOn className="icon" style={{ color: "#EA4335" }} />
-                </td>
-                <td className="text-large">
-                  <a
-                    href={activity.maps_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Ver en Google Maps
-                  </a>
-                </td>
-              </tr>
+              {/* no mostrar maps_link si es null*/}
+              {activity.maps_link && (
+                <tr className="table-separator">
+                  <td>
+                    <MdLocationOn className="icon" style={{ color: "#EA4335" }} />
+                  </td>
+                  <td className="text-large">
+                    <a href={activity.maps_link} target="_blank" rel="noopener noreferrer">
+                      Ver en Google Maps
+                    </a>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </Table>
           <div className="activity-info-box">
             <p className="activity-info-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
             </p>
           </div>
         </Col>
@@ -195,22 +181,14 @@ export const Activity = () => {
           <Button variant="primary" className="me-2 btn-large">
             Unirse 1 / 2
           </Button>
-          <Button
-            variant="secondary"
-            className="btn-large"
-            onClick={handleOpenModal}
-          >
+          <Button variant="secondary" className="btn-large" onClick={handleOpenModal}>
             Añadir comentario
           </Button>
         </Col>
       </Row>
-      <hr /> {/* Línea separadora debajo de los botones */}
+      <hr /> 
       {/* Modal para añadir comentario */}
-      <ModalCreateComment
-        show={showModal}
-        handleClose={handleCloseModal}
-        handleCommentSubmit={handleCommentSubmit}
-      />
+      <ModalCreateComment show={showModal} handleClose={handleCloseModal} handleCommentSubmit={handleCommentSubmit} />
       {/* Comentarios */}
       <Row className="justify-content-center mt-4">
         <Col xs={12}>
@@ -219,23 +197,14 @@ export const Activity = () => {
               <div className="comment-header d-flex justify-content-between">
                 <div className="d-flex align-items-center">
                   <Image
-                    src={
-                      comment.user_img
-                        ? `/src/assets/images/${comment.user_img}`
-                        : fallbackImage
-                    }
+                    src={comment.user_img ? `http://localhost:4000/images/users/${comment.user_img}` : fallbackImage}
                     roundedCircle
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginRight: "10px",
-                    }}
+                    style={{ width: "30px", height: "30px", marginRight: "10px" }}
                     onError={(e) => {
                       e.target.onerror = null; // Evitar loops infinitos si la imagen de fallback también falla
                       e.target.src = fallbackImage;
                     }}
                   />
-
                   <strong>{comment.user_name}</strong>
                 </div>
                 <span>
