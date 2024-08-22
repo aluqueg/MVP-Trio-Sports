@@ -14,8 +14,9 @@ export const RecoverPassword = () => {
 
   const onSubmit = async () => {
     if (!email) {
-      setMsg({ text: "El campo no puede estar vacío", show: true });
-      return;
+      setMsg({ text: "El campo no puede estar vacío", show: true });      
+    }else{
+      setMsg({show:false})
     }
     try {
       const res = await axios.post(
@@ -38,7 +39,7 @@ export const RecoverPassword = () => {
         <Form.Label>¿Problemas con la contraseña?</Form.Label>
         <Form.Control
           type="email"
-          placeholder="Enter email"
+          placeholder="Introduce tu email"
           name="email"
           value={email}
           onChange={handleChange}
@@ -50,7 +51,7 @@ export const RecoverPassword = () => {
         </Form.Text>
       </Form.Group>
       <Button variant="primary" onClick={onSubmit}>
-        Submit
+        Enviar
       </Button>
     </Form>
   );

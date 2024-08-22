@@ -18,5 +18,6 @@ router.post('/sendMessage',userController.sendMessage)
 router.get('/getUserActivities',verifyToken, userController.getUserActivities)
 router.get('/getUserParticipatedActivities',verifyToken, userController.getUserParticipatedActivities)
 router.post('/recoverPassword', userController.recoverPassword)
+router.put('/editPassword', userController.editPassword) //hace falta verifyToken
 
 module.exports = router;

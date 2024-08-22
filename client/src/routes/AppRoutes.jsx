@@ -15,6 +15,7 @@ import { AddSport } from "../pages/AddSport/AddSport";
 import { UserActivities } from "../pages/Profile/UserActivities/UserActivities";
 import { UserParticipatedActivities } from "../pages/Profile/UserParticipatedActivities/UserParticipatedActivities";
 import { RecoverPassword } from "../pages/RecoverPassword/RecoverPassword";
+import { EditPassword } from "../pages/EditPassword/EditPassword";
 
 export const AppRoutes = () => {
   return (
@@ -38,6 +39,7 @@ export const AppRoutes = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/recoverPassword" element={<RecoverPassword />}/>
+          <Route path="/editPassword" element={<EditPassword />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Container>

@@ -296,7 +296,7 @@ class userController {
 
   recoverPassword = (req, res) => {
     const { email } = req.body;
-    let sql = `SELECT id FROM user WHERE email = ${email}`;
+    let sql = `SELECT id FROM user WHERE email = "${email}"`;
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(401).json("Email incorrecto");
@@ -309,11 +309,20 @@ class userController {
             process.env.SECRET_KEY,
             { expiresIn: "1h" }
           );
+          const link = `http://localhost:4000/api/users/recoverPassword/${result}/${recoverToken}`
+          console.log(link);
+          
           res.status(200).json(recoverToken);
         }
       }
     });
   };
+
+  editPassword = (req, res) => {
+    const {password} = req.body
+    const {token} = req.params
+  }
+
 }
 
 module.exports = new userController();
