@@ -2,6 +2,7 @@ const connection = require("../config/db");
 const bcrypt = require("bcrypt");
 const { json } = require("express");
 const jwt = require("jsonwebtoken");
+const sendMail = require("../services/emailValidator");
 require("dotenv").config();
 
 class userController {
@@ -18,6 +19,7 @@ class userController {
       email,
       password,
       sport_id,
+      description,
     } = user;
     console.log("user", user);
     let saltRounds = 8;
@@ -35,11 +37,12 @@ class userController {
             user_city,
             email,
             hash,
+            description,
             req.body.last_log_date,
             req.file.filename,
           ];
-          let sql = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, last_log_date, user_img)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+          let sql = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, description, last_log_date, user_img)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
           connection.query(sql, data, (errIns, result) => {
             if (errIns) {
@@ -51,10 +54,15 @@ class userController {
                 "INSERT INTO practice (sport_id, user_id) VALUES ?";
               connection.query(practiceSql, [values], (errPrac, resPrac) => {
                 if (errPrac) {
-                  console.log("fdsafdsasdsa2");
                   res.status(500).json(errPrac);
                 } else {
-                  res.status(201).json(resPrac);
+                  const token = jwt.sign(
+                    { id: email },
+                    process.env.SECRET_KEY,
+                    { expiresIn: "14d" }
+                  );
+                  sendMail(email,user_name,token)
+                  res.status(201).json(resPrac2);
                 }
               });
             }
@@ -68,10 +76,11 @@ class userController {
             user_city,
             email,
             hash,
+            description,
             req.body.last_log_date,
           ];
-          let sql2 = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password, last_log_date)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+          let sql2 = `INSERT INTO user (user_name, last_name,birth_date, gender, user_city, email, password,description, last_log_date)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
           connection.query(sql2, data2, (errIns2, result2) => {
             if (errIns2) {
               res.status(500).json(errIns2);
@@ -84,6 +93,12 @@ class userController {
                 if (errPrac2) {
                   res.status(500).json(errPrac2);
                 } else {
+                  const token = jwt.sign(
+                    { id: email },
+                    process.env.SECRET_KEY,
+                    { expiresIn: "14d" }
+                  );
+                  sendMail(email,user_name,token)
                   res.status(201).json(resPrac2);
                 }
               });
@@ -93,6 +108,26 @@ class userController {
       }
     });
   };
+
+  validationUser = (req,res) =>{
+    try {
+      const token = req.params.token;
+      const decoded = jwt.verify(token, process.env.SECRET_KEY); 
+      console.log("*********", decoded);
+      let sql = `UPDATE user SET is_validated = 1 WHERE email = "${decoded.id}"`
+      connection.query(sql,(err,dbres)=>{
+        if(err){
+          console.log("rompe aqui",decoded.id)
+          res.status(500).json(err)
+        }else{
+          res.status(200).json({ message: "Token validado", data: decoded });
+        }
+      })
+    } catch (err) {
+      console.error("Error al verificar el token:", err.message);
+      res.status(400).json({ message: "Token inválido" });
+    }
+  }
 
   login = (req, res) => {
     const { email, password } = req.body;
@@ -139,8 +174,106 @@ class userController {
     });
   };
 
+  getPracticeSports = (req, res) => {
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `SELECT sport.sport_name, sport.sport_id FROM sport JOIN practice ON sport.sport_id = practice.sport_id WHERE practice.user_id = ${id}`;
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  };
+
   editUser = (req, res) => {
-    res.send("editUser");
+    console.log("editUser", req.body);
+    const { user_id, user_name, last_name, birth_date, gender, user_city, description, sports } =
+      req.body;
+
+    let data = [
+      user_name,
+      last_name,
+      birth_date,
+      gender,
+      user_city,
+      description,
+    ];
+
+    let sqlEditUser = `UPDATE user SET user_name = ?, last_name = ?, birth_date = ?, gender = ?, user_city = ?, description = ? WHERE user_id = ${user_id}`;
+
+    connection.query(sqlEditUser, data, (errEditUser, resultEditUser)=>{
+      if(errEditUser){
+        res.status(500).json(errEditUser);
+      }else{
+        let sqlDBSports = "SELECT sport_id FROM practice WHERE user_id = ?";
+        connection.query(sqlDBSports, [user_id], (err, results) => {
+          if (err) {
+            res.status(500).json(errDel);
+          } else {
+            const currentSportIds = results.map((row) => row.sport_id);
+            console.log("sports-----------------",sports)
+            // Paso 2: Eliminar deportes desmarcados
+            const toRemove = currentSportIds.filter(
+              (id) => !sports.includes(id)
+            );
+            if (toRemove.length > 0) {
+              let sqlDelSports =
+                "DELETE FROM practice WHERE user_id = ? AND sport_id IN (?)";
+              connection.query(
+                sqlDelSports,
+                [user_id, toRemove],
+                (errDel, resultDel) => {
+                  if (err) {
+                    res.status(500).json(errDel);
+                  } else {
+                    // Paso 3: Añadir nuevos deportes
+                    const toAdd = sports.filter(
+                      (id) => !currentSportIds.includes(id)
+                    );
+                    if (toAdd.length > 0) {
+                      const values = toAdd.map((id) => [user_id, id]);
+                      let sqlAddSports =
+                        "INSERT INTO practice (user_id, sport_id) VALUES ?";
+                      connection.query(sqlAddSports, [values], (errAdd, resAdd) => {
+                        if (err) {
+                          res.status(500).json(errAdd);
+                        } else {
+                          res.status(201).json(resAdd);
+                        }
+                      });
+                    } else {
+                      connection.end();
+                    }
+                  }
+                }
+              );
+            } else {
+              // Solo añadir si no hay deportes a eliminar
+              const toAdd = sports.filter(
+                (id) => !currentSportIds.includes(id)
+              );
+              if (toAdd.length > 0) {
+                const values = toAdd.map((id) => [user_id, id]);
+                let sqlAddSports2 =
+                  "INSERT INTO practice (user_id, sport_id) VALUES ?";
+                connection.query(sqlAddSports2, [values], (errAdd2, resAdd2) => {
+                  if (errAdd2) {
+                    res.status(500).json(errAdd2);
+                  } else {
+                    res.status(201).json(resAdd2);
+                  }
+                });
+              } else {
+                connection.end(resultEditUser);
+              }
+            }
+          }
+        });
+        res.status(201).json(resultEditUser);
+      }
+    })
   };
 
   emailValidation = (req, res) => {
@@ -261,6 +394,7 @@ class userController {
       res.status(200).json(result);
     });
   };
+
   sendMessage = (req, res) => {
     const { message, date, receiver, userID } = req.body;
     let sql = `INSERT INTO message (text,date_time,sender_user_id,receiver_user_id) VALUES (?,?,?,?)`;
