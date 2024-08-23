@@ -190,7 +190,23 @@ class userController {
   getUserActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT * FROM activity WHERE user_id = ${id}`;
+  
+    // Modificación de la consulta SQL para hacer un JOIN con la tabla 'sport'
+    let sql = `
+      SELECT 
+        activity.*, 
+        sport.sport_name, 
+        sport.sport_img 
+      FROM 
+        activity 
+      JOIN 
+        sport 
+      ON 
+        activity.sport_id = sport.sport_id 
+      WHERE 
+        activity.user_id = ${id}
+    `;
+  
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -199,6 +215,7 @@ class userController {
       }
     });
   };
+  
 
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;

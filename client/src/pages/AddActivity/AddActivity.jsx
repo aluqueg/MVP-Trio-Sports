@@ -54,7 +54,7 @@ export const AddActivity = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-
+  
     try {
       const year = dateTimeActivity.getFullYear();
       const month = String(dateTimeActivity.getMonth() + 1).padStart(2, '0');
@@ -62,9 +62,9 @@ export const AddActivity = () => {
       const hours = String(dateTimeActivity.getHours()).padStart(2, '0');
       const minutes = String(dateTimeActivity.getMinutes()).padStart(2, '0');
       const seconds = '00'; 
-
+  
       const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
+  
       const response = await axios.post(
         "http://localhost:4000/api/activity/createActivity",
         {
@@ -75,18 +75,17 @@ export const AddActivity = () => {
           activity_address: activityAddress,
           details,
           sport_id: Number(sportId),
-          user_id: 1, 
           maps_link: mapsLink || null,
         },
         {
           headers: { Authorization: `Bearer ${token}` }, // token 
         }
       );
-
+  
       if (response.status === 201) {
         setSuccess("Actividad creada con éxito");
         setTimeout(() => {
-          navigate("/allActivities");
+          navigate("/allActivities");  // Redirige a la vista de todas las actividades
         }, 2000);
       }
     } catch (error) {
@@ -97,6 +96,7 @@ export const AddActivity = () => {
       }
     }
   };
+  
 
   const handleCancel = () => {
     navigate("/allActivities"); 
@@ -157,7 +157,7 @@ export const AddActivity = () => {
           </Col>
         </Row>
 
-        <Form.Group controlId="formDateTimeActivity">
+             <Form.Group controlId="formDateTimeActivity">
           <Form.Label>Día y Hora</Form.Label>
           <div className="add-activity-datepicker-container">
             <DatePicker

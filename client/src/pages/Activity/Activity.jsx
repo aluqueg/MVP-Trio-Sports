@@ -55,39 +55,8 @@ export const Activity = () => {
     }
   }, [activity_id, token]);
 
-  const handleCommentSubmit = async (commentText) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:4000/api/comments/addComment",
-        {
-          activity_id: activity_id,
-          user_id: user.user_id,
-          text: commentText,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.status === 201) {
-        const newComment = {
-          user_name: user.user_name,
-          user_img: user.user_img || "default_user_img.png",
-          text: commentText,
-          date: new Date(),
-        };
-        setComments([newComment, ...comments]);
-        setShowModal(false); // Cerrar el modal después de enviar el comentario
-      } else {
-        console.error("Error al crear el comentario");
-      }
-    } catch (error) {
-      console.error("Error al enviar el comentario:", error);
-    }
-  };
-
   const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false); // cerrar el modal
+  const handleCloseModal = () => setShowModal(false);
 
   // Manejo del estado de la imagen de usuario
   const [fallbackImage, setFallbackImage] = useState(
@@ -96,6 +65,10 @@ export const Activity = () => {
 
   const handleImageError = () => {
     setFallbackImage("/src/assets/images/default_user_img.png");
+  };
+
+  const handleCommentAdded = (newComment) => {
+    setComments([newComment, ...comments]);
   };
 
   if (loading) return <div>Cargando...</div>;
@@ -188,7 +161,14 @@ export const Activity = () => {
       </Row>
       <hr /> 
       {/* Modal para añadir comentario */}
-      <ModalCreateComment show={showModal} handleClose={handleCloseModal} handleCommentSubmit={handleCommentSubmit} />
+      <ModalCreateComment 
+        show={showModal} 
+        handleClose={handleCloseModal} 
+        activity_id={activity_id} 
+        user={user}
+        token={token}
+        onCommentAdded={handleCommentAdded}
+      />
       {/* Comentarios */}
       <Row className="justify-content-center mt-4">
         <Col xs={12}>
@@ -223,3 +203,4 @@ export const Activity = () => {
     </Container>
   );
 };
+
