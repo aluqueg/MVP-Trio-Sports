@@ -18,8 +18,14 @@ export const EditPassword = () => {
   const onSubmit = async () => {
     if(!password){
       setMsg({text: "El campo no puede estar vacío.", show: true})
+      return;
+    }else if(!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/.test(
+      password
+    )) {
+      setMsg({text: "Contraseña no segura", show: true})
+      return;
     }else{
-      setMsg({show: false})
+      setMsg({show: false})      
     }
     try {
       const res = await axios.put("http://localhost:4000/api/users/editPassword", {password, validationToken})

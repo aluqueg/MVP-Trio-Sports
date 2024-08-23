@@ -6,7 +6,6 @@ const sendMail = require("../services/emailValidator");
 const recuperarPassword = require("../services/recuperarPass");
 require("dotenv").config();
 
-
 class userController {
   createUser = (req, res) => {
     console.log(req.file, "***** file");
@@ -63,7 +62,7 @@ class userController {
                     process.env.SECRET_KEY,
                     { expiresIn: "14d" }
                   );
-                  sendMail(email,user_name,token)
+                  sendMail(email, user_name, token);
                   res.status(201).json(resPrac2);
                 }
               });
@@ -100,7 +99,7 @@ class userController {
                     process.env.SECRET_KEY,
                     { expiresIn: "14d" }
                   );
-                  sendMail(email,user_name,token)
+                  sendMail(email, user_name, token);
                   res.status(201).json(resPrac2);
                 }
               });
@@ -111,25 +110,25 @@ class userController {
     });
   };
 
-  validationUser = (req,res) =>{
+  validationUser = (req, res) => {
     try {
       const token = req.params.token;
-      const decoded = jwt.verify(token, process.env.SECRET_KEY); 
+      const decoded = jwt.verify(token, process.env.SECRET_KEY);
       console.log("*********", decoded);
-      let sql = `UPDATE user SET is_validated = 1 WHERE email = "${decoded.id}"`
-      connection.query(sql,(err,dbres)=>{
-        if(err){
-          console.log("rompe aqui",decoded.id)
-          res.status(500).json(err)
-        }else{
+      let sql = `UPDATE user SET is_validated = 1 WHERE email = "${decoded.id}"`;
+      connection.query(sql, (err, dbres) => {
+        if (err) {
+          console.log("rompe aqui", decoded.id);
+          res.status(500).json(err);
+        } else {
           res.status(200).json({ message: "Token validado", data: decoded });
         }
-      })
+      });
     } catch (err) {
       console.error("Error al verificar el token:", err.message);
       res.status(400).json({ message: "Token inválido" });
     }
-  }
+  };
 
   login = (req, res) => {
     const { email, password } = req.body;
@@ -191,8 +190,16 @@ class userController {
 
   editUser = (req, res) => {
     console.log("editUser", req.body);
-    const { user_id, user_name, last_name, birth_date, gender, user_city, description, sports } =
-      req.body;
+    const {
+      user_id,
+      user_name,
+      last_name,
+      birth_date,
+      gender,
+      user_city,
+      description,
+      sports,
+    } = req.body;
 
     let data = [
       user_name,
@@ -205,18 +212,18 @@ class userController {
 
     let sqlEditUser = `UPDATE user SET user_name = ?, last_name = ?, birth_date = ?, gender = ?, user_city = ?, description = ? WHERE user_id = ${user_id}`;
 
-    connection.query(sqlEditUser, data, (errEditUser, resultEditUser)=>{
-      if(errEditUser){
+    connection.query(sqlEditUser, data, (errEditUser, resultEditUser) => {
+      if (errEditUser) {
         res.status(500).json(errEditUser);
-      }else{
+      } else {
         let sqlDBSports = "SELECT sport_id FROM practice WHERE user_id = ?";
         connection.query(sqlDBSports, [user_id], (err, results) => {
           if (err) {
             res.status(500).json(errDel);
           } else {
             const currentSportIds = results.map((e) => e.sport_id);
-            console.log("req.body-----------------",req.body)
-            console.log("sports-----------------",sports)
+            console.log("req.body-----------------", req.body);
+            console.log("sports-----------------", sports);
             // Paso 2: Eliminar deportes desmarcados
             const toRemove = currentSportIds.filter(
               (id) => !sports.includes(id)
@@ -239,13 +246,17 @@ class userController {
                       const values = toAdd.map((id) => [user_id, id]);
                       let sqlAddSports =
                         "INSERT INTO practice (user_id, sport_id) VALUES ?";
-                      connection.query(sqlAddSports, [values], (errAdd, resAdd) => {
-                        if (err) {
-                          res.status(500).json(errAdd);
-                        } else {
-                          res.status(201).json(resAdd);
+                      connection.query(
+                        sqlAddSports,
+                        [values],
+                        (errAdd, resAdd) => {
+                          if (err) {
+                            res.status(500).json(errAdd);
+                          } else {
+                            res.status(201).json(resAdd);
+                          }
                         }
-                      });
+                      );
                     } else {
                       connection.end();
                     }
@@ -261,13 +272,17 @@ class userController {
                 const values = toAdd.map((id) => [user_id, id]);
                 let sqlAddSports2 =
                   "INSERT INTO practice (user_id, sport_id) VALUES ?";
-                connection.query(sqlAddSports2, [values], (errAdd2, resAdd2) => {
-                  if (errAdd2) {
-                    res.status(500).json(errAdd2);
-                  } else {
-                    res.status(201).json(resAdd2);
+                connection.query(
+                  sqlAddSports2,
+                  [values],
+                  (errAdd2, resAdd2) => {
+                    if (errAdd2) {
+                      res.status(500).json(errAdd2);
+                    } else {
+                      res.status(201).json(resAdd2);
+                    }
                   }
-                });
+                );
               } else {
                 res.status(201).json(resultEditUser);
               }
@@ -275,7 +290,7 @@ class userController {
           }
         });
       }
-    })
+    });
   };
 
   emailValidation = (req, res) => {
@@ -301,7 +316,7 @@ class userController {
     connection.query(sql, (error, result) => {
       if (error) {
         res.status(500).json(error);
-        console.log("****************",error);
+        console.log("****************", error);
       } else {
         res.status(200).json(result);
         console.log(result);
@@ -325,7 +340,7 @@ class userController {
   getUserActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-  
+
     // Modificación de la consulta SQL para hacer un JOIN con la tabla 'sport'
     let sql = `
       SELECT 
@@ -341,7 +356,7 @@ class userController {
       WHERE 
         activity.user_id = ${id}
     `;
-  
+
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -350,7 +365,6 @@ class userController {
       }
     });
   };
-  
 
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
@@ -450,26 +464,35 @@ class userController {
   recoverPassword = (req, res) => {
     const email = req.body.id;
     console.log(req.body.id);
-    try{
-      const recoverToken = jwt.sign(
-        { id: email },
-        process.env.SECRET_KEY,
-        { expiresIn: "14d" }
-      );   
-      recuperarPassword(email, recoverToken)            
-    }catch(err){
-      console.log(err);      
-    } 
+    try {
+      const recoverToken = jwt.sign({ id: email }, process.env.SECRET_KEY, {
+        expiresIn: "14d",
+      });
+      recuperarPassword(email, recoverToken);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   editPassword = (req, res) => {
-    const {password} = req.body
-    const {token} = req.params
-
-    console.log(req.body);
-    
-  }
-
+    const { password, validationToken } = req.body;
+    const decoded = jwt.verify(validationToken, process.env.SECRET_KEY);
+    let saltRounds = 8;
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        let sql = `UPDATE user SET password = ? WHERE email = ?`;
+        connection.query(sql, [hash, decoded.id], (err, result) => {
+          if (err) {
+            res.status(500).json(err);
+          } else {
+            res.status(200).json(result);
+          }
+        });
+      }
+    });
+  };
 }
 
 module.exports = new userController();
