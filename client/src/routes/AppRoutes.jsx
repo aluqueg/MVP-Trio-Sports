@@ -28,7 +28,7 @@ export const AppRoutes = () => {
       <Row>
         <NavBarApp />
       </Row>
-      <Container fluid="xl" className="Chats">
+      <Container fluid="xl">
         <Routes>
           <Route path="/" element={<Home />} />
           {user && <Route path="/allActivities" element={<AllActivities />} />}

@@ -21,3 +21,7 @@
   background-color: var(--trio2);
   border: 2px solid var(--trio2);
 }
+
+.select-borde{
+  border-bottom: 2px solid rgb(115, 115, 115) !important;
+}

@@ -15,7 +15,10 @@ export const NavBarApp = () => {
     setUser();
     navigate("/");
   };
-
+  const url = `${location.pathname}`
+  const partes = url.split('/')
+  const currentPage = partes[1]
+  console.log(currentPage)
   return (
     <>
       <Navbar expand="md" className="bg-body-tertiary ">
@@ -41,22 +44,22 @@ export const NavBarApp = () => {
                 className="justify-content-start flex-grow-1 pe-3"
               >
                 {user && <div className="d-flex">
-                  <Nav.Link as={Link} to="/allActivities">
+                  <Nav.Link as={Link} to="/allActivities" className={currentPage === "allActivities" ? "select-borde" : null}>
                     Actividades
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/addActivity">
+                  <Nav.Link as={Link} to="/addActivity"className={currentPage === "addActivity" ? "select-borde" : null} >
                     Crear Actividad
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/addSport">
+                  <Nav.Link as={Link} to="/addSport" className={currentPage === "addSport" ? "select-borde" : null}>
                     Crear Deporte
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/allUsers">
+                  <Nav.Link as={Link} to="/allUsers" className={currentPage === "allUsers" ? "select-borde" : null}>
                     Búsqueda
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/chats">
+                  <Nav.Link as={Link} to="/chats" className={currentPage === "chats" ? "select-borde" : null}>
                     Mensajes
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/profile">
+                  <Nav.Link as={Link} to="/profile" className={currentPage === "profile" ? "select-borde" : null}>
                     Perfil
                   </Nav.Link>
                 </div>}
