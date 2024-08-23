@@ -3,7 +3,9 @@ const bcrypt = require("bcrypt");
 const { json } = require("express");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../services/emailValidator");
+const recuperarPassword = require("../services/recuperarPass");
 require("dotenv").config();
+
 
 class userController {
   createUser = (req, res) => {
@@ -295,7 +297,7 @@ class userController {
   //revisar
   getAllUsers = (req, res) => {
     // let token = req.headers.authorization.split(" ")[1]
-    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE is_validated = 1 AND user.is_disabled = 0 AND	user.type = 2 GROUP BY user.user_name ORDER BY user.user_name;`;
+    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE is_validated = 1 AND user.is_disabled = 0 AND	user.type = 2 GROUP BY user.user_id ORDER BY user.user_name;`;
     connection.query(sql, (error, result) => {
       if (error) {
         res.status(500).json(error);
@@ -429,32 +431,26 @@ class userController {
   };
 
   recoverPassword = (req, res) => {
-    const { email } = req.body;
-    let sql = `SELECT id FROM user WHERE email = "${email}"`;
-    connection.query(sql, (err, result) => {
-      if (err) {
-        res.status(401).json("Email incorrecto");
-      } else {
-        if (!result || result.length === 0) {
-          res.status(401).json("Email incorrecto");
-        } else {
-          const recoverToken = jwt.sign(
-            { id: result },
-            process.env.SECRET_KEY,
-            { expiresIn: "1h" }
-          );
-          const link = `http://localhost:4000/api/users/recoverPassword/${result}/${recoverToken}`
-          console.log(link);
-          
-          res.status(200).json(recoverToken);
-        }
-      }
-    });
+    const email = req.body.id;
+    console.log(req.body.id);
+    try{
+      const recoverToken = jwt.sign(
+        { id: email },
+        process.env.SECRET_KEY,
+        { expiresIn: "14d" }
+      );   
+      recuperarPassword(email, recoverToken)            
+    }catch(err){
+      console.log(err);      
+    } 
   };
 
   editPassword = (req, res) => {
     const {password} = req.body
     const {token} = req.params
+
+    console.log(req.body);
+    
   }
 
 }

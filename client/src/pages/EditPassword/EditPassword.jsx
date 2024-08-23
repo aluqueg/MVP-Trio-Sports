@@ -11,6 +11,9 @@ export const EditPassword = () => {
 
   const [password, setPassword] = useState("")
   const [msg, setMsg] = useState(initialValue)
+  const url = `${location.pathname}`
+  const partes = url.split('/')
+  const validationToken = partes[2]
 
   const onSubmit = async () => {
     if(!password){
@@ -19,7 +22,7 @@ export const EditPassword = () => {
       setMsg({show: false})
     }
     try {
-      const res = await axios.put("http://localhost:4000/api/users/editPassword", password)
+      const res = await axios.put("http://localhost:4000/api/users/editPassword", {password, validationToken})
     }catch(err){
       console.log(err);      
     }

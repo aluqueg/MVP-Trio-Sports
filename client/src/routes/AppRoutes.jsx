@@ -45,7 +45,7 @@ export const AppRoutes = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/recoverPassword" element={<RecoverPassword />}/>
-          <Route path="/editPassword" element={<EditPassword />} />
+          <Route path="/editPassword/:token" element={<EditPassword />} />
           <Route path="*" element={<ErrorPage />} />
           <Route path = "/validation/:token" element={<Validation/>}/>
         </Routes>
