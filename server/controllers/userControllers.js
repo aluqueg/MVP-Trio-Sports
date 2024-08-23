@@ -62,7 +62,7 @@ class userController {
                     { expiresIn: "14d" }
                   );
                   sendMail(email,user_name,token)
-                  res.status(201).json(resPrac2);
+                  res.status(201).json(resPrac);
                 }
               });
             }

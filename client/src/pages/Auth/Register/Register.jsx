@@ -16,7 +16,7 @@ setDefaultLocale("es");
 
 export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
-  const [page, setpage] = useState(0);
+  const [page, setpage] = useState(3);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [sportId, setSportId] = useState("");
@@ -25,10 +25,15 @@ export const Register = () => {
   const [validateEmail, setValidateEmail] = useState(false);
   const [validatePassword, setValidatePassword] = useState(false);
   const { sports, setSports } = useContext(TrioContext);
+ const [contador,setContador] = useState("")
+  
 
   const handleRegister = (e) => {
     const { name, value } = e.target;
     setUserRegister({ ...userRegister, [name]: value });
+    if(name == "description"){
+      setContador(value)
+    }
   };
 
   //validación de campos
@@ -175,7 +180,9 @@ export const Register = () => {
   const [startDate, setStartDate] = useState(subYears(new Date(), 18));
   const maxDate = subYears(new Date(), 18);
   const years = range(1990, getYear(new Date()) + 1, 1);
-  const lastLogDate = format(startDate, `yyyy-MM-dd HH-mm-ss`);
+  const logDate = new Date()
+  const lastLogDate = format(logDate, `yyyy-MM-dd HH-mm-ss`);
+  console.log(logDate)
   const continuarBirthDate = () => {
     setpage(page + 1);
     const Date = format(startDate, `yyyy-MM-dd`);
@@ -243,6 +250,8 @@ export const Register = () => {
       })
       .catch((err) => console.log(err));
   };
+
+  console.log(selectedSport)
   return (
     <Container>
       <Form action="">
@@ -517,6 +526,8 @@ export const Register = () => {
               onSportCreated={handleSportCreated}
               existingSports={sports} //pasamos la lista de deportes existentes al modal
             />
+            {selectedSport.length > 5 ?<p>Debes elegir entre 1 y 5 deportes</p> : null}
+            {selectedSport.length < 1 ?<p>Debes elegir entre 1 y 5 deportes</p> : null}
             <Button onClick={volver}>Volver</Button>
             {selectedSport.length > 5 || selectedSport.length < 1 ? (
               <Button className="button-color">Continuar</Button>
@@ -538,8 +549,10 @@ export const Register = () => {
                 placeholder="Enter your text here"
                 onChange={handleRegister}
                 name="description"
+                maxlength="255"
               />
             </Form.Group>
+            <p>{contador.length}/255</p>
             <Button onClick={volver}>Volver</Button>
             <Button onClick={continuar}>Continuar</Button>
           </>
@@ -568,7 +581,7 @@ export const Register = () => {
         show={showModal}
         closeModal={() => setShowModal(false)}
         onSportCreated={handleSportCreated}
-        existingSports={sports} //pasamos la lista de deportes existentes al modal
+        existingSports={sports} 
       />
     </Container>
   );

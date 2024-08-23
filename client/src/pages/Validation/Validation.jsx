@@ -8,7 +8,6 @@ export const Validation = () => {
   const partes = url.split('/')
   const validationToken = partes[2]
   const navigate = useNavigate();
-
   useEffect(()=>{
     if(validationToken){
       axios.put(`http://localhost:4000/api/users/validation/${validationToken}`)
