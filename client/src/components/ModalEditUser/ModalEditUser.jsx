@@ -8,8 +8,8 @@ import DatePicker from "react-datepicker";
 import { es } from "date-fns/locale/es";
 import { ModalCreateSport } from "../ModalCreateSport/ModalCreateSport";
 import axios from "axios";
-// import * as formik from 'formik';
-// import * as yup from 'yup';
+import * as formik from 'formik';
+import * as yup from 'yup';
 
 function ModalEditUser({ show, handleClose, data, practiceSports }) {
   const [editUser, setEditUser] = useState(data);
