@@ -85,7 +85,7 @@ export const AddActivity = () => {
       if (response.status === 201) {
         setSuccess("Actividad creada con éxito");
         setTimeout(() => {
-          navigate("/allActivities");  // Redirige a la vista de todas las actividades
+          navigate("/allActivities"); 
         }, 2000);
       }
     } catch (error) {
@@ -96,7 +96,6 @@ export const AddActivity = () => {
       }
     }
   };
-  
 
   const handleCancel = () => {
     navigate("/allActivities"); 
@@ -157,7 +156,7 @@ export const AddActivity = () => {
           </Col>
         </Row>
 
-             <Form.Group controlId="formDateTimeActivity">
+        <Form.Group controlId="formDateTimeActivity">
           <Form.Label>Día y Hora</Form.Label>
           <div className="add-activity-datepicker-container">
             <DatePicker
@@ -222,7 +221,11 @@ export const AddActivity = () => {
             placeholder="Introduce una breve descripción"
             value={details}
             onChange={(e) => setDetails(e.target.value)}
+            maxLength={255}  // Limitar a 255 caracteres
           />
+          <Form.Text className="text-muted">
+            {`${details.length}/255 caracteres`}
+          </Form.Text>
         </Form.Group>
 
         <Button variant="secondary" type="button" className="mt-3 me-3" onClick={handleCancel}>
@@ -243,6 +246,7 @@ export const AddActivity = () => {
     </Container>
   );
 };
+
 
 
 

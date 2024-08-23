@@ -8,15 +8,20 @@ import ModalCreateComment from "../../../components/ModalCreateComment/ModalCrea
 import { useNavigate } from "react-router-dom";
 
 
+
+
 export const UserActivities = () => {
-  const { token, user } = useContext(TrioContext); // Asegúrate de obtener `user` aquí
+  const { token, user } = useContext(TrioContext); 
   const [userActivities, setUserActivities] = useState([]);
+
   const navigate = useNavigate();
   useEffect(()=>{
     const userActivities = async () => {
       try{
         let res = await axios.get('http://localhost:4000/api/users/getUserActivities', {headers: {Authorization: `Bearer ${token}`}})
         
+
+
         setUserActivities(res.data);
       } catch (err) {
         console.log(err);
@@ -46,11 +51,11 @@ export const UserActivities = () => {
         "http://localhost:4000/api/comments/addComment",
         {
           activity_id: selectedActivity.activity_id,
-          user_id: user.user_id, // Asegúrate de incluir `user_id`
+          user_id: user.user_id, 
           text: comment,
         },
         {
-          headers: { Authorization: `Bearer ${token}` }, // Incluye el token
+          headers: { Authorization: `Bearer ${token}` }, // token
         }
       );
       if (response.status === 201) {
