@@ -62,8 +62,8 @@ class userController {
                     process.env.SECRET_KEY,
                     { expiresIn: "14d" }
                   );
-                  sendMail(email, user_name, token);
-                  res.status(201).json(resPrac2);
+                  sendMail(email,user_name,token)
+                  res.status(201).json(resPrac);
                 }
               });
             }
