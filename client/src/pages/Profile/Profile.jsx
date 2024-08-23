@@ -33,7 +33,6 @@ export const Profile = () => {
         .catch(err=>{console.log(err)})
   },[])
 
-  console.log("practiceSport", practiceSports)
   return (
     <Container fluid="xxl">
       <Row className="my-3">

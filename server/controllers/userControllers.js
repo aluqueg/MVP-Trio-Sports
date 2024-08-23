@@ -212,7 +212,8 @@ class userController {
           if (err) {
             res.status(500).json(errDel);
           } else {
-            const currentSportIds = results.map((row) => row.sport_id);
+            const currentSportIds = results.map((e) => e.sport_id);
+            console.log("req.body-----------------",req.body)
             console.log("sports-----------------",sports)
             // Paso 2: Eliminar deportes desmarcados
             const toRemove = currentSportIds.filter(
@@ -266,12 +267,11 @@ class userController {
                   }
                 });
               } else {
-                connection.end(resultEditUser);
+                res.status(201).json(resultEditUser);
               }
             }
           }
         });
-        res.status(201).json(resultEditUser);
       }
     })
   };
@@ -299,7 +299,7 @@ class userController {
     connection.query(sql, (error, result) => {
       if (error) {
         res.status(500).json(error);
-        console.log(error);
+        console.log("****************",error);
       } else {
         res.status(200).json(result);
         console.log(result);
