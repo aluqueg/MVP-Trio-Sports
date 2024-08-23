@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { TrioContext } from "../../../context/TrioContextProvider";
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 //valor inicial login
@@ -52,7 +52,6 @@ export const Login = () => {
       if (response.data.type === 2) {
         navigate("/allActivities");
       } else if (response.data.type === 1) {
-        //setUserAdmin(res.data)
         navigate("/admin");
       }
     } catch (err) {
@@ -95,7 +94,7 @@ export const Login = () => {
           Inicia sesión
         </Button>
       </Form>
-      <p>¿Has olvidado la contraseña?</p>
+      <p><Link to='/recoverPassword'>¿Has olvidado la contraseña?</Link></p>
       <hr />
       <Button
         onClick={()=>navigate("/register")}

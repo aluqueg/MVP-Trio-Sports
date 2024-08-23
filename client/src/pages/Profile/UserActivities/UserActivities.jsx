@@ -5,19 +5,18 @@ import { Col, Container, Row } from "react-bootstrap";
 import { CardOneActivity } from "../../../components/CardOneActivity/CardOneActivity";
 import { isBefore, parseISO } from "date-fns";
 import ModalCreateComment from "../../../components/ModalCreateComment/ModalCreateComment";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useNavigate } from "react-router-dom";
+
 
 export const UserActivities = () => {
   const { token, user } = useContext(TrioContext); // Asegúrate de obtener `user` aquí
   const [userActivities, setUserActivities] = useState([]);
-  const navigate = useNavigate(); // Define `navigate`
-
-  useEffect(() => {
-    const fetchUserActivities = async () => {
-      try {
-        let res = await axios.get("http://localhost:4000/api/users/getUserActivities", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+  const navigate = useNavigate();
+  useEffect(()=>{
+    const userActivities = async () => {
+      try{
+        let res = await axios.get('http://localhost:4000/api/users/getUserActivities', {headers: {Authorization: `Bearer ${token}`}})
+        
         setUserActivities(res.data);
       } catch (err) {
         console.log(err);

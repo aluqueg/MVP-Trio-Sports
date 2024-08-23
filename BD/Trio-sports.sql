@@ -172,6 +172,7 @@ VALUES ('Yoga', 'yoga.jpg');
 INSERT INTO sport (sport_name, sport_img)
 VALUES ('Pilates', 'pilates.jpg');
 
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 
 

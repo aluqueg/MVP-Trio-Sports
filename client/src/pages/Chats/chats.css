@@ -1,12 +1,12 @@
 .messages {
   width: 100%;
-  height: 80vh;
+  height: calc(100vh - 58.43px);
   display: grid;
   grid-template-rows: 80% 20%;
   grid-template-columns: repeat(12, minmax(0,1fr));
 }
 .lateral-mensajes{
-  background-color: aquamarine;
+  background-color: #D9D9D9;
   grid-column: 1/4;
   grid-row: 1/3;
 }
@@ -25,4 +25,8 @@
 }
 .dch{
   text-align: right;
+}
+.Chats{
+  margin: 0px;
+  width: 100vw;
 }

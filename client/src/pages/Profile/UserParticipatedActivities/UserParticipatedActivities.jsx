@@ -5,10 +5,12 @@ import { Container, Row } from 'react-bootstrap';
 import ModalCreateComment from "../../../components/ModalCreateComment/ModalCreateComment";
 import { isBefore, parseISO } from 'date-fns';
 import { CardOneActivity } from '../../../components/CardOneActivity/CardOneActivity';
+import { useNavigate } from 'react-router-dom';
 
 export const UserParticipatedActivities = ({participated}) => {
   const { token } = useContext(TrioContext);
   const [userParticipatedActivities, setUserParticipatedActivities] = useState([]);
+  const navigate = useNavigate();
 
   console.log("participatedActivities", participated);
   
@@ -114,7 +116,6 @@ export const UserParticipatedActivities = ({participated}) => {
     }
   };
 
-  console.log("userParticipated", userParticipatedActivities)
   return (
     <Container>
             <Row>
