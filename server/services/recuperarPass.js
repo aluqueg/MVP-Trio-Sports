@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendMail = (email, name,token) => {
+const recuperarPassword = (email,  token) => {
   let mensajeHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,20 +19,21 @@ const sendMail = (email, name,token) => {
   <title>Document</title>
 </head>
 <body>
-  <h1>BIENVENIDO ${name}</h1>
-  http://localhost:5173/validation/${token}
+  <h1>Recupera tu cuenta</h1>
+  <p>Para recupear tu cuenta pulsa en el siguiente enlace</p>
+  http://localhost:5173/editPassword/${token}
 </body>
 </html>`;
-  
-  const info = transporter.sendMail({
-    from: '"trio" <alexmakigo@gmail.com>',
-    to: email,
-    subject: "bienvenido a trio",
-    html: mensajeHtml
-  })
-  info
+
+const info = transporter.sendMail({
+  from: '"trio" <alexmakigo@gmail.com>',
+  to: email,
+  subject: "Recupera tu contraseña",
+  html: mensajeHtml 
+})
+info
       .then(res=>console.log(res))
       .catch(err=>console.log(err))
-};
+}
 
-module.exports = sendMail
+module.exports = recuperarPassword

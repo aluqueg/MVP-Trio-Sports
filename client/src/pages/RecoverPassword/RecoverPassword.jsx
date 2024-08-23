@@ -12,6 +12,11 @@ export const RecoverPassword = () => {
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState(initialValue);
 
+  const handleChange = (e) => {
+    const email = e.target.value;
+    setEmail(email);
+  };
+
   const onSubmit = async () => {
     if (!email) {
       setMsg({ text: "El campo no puede estar vacío", show: true });      
@@ -21,16 +26,11 @@ export const RecoverPassword = () => {
     try {
       const res = await axios.post(
         "http://localhost:4000/api/users/recoverPassword",
-        email
+        {id: email}
       );
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const handleChange = (e) => {
-    const email = e.target.value;
-    setEmail(email);
   };
 
   return (

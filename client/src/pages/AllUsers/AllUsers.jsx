@@ -1,12 +1,10 @@
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import Button from "react-bootstrap/esm/Button";
 import { TrioContext } from "../../context/TrioContextProvider";
 import { useContext, useEffect, useState } from "react";
 import { CardOneUser } from "../../components/CardOneUser/CardOneUser";
 import axios from "axios";
 import { gender } from "../../helpers/genderData";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Form } from "react-bootstrap";
 import "./allUsers.css";
 
 export const AllUsers = () => {
@@ -46,7 +44,7 @@ export const AllUsers = () => {
   const handleClick = () => {
     const filtered = allUsers.filter((user) => {
       return (
-        (selectedSport ? user.sports === selectedSport : true) &&
+        (selectedSport ? user.sports.includes(selectedSport) : true) &&
         (age ? user.age === age : true) &&
         (selectedGender ? user.gender === selectedGender : true) &&
         (location
@@ -73,25 +71,28 @@ export const AllUsers = () => {
           lg={2}
           className="d-flex justify-content-center gap-5"
         >
-          <DropdownButton
+          <Form.Group className="filter-group">
+          <Form.Select
             id="deporte"
             title="Deporte"
             value={selectedSport}
-            onSelect={(e) => setSelectedSport(e)}
-            className="rounded-pill"
-          >
+            onChange={(e) => setSelectedSport(e.target.value)}
+            className="filter-select"
+            >
+              <option value="">Todos los deportes</option>
             {sports.map((e) => {
               return (
-                <Dropdown.Item key={e.sport_id} eventKey={e.sport_name}>
+                <option key={e.sport_id} value={e.sport_name}>
                   {e.sport_name}
-                </Dropdown.Item>
+                </option>
               );
             })}
-          </DropdownButton>
+          </Form.Select>
+            </Form.Group>
         </Col>
         <Col xs={12} sm={6} md={4} lg={2}>
           <input
-            className="rounded-5"
+            className="filter-input"
             type="text"
             placeholder="Edad"
             value={age ? age : ""}
@@ -99,24 +100,28 @@ export const AllUsers = () => {
           />
         </Col>
         <Col xs={12} sm={6} md={4} lg={2}>
-          <DropdownButton
+        <Form.Group className="filter-group">
+          <Form.Select
             id="sexo"
             title="Sexo"
             value={selectedGender}
-            onSelect={(e) => setSelectedGender(e)}
-          >
+            className="filter-select"
+            onChange={(e) => setSelectedGender(e.target.value)}
+            >
+            <option value="">Sexo</option>
             {gender.map((e, index) => {
               return (
-                <Dropdown.Item key={index} eventKey={e}>
+                <option key={index} >
                   {e}
-                </Dropdown.Item>
+                </option>
               );
             })}
-          </DropdownButton>
+          </Form.Select>
+            </Form.Group>
         </Col>
         <Col xs={12} sm={6} md={4} lg={2}>
           <input
-            className="rounded-5"
+            className="filter-input"
             type="text"
             placeholder="Ubicación"
             value={location}
@@ -124,7 +129,7 @@ export const AllUsers = () => {
           />
         </Col>
         <Col xs={12} sm={6} md={4} lg={2}>
-          <Button className="rounded-5" onClick={handleClick}>
+          <Button className="filter-button" onClick={handleClick}>
             Buscar
           </Button>
         </Col>
