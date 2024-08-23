@@ -10,4 +10,5 @@ router.get('/getAllActivities', verifyToken, activityController.getAllActivities
 router.get('/getOneActivity/:activity_id', verifyToken, activityController.getOneActivity)
 router.put('/joinActivity', verifyToken, activityController.joinActivity);
 
+
 module.exports = router;

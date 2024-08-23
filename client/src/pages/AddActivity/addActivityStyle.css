@@ -18,5 +18,22 @@
     transform: translateY(-50%);
     pointer-events: none; 
   }
+
+  .text-large {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .activity-info-text {
+    word-wrap: break-word;
+    white-space: pre-wrap; 
+  }
+  
+  .activity-table td {
+    max-width: 300px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
   
   

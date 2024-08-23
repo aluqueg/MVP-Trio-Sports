@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import { BsTrophy, BsMap, BsCalendar3 } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import { format, isBefore, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
-import axios from "axios";
 
 export const CardOneActivity = ({
   activity,
@@ -20,6 +19,19 @@ export const CardOneActivity = ({
     locale: es,
   });
   const statusLabel = getStatusLabel(activity);
+
+  // Función para truncar texto
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
+  };
+
+  // ...título, dirección y ciudad si son demasiado largos
+  const truncatedTitle = truncateText(activity.text, 50); 
+  const truncatedAddress = truncateText(activity.activity_address, 30);
+  const truncatedCity = truncateText(activity.activity_city, 20);
 
   return (
     <Col xs={12} md={6} className="mb-4">
@@ -38,18 +50,18 @@ export const CardOneActivity = ({
           />
 
           <Card.Body className="d-flex flex-column">
-            {activity.text && <Card.Title>{activity.text}</Card.Title>}
+            {activity.text && <Card.Title>{truncatedTitle}</Card.Title>}
 
             <Card.Text>
               <BsTrophy /> {activity.sport_name}
             </Card.Text>
 
             <Card.Text>
-              < BsCalendar3/> {formattedDate}
+              <BsCalendar3 /> {formattedDate}
             </Card.Text>
 
             <Card.Text>
-              <BsMap /> {activity.activity_address}, {activity.activity_city}
+              <BsMap /> {truncatedAddress}, {truncatedCity}
             </Card.Text>
 
             {statusLabel && (
