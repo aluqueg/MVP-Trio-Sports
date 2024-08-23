@@ -22,7 +22,7 @@ export const UserActivities = () => {
         console.log(err);
       }
     };
-    fetchUserActivities();
+    userActivities();
   }, [token]);
 
   /* NECESARIO PARA LA CARD */
