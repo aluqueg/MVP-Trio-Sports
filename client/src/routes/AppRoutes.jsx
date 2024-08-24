@@ -19,6 +19,7 @@ import { RecoverPassword } from "../pages/RecoverPassword/RecoverPassword";
 import { EditPassword } from "../pages/EditPassword/EditPassword";
 import { useContext } from "react";
 import { TrioContext } from "../context/TrioContextProvider";
+import { Admin } from "../pages/Admin/Admin";
 
 
 export const AppRoutes = () => {
@@ -48,6 +49,7 @@ export const AppRoutes = () => {
           <Route path="/editPassword/:token" element={<EditPassword />} />
           <Route path="*" element={<ErrorPage />} />
           <Route path = "/validation/:token" element={<Validation/>}/>
+          <Route path="/admin" element={<Admin/>}/>
         </Routes>
       </Container>
     </BrowserRouter>
