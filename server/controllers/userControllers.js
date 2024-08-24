@@ -257,8 +257,6 @@ class userController {
                           }
                         }
                       );
-                    } else {
-                      connection.end();
                     }
                   }
                 }

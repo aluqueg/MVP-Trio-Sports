@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Form from "react-bootstrap/Form";
 import { Button, Container } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -16,7 +16,7 @@ setDefaultLocale("es");
 
 export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
-  const [page, setpage] = useState(3);
+  const [page, setpage] = useState(0);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [sportId, setSportId] = useState("");

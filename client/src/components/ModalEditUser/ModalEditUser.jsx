@@ -1,4 +1,4 @@
-import { format, getMonth, getYear, subYears } from "date-fns";
+import { format, getMonth, getYear, isValid, parse, subYears } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 import { Form, ListGroup } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
@@ -11,16 +11,14 @@ import axios from "axios";
 import * as formik from 'formik';
 import * as yup from 'yup';
 
-function ModalEditUser({ show, handleClose, data, practiceSports }) {
+function ModalEditUser({ show, setShowModal, data }) {
   const [editUser, setEditUser] = useState(data);
-  const [formErrors, setFormErrors] = useState({});
   const [sportId, setSportId] = useState("");
   const { sports, setSports, token } = useContext(TrioContext);
 
-  const handleEditUser = (e) => {
-    const { name, value } = e.target;
-    setEditUser({ ...editUser, [name]: value });
-  };
+  const handleClose = () => {
+    setShowModal(false)
+  }
 
   const months = [
     "Enero",
@@ -48,15 +46,27 @@ function ModalEditUser({ show, handleClose, data, practiceSports }) {
   const [startDate, setStartDate] = useState(editUser?.birth_date);
   const maxDate = subYears(new Date(), 18);
   const years = range(1990, getYear(new Date()) + 1, 1);
+  const [errorDate, setErrorDate] = useState("");
+  const [errorSports, setErrorSports] = useState("");
 
   /* VALIDATION */
   const { Formik } = formik;
 
   const schema = yup.object().shape({
-    user_name: yup.string().required().matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/, "El nombre ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."),
-    last_name: yup.string().required().matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/, "El apellido ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."),
-    user_city: yup.string().required().matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,200}$/, "La ciudad ingresada no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 200 caracteres."),
+    user_name: yup.string().required("El Nombre es obligatorio").matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/, "El nombre ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."),
+    last_name: yup.string().required("Los Apellidos son obligatorios").matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/, "El apellido ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."),
+    user_city: yup.string().required("La ciudad es obligatorio").matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,200}$/, "La ciudad ingresada no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 200 caracteres."),
   });
+
+  const handleOnBlur = ({ target: { value } }) => {
+    const date = parse(value, 'dd/MM/yyyy', new Date());
+    if (isValid(date)) {
+      setErrorDate("")
+    } else {
+      setErrorDate("La fecha de nacimiento es un campo obligatorio ")
+    }
+  };
+
 
   /* GENERO */
 
@@ -89,11 +99,21 @@ function ModalEditUser({ show, handleClose, data, practiceSports }) {
   },[])
 
   const addSports = (e) => {
-    setSelectedSport([...selectedSport, e]);
+    if(selectedSport.length < 5){
+      setSelectedSport([...selectedSport, e]);  
+      setErrorSports("")
+    }else{
+      setErrorSports("Máximo 5 deportes")
+    }
   };
 
   const removeSports = (e) => {
-    setSelectedSport(selectedSport.filter((sport) => sport !== e));
+    if(selectedSport.length <= 1){
+      setErrorSports("Mínimo 1 deporte")
+    }else{
+      setSelectedSport(selectedSport.filter((sport) => sport !== e));
+      setErrorSports("")
+    }
   };
 
   const handleCheckboxChange = (sportId) => {
@@ -106,9 +126,11 @@ function ModalEditUser({ show, handleClose, data, practiceSports }) {
   };
 
   const onEditSubmit = (values) => {
+    const date = format(startDate, "dd/MM/yyyy");
     const updatedEditUser = {
       ...editUser,
       ...values,
+      birth_date: date,
       sports: selectedSport,
     };
   
@@ -120,20 +142,15 @@ function ModalEditUser({ show, handleClose, data, practiceSports }) {
       })
       .then((res) => {
         console.log(res);
-        // handleClose();
       })
       .catch((err) => console.log(err));
-  };
-  const [isOpen, setIsOpen] = useState(false);
-  const handleClick = (e) => {
-    e.preventDefault();
-    setIsOpen(!isOpen);
   };
 
   return (
     <Formik
       validationSchema={schema}
       onSubmit={onEditSubmit}
+      validateOnMount={true}
       initialValues={{
         email: editUser.email,
         user_name: editUser.user_name,
@@ -142,7 +159,7 @@ function ModalEditUser({ show, handleClose, data, practiceSports }) {
         description: editUser.description
       }}
     >
-    {({handleSubmit, handleChange, values, errors}) => (
+    {({handleSubmit, handleChange, values, errors, isValid}) => (
       <>
       <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
@@ -216,7 +233,8 @@ function ModalEditUser({ show, handleClose, data, practiceSports }) {
             <>
   <DatePicker
     showIcon
-    locale={es}
+    dateFormat="dd/MM/yyyy"
+    locale="es"
     maxDate={maxDate}
     renderCustomHeader={({
       date,
@@ -246,23 +264,23 @@ function ModalEditUser({ show, handleClose, data, practiceSports }) {
             {"<"}
           </button>
           <select
-            value={years.includes(currentYear) ? currentYear : years[0]}
-            onChange={({ target: { value } }) => changeYear(Number(value))}
-          >
-            {years.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-
-          <select
             value={months.includes(currentMonth) ? currentMonth : months[0]}
             onChange={({ target: { value } }) =>
               changeMonth(months.indexOf(value))
             }
           >
             {months.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          
+          <select
+            value={years.includes(currentYear) ? currentYear : years[0]}
+            onChange={({ target: { value } }) => changeYear(Number(value))}
+          >
+            {years.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
@@ -281,7 +299,10 @@ function ModalEditUser({ show, handleClose, data, practiceSports }) {
     }}
     selected={startDate}
     onChange={(date) => setStartDate(date)}
+    onBlur={handleOnBlur}
+    placeholderText="Introduce tu fecha de nacimiento"
   />
+  {errorDate ? <span>{errorDate}</span> : null}
 </>
 
             {/* CIUDAD */}
@@ -359,6 +380,7 @@ function ModalEditUser({ show, handleClose, data, practiceSports }) {
                 onSportCreated={handleSportCreated}
                 existingSports={sports} //pasamos la lista de deportes existentes al modal
               />
+              {errorSports ? <span>{errorSports}</span> : null}
             </>
 
             {/* DESCRIPTION */}
@@ -382,8 +404,11 @@ function ModalEditUser({ show, handleClose, data, practiceSports }) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleSubmit}>
-            Guardar Cambios
+          <Button 
+            variant="primary" 
+            onClick={handleSubmit}
+            disabled={!isValid || errorDate}
+          >Guardar Cambios
           </Button>
         </Modal.Footer>
       </Modal>
