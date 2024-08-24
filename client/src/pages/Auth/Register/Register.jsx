@@ -16,7 +16,7 @@ setDefaultLocale("es");
 
 export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
-  const [page, setpage] = useState(3);
+  const [page, setpage] = useState(0);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [sportId, setSportId] = useState("");

@@ -112,6 +112,7 @@ export const UserActivities = () => {
       console.error("Error al unirse a la actividad:", error);
     }
   };
+  
 
   return (
     <Container fluid={"md"}>

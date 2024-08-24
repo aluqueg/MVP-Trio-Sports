@@ -152,27 +152,88 @@ export const AllActivities = () => {
     return null;
   };
 
-  const handleJoinActivity = async (activityId) => {
-    try {
-      const response = await axios.put(
-        "http://localhost:4000/api/activity/joinActivity",
-        {
-          activity_id: activityId,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }, // token
-        }
+//unirse a una actividad
+const handleJoinActivity = async (activityId) => {
+  try {
+    console.log("Activity ID:", activityId);
+    console.log("Token:", token);
+
+    const response = await axios.put(
+      "http://localhost:4000/api/activity/joinActivity",
+      { activity_id: activityId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (response.status === 200) {
+      // Veriff estado actual desde el backend
+      const updatedResponse = await axios.get(
+        `http://localhost:4000/api/activity/getOneActivity/${activityId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
+
       const updatedActivities = activities.map((activity) =>
         activity.activity_id === activityId
-          ? { ...activity, num_asistants: activity.num_asistants + 1 }
+          ? { ...activity, num_asistants: activity.num_asistants + 1, is_user_participant: true }
           : activity
       );
       setFilteredActivities(updatedActivities);
-    } catch (error) {
-      console.error("Error al unirse a la actividad:", error);
     }
-  };
+  } catch (error) {
+    console.error("Error al unirse a la actividad:", error);
+    // Reiniciar el estado de carga
+    setFilteredActivities((prevActivities) =>
+      prevActivities.map((activity) =>
+        activity.activity_id === activityId ? { ...activity, loading: false } : activity
+      )
+    );
+  }
+};
+
+// abandonar una actividad
+const handleLeaveActivity = async (activityId) => {
+  try {
+    console.log("Activity ID:", activityId); // Verificar activityId 
+    // Desactiva temporalmente el botón
+    setFilteredActivities((prevActivities) =>
+      prevActivities.map((activity) =>
+        activity.activity_id === activityId ? { ...activity, loading: true } : activity
+      )
+    );
+
+    const response = await axios.put(
+      "http://localhost:4000/api/activity/leaveActivity",
+      { activity_id: activityId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (response.status === 200) {
+      // Verificar el estado actual desde el backend
+      const updatedResponse = await axios.get(
+        `http://localhost:4000/api/activity/getOneActivity/${activityId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const updatedActivities = activities.map((activity) =>
+        activity.activity_id === activityId
+          ? { ...updatedResponse.data, is_user_participant: false, loading: false }
+          : activity
+      );
+      setFilteredActivities(updatedActivities);
+    }
+  } catch (error) {
+    console.error("Error al abandonar la actividad:", error.response?.data || error.message);
+   
+    // Reiniciar el estado de carga
+    setFilteredActivities((prevActivities) =>
+      prevActivities.map((activity) =>
+        activity.activity_id === activityId ? { ...activity, loading: false } : activity
+      )
+    );
+  }
+};
+
+
+  
 
   return (
     <Container>
@@ -184,15 +245,18 @@ export const AllActivities = () => {
         {filteredActivities.length > 0 ? (
           filteredActivities.map((activity) => (
             <CardOneActivity
-              key={activity.activity_id}
-              activity={activity}
-              handleJoinActivity={handleJoinActivity}
-              isActivityFull={isActivityFull}
-              isActivityPast={isActivityPast}
-              getButtonLabel={getButtonLabel}
-              getStatusLabel={getStatusLabel}
-              handleShowModal={handleShowModal}
-            />
+            key={activity.activity_id}
+            activity={activity}
+            handleJoinActivity={handleJoinActivity}
+            handleLeaveActivity={handleLeaveActivity} 
+            isActivityFull={isActivityFull}
+            isActivityPast={isActivityPast}
+            getButtonLabel={getButtonLabel}
+            getStatusLabel={getStatusLabel}
+            handleShowModal={handleShowModal}
+          />
+          
+          
           ))
         ) : (
           <p className="no-results-message">No hay actividades disponibles para los criterios de búsqueda.</p>
