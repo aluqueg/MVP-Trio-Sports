@@ -20,8 +20,6 @@ export const UserActivities = () => {
       try{
         let res = await axios.get('http://localhost:4000/api/users/getUserActivities', {headers: {Authorization: `Bearer ${token}`}})
         
-
-
         setUserActivities(res.data);
       } catch (err) {
         console.log(err);

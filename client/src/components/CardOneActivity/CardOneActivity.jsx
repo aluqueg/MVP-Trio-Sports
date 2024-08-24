@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import { BsTrophy, BsMap, BsCalendar3 } from "react-icons/bs";
 import { Link } from "react-router-dom";
