@@ -18,6 +18,7 @@ import { Validation } from "../pages/Validation/Validation";
 import { RecoverPassword } from "../pages/RecoverPassword/RecoverPassword";
 import { useContext } from "react";
 import { TrioContext } from "../context/TrioContextProvider";
+import { Admin } from "../pages/Admin/Admin";
 
 export const AppRoutes = () => {
   const {user} = useContext(TrioContext)
@@ -45,6 +46,7 @@ export const AppRoutes = () => {
           <Route path="/recoverPassword" element={<RecoverPassword />}/>
           <Route path="*" element={<ErrorPage />} />
           <Route path = "/validation/:token" element={<Validation/>}/>
+          <Route path="/admin" element={<Admin/>}/>
         </Routes>
       </Container>
     </BrowserRouter>

@@ -176,13 +176,11 @@ export const Register = () => {
     }
     return output;
   };
-  const [defaultDate, setDefaultDate] = useState(new Date());
-  const [startDate, setStartDate] = useState(subYears(new Date(), 18));
+  const [defaultDate, setDefaultDate] = useState(subYears(new Date(), 18));
+  const [startDate, setStartDate] = useState(null);
   const maxDate = subYears(new Date(), 18);
-  const years = range(1990, getYear(new Date()) + 1, 1);
-  const logDate = new Date()
-  const lastLogDate = format(logDate, `yyyy-MM-dd HH-mm-ss`);
-  console.log(logDate)
+  const years = range(1900, getYear(new Date()) + 1, 1);
+  const lastLogDate = startDate ? format(startDate, `yyyy-MM-dd HH-mm-ss`) : '';
   const continuarBirthDate = () => {
     setpage(page + 1);
     const Date = format(startDate, `yyyy-MM-dd`);
@@ -353,6 +351,7 @@ export const Register = () => {
         {page === 3 ? (
           <>
             <DatePicker
+              isClearable
               showIcon
               locale={es}
               maxDate={maxDate}
@@ -364,6 +363,7 @@ export const Register = () => {
                 increaseMonth,
                 prevMonthButtonDisabled,
                 nextMonthButtonDisabled,
+                
               }) => (
                 <div
                   style={{
@@ -416,11 +416,10 @@ export const Register = () => {
               onChange={(date) => setStartDate(date)}
             />
             <Button onClick={volver}>Volver</Button>
-            {format(startDate, `dd-MM-yyyy`) ===
-            format(defaultDate, `dd-MM-yyyy`) ? (
-              <Button className="button-color">Continuar</Button>
-            ) : (
+            {startDate? (
               <Button onClick={continuarBirthDate}>Continuar</Button>
+            ) : (     
+              <Button className="button-color">Continuar</Button>
             )}
           </>
         ) : null}
