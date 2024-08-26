@@ -20,5 +20,6 @@ router.get('/getUserActivities',verifyToken, userController.getUserActivities)
 router.get('/getUserParticipatedActivities',verifyToken, userController.getUserParticipatedActivities)
 router.put('/validation/:token',userController.validationUser)
 router.post('/recoverPassword', userController.recoverPassword)
+router.put('/updateLastLog', userController.updateLastLog)
 
 module.exports = router;
