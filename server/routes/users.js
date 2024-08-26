@@ -22,6 +22,6 @@ router.put('/validation/:token',userController.validationUser)
 router.post('/recoverPassword', userController.recoverPassword)
 router.put('/updateLastLog', userController.updateLastLog)
 router.put('/editPassword', userController.editPassword) //hace falta verifyToken
-
+router.put('/read',verifyToken,userController.read)
 
 module.exports = router;
