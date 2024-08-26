@@ -434,7 +434,7 @@ class userController {
     console.log(req.body.id);
     try {
       const recoverToken = jwt.sign({ id: email }, process.env.SECRET_KEY, {
-        expiresIn: "14d",
+        expiresIn: "1h",
       });
       recuperarPassword(email, recoverToken);
     } catch (err) {
@@ -462,6 +462,19 @@ class userController {
     });
   };
 
+  getOneUser = (req, res) => {
+    const id = req.params.id;
+    console.log("para ver si llega la id", id);    
+    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE user.is_validated = 1 AND user.is_disabled = 0 AND user.type = 2 AND user.user_id = ${id};`;
+    connection.query(sql, (err, result)=>{
+            if(err){
+        res.status(500).json(err);
+      }else{
+        res.status(200).json(result)
+      }
+    })
+  }
+
   updateLastLog = (req,res) =>{
     const {data} = req.body
     let token = req.headers.authorization.split(" ")[1];
@@ -475,6 +488,54 @@ class userController {
       }
     })
   }
+
+
+  getOneUserActivities = (req, res) => {
+    const id = req.params.id    
+    let sql = `
+      SELECT 
+        activity.*, 
+        sport.sport_name, 
+        sport.sport_img 
+      FROM 
+        activity 
+      JOIN 
+        sport 
+      ON 
+        activity.sport_id = sport.sport_id 
+      WHERE 
+        activity.user_id = ${id}
+    `;
+
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+      console.log("el result", result);
+      
+    });        
+  }
+
+  getOneUserParticipatedActivities = (req, res) => {
+    let id = req.params.id
+    let sql = `SELECT activity.* FROM activity JOIN participate
+    ON activity.activity_id = participate.activity_id
+    JOIN user ON participate.user_id = user.user_id
+    where user.user_id = ${id} ORDER BY date_time_activity DESC`;
+
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  }
+
+
+
   read = (req,res) =>{
     const { user_sender_id: sender_user_id } = req.body;
     console.log(req.body)
@@ -489,6 +550,7 @@ class userController {
       }
     })
   }
+
 }
 
 module.exports = new userController();

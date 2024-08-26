@@ -20,6 +20,9 @@ import { EditPassword } from "../pages/EditPassword/EditPassword";
 import { useContext, useEffect } from "react";
 import { TrioContext } from "../context/TrioContextProvider";
 import { Admin } from "../pages/Admin/Admin";
+import { OneUser } from "../pages/OneUser/OneUser";
+import { OneUserActivies } from "../pages/OneUser/OneUserActivities/OneUserActivies";
+import { OneUserParticipatedActivities } from "../pages/OneUser/OneUserParticipatedActivities/OneUserParticipatedActivities";
 
 import { EditActivity } from "../pages/EditActivity/EditActivity";
 import { AdminUsers } from "../pages/Admin/AdminUsers/AdminUsers";
@@ -66,11 +69,14 @@ export const AppRoutes = () => {
           <Route path="*" element={<ErrorPage />} />
 
           <Route path = "/validation/:token" element={<Validation/>}/>
+          <Route path="/oneUser/:id" element={<OneUser/>} >
+            <Route index element={<OneUserActivies />} />
+            <Route path="1" element={<OneUserParticipatedActivities />} />
+          </Route>
           <Route path="/admin" element={<Admin/>}>
             <Route index element = {<AdminUsers/>}/>
             <Route path="1" element = {<AdminSports/>} />
           </Route>
-
         </Routes>
       </Container>
     </BrowserRouter>

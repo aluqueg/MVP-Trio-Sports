@@ -6,6 +6,7 @@ import axios from "axios";
 import { gender } from "../../helpers/genderData";
 import { Col, Container, Row, Form } from "react-bootstrap";
 import "./allUsers.css";
+import { Navigate } from "react-router-dom";
 
 export const AllUsers = () => {
   const { user, token, setToken, sports, setSports } = useContext(TrioContext);
