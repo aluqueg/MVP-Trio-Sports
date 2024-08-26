@@ -30,3 +30,6 @@
   margin: 0px;
   width: 100vw;
 }
+.readedFalse{
+  background-color: red;
+}

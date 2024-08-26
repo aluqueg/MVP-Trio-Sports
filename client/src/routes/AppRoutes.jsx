@@ -17,7 +17,7 @@ import { UserParticipatedActivities } from "../pages/Profile/UserParticipatedAct
 import { Validation } from "../pages/Validation/Validation";
 import { RecoverPassword } from "../pages/RecoverPassword/RecoverPassword";
 import { EditPassword } from "../pages/EditPassword/EditPassword";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { TrioContext } from "../context/TrioContextProvider";
 import { Admin } from "../pages/Admin/Admin";
 import { AdminUsers } from "../pages/Admin/AdminUsers/AdminUsers";
@@ -26,6 +26,9 @@ import { AdminSports } from "../pages/Admin/AdminSports/AdminSports";
 
 export const AppRoutes = () => {
   const {user} = useContext(TrioContext)
+  useEffect(()=>{
+    console.log("HOLA")
+  },[])
   return (
     <BrowserRouter>
       <Row>
