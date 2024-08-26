@@ -20,6 +20,9 @@ import { EditPassword } from "../pages/EditPassword/EditPassword";
 import { useContext } from "react";
 import { TrioContext } from "../context/TrioContextProvider";
 import { Admin } from "../pages/Admin/Admin";
+import { OneUser } from "../pages/OneUser/OneUser";
+import { OneUserActivies } from "../pages/OneUser/OneUserActivities/OneUserActivies";
+import { OneUserParticipatedActivities } from "../pages/OneUser/OneUserParticipatedActivities/OneUserParticipatedActivities";
 
 
 export const AppRoutes = () => {
@@ -50,6 +53,10 @@ export const AppRoutes = () => {
           <Route path="*" element={<ErrorPage />} />
           <Route path = "/validation/:token" element={<Validation/>}/>
           <Route path="/admin" element={<Admin/>}/>
+          <Route path="/oneUser/:id" element={<OneUser/>} >
+            <Route index element={<OneUserActivies />} />
+            <Route path="1" element={<OneUserParticipatedActivities />} />
+          </Route>
         </Routes>
       </Container>
     </BrowserRouter>

@@ -7,10 +7,8 @@ import { isBefore, parseISO } from "date-fns";
 import ModalCreateComment from "../../../components/ModalCreateComment/ModalCreateComment";
 import { useNavigate } from "react-router-dom";
 
-
-
-
 export const UserActivities = () => {
+
   const { token, user } = useContext(TrioContext); 
   const [userActivities, setUserActivities] = useState([]);
 
