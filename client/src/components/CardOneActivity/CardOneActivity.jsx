@@ -1,17 +1,15 @@
-import React, { useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import { BsTrophy, BsMap, BsCalendar3 } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import { format, isBefore, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
-import axios from "axios";
 
 export const CardOneActivity = ({
   activity,
   handleJoinActivity,
+  handleLeaveActivity,
   isActivityFull,
   isActivityPast,
-  getButtonLabel,
   getStatusLabel,
   handleShowModal,
 }) => {
@@ -20,6 +18,30 @@ export const CardOneActivity = ({
     locale: es,
   });
   const statusLabel = getStatusLabel(activity);
+
+  // truncar texto
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
+  };
+
+  // texto para el botón, incluyendo el contador de asistentes
+  const getJoinButtonText = () => {
+    if (activity.is_user_participant) {
+      return "Abandonar";
+    } else if (activity.limit_users) {
+      return `Unirse ${activity.num_assistants}/${activity.limit_users}`;
+    } else {
+      return "Unirse";
+    }
+  };
+
+  // ...título, dirección y ciudad si son demasiado largos
+  const truncatedTitle = truncateText(activity.text, 50);
+  const truncatedAddress = truncateText(activity.activity_address, 30);
+  const truncatedCity = truncateText(activity.activity_city, 20);
 
   return (
     <Col xs={12} md={6} className="mb-4">
@@ -38,18 +60,18 @@ export const CardOneActivity = ({
           />
 
           <Card.Body className="d-flex flex-column">
-            {activity.text && <Card.Title>{activity.text}</Card.Title>}
+            {activity.text && <Card.Title>{truncatedTitle}</Card.Title>}
 
             <Card.Text>
               <BsTrophy /> {activity.sport_name}
             </Card.Text>
 
             <Card.Text>
-              < BsCalendar3/> {formattedDate}
+              <BsCalendar3 /> {formattedDate}
             </Card.Text>
 
             <Card.Text>
-              <BsMap /> {activity.activity_address}, {activity.activity_city}
+              <BsMap /> {truncatedAddress}, {truncatedCity}
             </Card.Text>
 
             {statusLabel && (
@@ -70,18 +92,29 @@ export const CardOneActivity = ({
                   variant={
                     isActivityFull(activity) || isActivityPast(activityDate)
                       ? "danger"
+                      : activity.is_user_participant
+                      ? "secondary"
                       : "primary"
                   }
                   className="w-100"
                   disabled={
-                    isActivityFull(activity) || isActivityPast(activityDate)
-                  }
+                    isActivityFull(activity) ||
+                    isActivityPast(activityDate) ||
+                    activity.loading
+                  } // Deshabilita mientras carga
                   onClick={(e) => {
                     e.preventDefault();
-                    handleJoinActivity(activity.activity_id);
+                    if (!activity.loading) {
+                      // Solo permite clic si no está cargando
+                      if (activity.is_user_participant) {
+                        handleLeaveActivity(activity.activity_id);
+                      } else {
+                        handleJoinActivity(activity.activity_id);
+                      }
+                    }
                   }}
                 >
-                  {getButtonLabel(activity)}
+                  {getJoinButtonText()}
                 </Button>
               </Col>
               <Col xs={12} md={6}>

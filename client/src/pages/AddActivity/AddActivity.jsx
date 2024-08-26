@@ -54,7 +54,7 @@ export const AddActivity = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-
+  
     try {
       const year = dateTimeActivity.getFullYear();
       const month = String(dateTimeActivity.getMonth() + 1).padStart(2, '0');
@@ -62,9 +62,9 @@ export const AddActivity = () => {
       const hours = String(dateTimeActivity.getHours()).padStart(2, '0');
       const minutes = String(dateTimeActivity.getMinutes()).padStart(2, '0');
       const seconds = '00'; 
-
+  
       const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
+  
       const response = await axios.post(
         "http://localhost:4000/api/activity/createActivity",
         {
@@ -75,18 +75,17 @@ export const AddActivity = () => {
           activity_address: activityAddress,
           details,
           sport_id: Number(sportId),
-          user_id: 1, 
           maps_link: mapsLink || null,
         },
         {
           headers: { Authorization: `Bearer ${token}` }, // token 
         }
       );
-
+  
       if (response.status === 201) {
         setSuccess("Actividad creada con éxito");
         setTimeout(() => {
-          navigate("/allActivities");
+          navigate("/allActivities"); 
         }, 2000);
       }
     } catch (error) {
@@ -222,7 +221,11 @@ export const AddActivity = () => {
             placeholder="Introduce una breve descripción"
             value={details}
             onChange={(e) => setDetails(e.target.value)}
+            maxLength={255}  // Limitar a 255 caracteres
           />
+          <Form.Text className="text-muted">
+            {`${details.length}/255 caracteres`}
+          </Form.Text>
         </Form.Group>
 
         <Button variant="secondary" type="button" className="mt-3 me-3" onClick={handleCancel}>
@@ -243,6 +246,7 @@ export const AddActivity = () => {
     </Container>
   );
 };
+
 
 
 

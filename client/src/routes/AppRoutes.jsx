@@ -16,11 +16,13 @@ import { UserActivities } from "../pages/Profile/UserActivities/UserActivities";
 import { UserParticipatedActivities } from "../pages/Profile/UserParticipatedActivities/UserParticipatedActivities";
 import { Validation } from "../pages/Validation/Validation";
 import { RecoverPassword } from "../pages/RecoverPassword/RecoverPassword";
+import { EditPassword } from "../pages/EditPassword/EditPassword";
 import { useContext } from "react";
 import { TrioContext } from "../context/TrioContextProvider";
 import { Admin } from "../pages/Admin/Admin";
 import { AdminUsers } from "../pages/Admin/AdminUsers/AdminUsers";
 import { AdminSports } from "../pages/Admin/AdminSports/AdminSports";
+
 
 export const AppRoutes = () => {
   const {user} = useContext(TrioContext)
@@ -46,6 +48,7 @@ export const AppRoutes = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/recoverPassword" element={<RecoverPassword />}/>
+          <Route path="/editPassword/:token" element={<EditPassword />} />
           <Route path="*" element={<ErrorPage />} />
           <Route path = "/validation/:token" element={<Validation/>}/>
           <Route path="/admin" element={<Admin/>}>

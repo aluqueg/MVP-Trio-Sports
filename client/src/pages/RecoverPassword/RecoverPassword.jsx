@@ -12,24 +12,25 @@ export const RecoverPassword = () => {
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState(initialValue);
 
+  const handleChange = (e) => {
+    const email = e.target.value;
+    setEmail(email);
+  };
+
   const onSubmit = async () => {
     if (!email) {
-      setMsg({ text: "El campo no puede estar vacío", show: true });
-      return;
+      setMsg({ text: "El campo no puede estar vacío", show: true });      
+    }else{
+      setMsg({show:false})
     }
     try {
       const res = await axios.post(
         "http://localhost:4000/api/users/recoverPassword",
-        email
+        {id: email}
       );
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const handleChange = (e) => {
-    const email = e.target.value;
-    setEmail(email);
   };
 
   return (
@@ -38,7 +39,7 @@ export const RecoverPassword = () => {
         <Form.Label>¿Problemas con la contraseña?</Form.Label>
         <Form.Control
           type="email"
-          placeholder="Enter email"
+          placeholder="Introduce tu email"
           name="email"
           value={email}
           onChange={handleChange}
@@ -50,7 +51,7 @@ export const RecoverPassword = () => {
         </Form.Text>
       </Form.Group>
       <Button variant="primary" onClick={onSubmit}>
-        Submit
+        Enviar
       </Button>
     </Form>
   );

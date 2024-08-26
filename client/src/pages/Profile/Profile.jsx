@@ -20,10 +20,6 @@ export const Profile = () => {
     setShowModal(true)
   }
 
-  const handleClose = () => {
-    setShowModal(false)
-  }
-
   useEffect(()=>{
     axios
         .get(`http://localhost:4000/api/users/getPracticeSports`,{headers:{Authorization: `Bearer ${token}`}})
@@ -33,7 +29,6 @@ export const Profile = () => {
         .catch(err=>{console.log(err)})
   },[])
 
-  console.log("practiceSport", practiceSports)
   return (
     <Container fluid="xxl">
       <Row className="my-3">
@@ -72,7 +67,7 @@ export const Profile = () => {
           <Outlet />
         </Col>
       </Row>
-      <ModalEditUser show={showModal} handleClose={handleClose} data={user} token={token}/>
+      <ModalEditUser show={showModal} setShowModal={setShowModal} data={user} token={token}/>
     </Container>
   );
 };

@@ -1,26 +1,23 @@
-import { format, getMonth, getYear, subYears } from "date-fns";
+import { format, getMonth, getYear, isValid, parse, subYears } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 import { Form, ListGroup } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { TrioContext } from "../../context/TrioContextProvider";
 import DatePicker from "react-datepicker";
-import { es } from "date-fns/locale/es";
 import { ModalCreateSport } from "../ModalCreateSport/ModalCreateSport";
 import axios from "axios";
 /* import * as formik from 'formik';
 import * as yup from 'yup'; */
 
-function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
+function ModalEditUser({ show, setShowModal, data }) {
   const [editUser, setEditUser] = useState(data);
-  const [formErrors, setFormErrors] = useState({});
   const [sportId, setSportId] = useState("");
-  const { sports, setSports } = useContext(TrioContext);
+  const { sports, setSports, token } = useContext(TrioContext);
 
-  const handleEditUser = (e) => {
-    const { name, value } = e.target;
-    setEditUser({ ...editUser, [name]: value });
-  };
+  const handleClose = () => {
+    setShowModal(false)
+  }
 
   const months = [
     "Enero",
@@ -48,7 +45,27 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
   const [startDate, setStartDate] = useState(editUser?.birth_date);
   const maxDate = subYears(new Date(), 18);
   const years = range(1990, getYear(new Date()) + 1, 1);
-  const lastLogDate = format(startDate, `yyyy-MM-dd HH-mm-ss`);
+  const [errorDate, setErrorDate] = useState("");
+  const [errorSports, setErrorSports] = useState("");
+
+  /* VALIDATION */
+  const { Formik } = formik;
+
+  const schema = yup.object().shape({
+    user_name: yup.string().required("El Nombre es obligatorio").matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/, "El nombre ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."),
+    last_name: yup.string().required("Los Apellidos son obligatorios").matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/, "El apellido ingresado no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 15 caracteres."),
+    user_city: yup.string().required("La ciudad es obligatorio").matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,200}$/, "La ciudad ingresada no es válido. Por favor, asegúrate de que solo contenga letras, espacios, y no supere los 200 caracteres."),
+  });
+
+  const handleOnBlur = ({ target: { value } }) => {
+    const date = parse(value, 'dd/MM/yyyy', new Date());
+    if (isValid(date)) {
+      setErrorDate("")
+    } else {
+      setErrorDate("La fecha de nacimiento es un campo obligatorio ")
+    }
+  };
+
 
   /* GENERO */
 
@@ -71,8 +88,6 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
   const addSportStatus = () => setModalAddSports(!modalAddSports);
   const [selectedSport, setSelectedSport] = useState([]);
 
-  /* VALIDATION */
-
   useEffect(()=>{
     axios
         .get(`http://localhost:4000/api/users/getPracticeSports`,{headers:{Authorization: `Bearer ${token}`}})
@@ -83,11 +98,21 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
   },[])
 
   const addSports = (e) => {
-    setSelectedSport([...selectedSport, e]);
+    if(selectedSport.length < 5){
+      setSelectedSport([...selectedSport, e]);  
+      setErrorSports("")
+    }else{
+      setErrorSports("Máximo 5 deportes")
+    }
   };
 
   const removeSports = (e) => {
-    setSelectedSport(selectedSport.filter((sport) => sport !== e));
+    if(selectedSport.length <= 1){
+      setErrorSports("Mínimo 1 deporte")
+    }else{
+      setSelectedSport(selectedSport.filter((sport) => sport !== e));
+      setErrorSports("")
+    }
   };
 
   const handleCheckboxChange = (sportId) => {
@@ -99,23 +124,43 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
     setSportId(newSport.sport_id); //Selecciona automáticamente el nuevo deporte
   };
 
-  const onEditSubmit = () => {
-    setEditUser({...editUser, ["sports"]: selectedSport})
-    console.log("submit editUser",editUser)
-    console.log("submit selectSports", selectedSport);
+  const onEditSubmit = (values) => {
+    const date = format(startDate, "yyyy/MM/dd");
+    const updatedEditUser = {
+      ...editUser,
+      ...values,
+      birth_date: date,
+      sports: selectedSport,
+    };
+  
+    setEditUser(updatedEditUser);
+  
     axios
-      .put('http://localhost:4000/api/users/editUser', editUser, {
+      .put('http://localhost:4000/api/users/editUser', updatedEditUser, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
         console.log(res);
-        // handleClose();
+        handleClose();
       })
       .catch((err) => console.log(err));
   };
-  console.log(selectedSport)
+
   return (
-    <>
+    <Formik
+      validationSchema={schema}
+      onSubmit={onEditSubmit}
+      validateOnMount={true}
+      initialValues={{
+        email: editUser.email,
+        user_name: editUser.user_name,
+        last_name: editUser.last_name,
+        user_city: editUser.user_city,
+        description: editUser.description
+      }}
+    >
+    {({handleSubmit, handleChange, values, errors, isValid}) => (
+      <>
       <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Modal heading</Modal.Title>
@@ -123,7 +168,7 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
         <Modal.Body>
           {/* EMAIL */}
 
-          <Form action="">
+          <Form noValidate onSubmit={handleSubmit}>
 
             {/* EMAIL */}
 
@@ -134,7 +179,7 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
                   type="email"
                   placeholder="Enter email"
                   name="email"
-                  value={editUser?.email}
+                  value={values.email}
                   disabled
                 />
                 <Form.Text className="text-muted"></Form.Text>
@@ -150,13 +195,13 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
                   type="text"
                   placeholder="Enter name"
                   name="user_name"
-                  onChange={handleEditUser}
-                  value={editUser?.user_name}
-                  required
+                  onChange={handleChange}
+                  value={values.user_name}
+                  isInvalid={!!errors.user_name}
                 />
-                {formErrors.user_name ? (
-                  <span className="error-msg">{formErrors.user_name}</span>
-                ) : null}
+                  <Form.Control.Feedback type="invalid">
+                  {errors.user_name}
+                </Form.Control.Feedback>
                 <Form.Text className="text-muted"></Form.Text>{" "}
               </Form.Group>
             </>
@@ -170,87 +215,95 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
                   <Form.Label>APELLIDOS</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter name"
+                    placeholder="Enter last name"
                     name="last_name"
-                    onChange={handleEditUser}
-                    value={editUser?.last_name}
+                    onChange={handleChange}
+                    value={values.last_name}
+                    isInvalid={!!errors.last_name}
                   />
-                  {formErrors.last_name ? (
-                    <span className="error-msg">{formErrors.last_name}</span>
-                  ) : null}
+                  <Form.Control.Feedback type="invalid">
+                  {errors.last_name}
+                </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Text className="text-muted"></Form.Text>{" "}
               </Form.Group>
             </>
 
             {/* CUMPLEAÑOS */}
-
             <>
-              <Form.Label className="mb-3 me-3">CUMPLEAÑOS</Form.Label>
-              <DatePicker
-                showIcon
-                locale={es}
-                maxDate={maxDate}
-                renderCustomHeader={({
-                  date,
-                  changeYear,
-                  changeMonth,
-                  decreaseMonth,
-                  increaseMonth,
-                  prevMonthButtonDisabled,
-                  nextMonthButtonDisabled,
-                }) => (
-                  <div
-                    style={{
-                      margin: 10,
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <button
-                      type="button"
-                      onClick={decreaseMonth}
-                      disabled={prevMonthButtonDisabled}
-                    >
-                      {"<"}
-                    </button>
-                    <select
-                      value={getYear(date)}
-                      onChange={({ target: { value } }) => changeYear(value)}
-                    >
-                      {years.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+  <DatePicker
+    showIcon
+    dateFormat="dd/MM/yyyy"
+    locale="es"
+    maxDate={maxDate}
+    renderCustomHeader={({
+      date,
+      changeYear,
+      changeMonth,
+      decreaseMonth,
+      increaseMonth,
+      prevMonthButtonDisabled,
+      nextMonthButtonDisabled,
+    }) => {
+      const currentYear = getYear(date);
+      const currentMonth = months[getMonth(date)];
+      
+      return (
+        <div
+          style={{
+            margin: 10,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <button
+            type="button"
+            onClick={decreaseMonth}
+            disabled={prevMonthButtonDisabled}
+          >
+            {"<"}
+          </button>
+          <select
+            value={months.includes(currentMonth) ? currentMonth : months[0]}
+            onChange={({ target: { value } }) =>
+              changeMonth(months.indexOf(value))
+            }
+          >
+            {months.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          
+          <select
+            value={years.includes(currentYear) ? currentYear : years[0]}
+            onChange={({ target: { value } }) => changeYear(Number(value))}
+          >
+            {years.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
 
-                    <select
-                      value={months[getMonth(date)]}
-                      onChange={({ target: { value } }) =>
-                        changeMonth(months.indexOf(value))
-                      }
-                    >
-                      {months.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-
-                    <button
-                      type="button"
-                      onClick={increaseMonth}
-                      disabled={nextMonthButtonDisabled}
-                    >
-                      {">"}
-                    </button>
-                  </div>
-                )}
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-              />
-            </>
+          <button
+            type="button"
+            onClick={increaseMonth}
+            disabled={nextMonthButtonDisabled}
+          >
+            {">"}
+          </button>
+        </div>
+      );
+    }}
+    selected={startDate}
+    onChange={(date) => setStartDate(date)}
+    onBlur={handleOnBlur}
+    placeholderText="Introduce tu fecha de nacimiento"
+  />
+  {errorDate ? <span>{errorDate}</span> : null}
+</>
 
             {/* CIUDAD */}
             <>
@@ -260,12 +313,13 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
                   type="text"
                   placeholder="cual es tu ciudad"
                   name="user_city"
-                  onChange={handleEditUser}
-                  value={editUser?.user_city}
+                  onChange={handleChange}
+                  value={values.user_city}
+                  isInvalid={!!errors.user_city}
                 />
-                {formErrors.user_city ? (
-                  <span className="error-msg">{formErrors.user_city}</span>
-                ) : null}
+                <Form.Control.Feedback type="invalid">
+                  {errors.user_city}
+                </Form.Control.Feedback>
                 <Form.Text className="text-muted"></Form.Text>
               </Form.Group>
             </>
@@ -326,6 +380,7 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
                 onSportCreated={handleSportCreated}
                 existingSports={sports} //pasamos la lista de deportes existentes al modal
               />
+              {errorSports ? <span>{errorSports}</span> : null}
             </>
 
             {/* DESCRIPTION */}
@@ -337,12 +392,9 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
                   type="textarea"
                   placeholder="Cuentanos más sobre ti..."
                   name="description"
-                  onChange={handleEditUser}
-                  value={editUser?.description}
+                  onChange={handleChange}
+                  value={values.description}
                 />
-                {formErrors.user_city ? (
-                  <span className="error-msg">{formErrors.user_city}</span>
-                ) : null}
                 <Form.Text className="text-muted"></Form.Text>
               </Form.Group>
             </>
@@ -352,12 +404,17 @@ function ModalEditUser({ show, handleClose, data, token, practiceSports }) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={onEditSubmit}>
-            Guardar Cambios
+          <Button 
+            variant="primary" 
+            onClick={handleSubmit}
+            disabled={!isValid || errorDate}
+          >Guardar Cambios
           </Button>
         </Modal.Footer>
       </Modal>
     </>
+    )}
+    </Formik>
   );
 }
 

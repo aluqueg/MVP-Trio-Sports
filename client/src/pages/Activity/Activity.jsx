@@ -15,7 +15,7 @@ export const Activity = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [comments, setComments] = useState([]);
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -55,12 +55,24 @@ export const Activity = () => {
     }
   }, [activity_id, token]);
 
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
+  // Manejo del estado de la imagen de usuario
+  const [fallbackImage, setFallbackImage] = useState(
+    "/src/assets/images/default_user_img.png"
+  );
+
+  const handleImageError = () => {
+    setFallbackImage("/src/assets/images/default_user_img.png");
+  };
+
   const handleCommentSubmit = async (commentText) => {
     try {
       const response = await axios.post(
         "http://localhost:4000/api/comments/addComment",
         {
-          activity_id: activity_id,
+          activity_id,
           user_id: user.user_id,
           text: commentText,
         },
@@ -77,25 +89,13 @@ export const Activity = () => {
           date: new Date(),
         };
         setComments([newComment, ...comments]);
-        setShowModal(false); // Cerrar el modal después de enviar el comentario
+        handleCloseModal();
       } else {
         console.error("Error al crear el comentario");
       }
     } catch (error) {
       console.error("Error al enviar el comentario:", error);
     }
-  };
-
-  const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false); // cerrar el modal
-
-  // Manejo del estado de la imagen de usuario
-  const [fallbackImage, setFallbackImage] = useState(
-    "/src/assets/images/default_user_img.png"
-  );
-
-  const handleImageError = () => {
-    setFallbackImage("/src/assets/images/default_user_img.png");
   };
 
   if (loading) return <div>Cargando...</div>;
@@ -114,7 +114,9 @@ export const Activity = () => {
             src={`/src/assets/activities/${activity.sport_img}`}
             alt={activity.sport_name}
             className="activity-image"
-            onError={(e) => (e.target.src = "/src/assets/activities/newsport.jpg")}
+            onError={(e) =>
+              (e.target.src = "/src/assets/activities/newsport.jpg")
+            }
           />
         </Col>
         <Col xs={12} md={6} className="activity-details-wrapper">
@@ -139,7 +141,9 @@ export const Activity = () => {
                   <BsCalendar3 className="icon" />
                 </td>
                 <td className="text-large">
-                  {new Date(activity.date_time_activity).toLocaleDateString("es-ES")}
+                  {new Date(activity.date_time_activity).toLocaleDateString(
+                    "es-ES"
+                  )}
                 </td>
               </tr>
               <tr className="table-separator">
@@ -147,20 +151,30 @@ export const Activity = () => {
                   <BsClock className="icon" />
                 </td>
                 <td className="text-large">
-                  {new Date(activity.date_time_activity).toLocaleTimeString("es-ES", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {new Date(activity.date_time_activity).toLocaleTimeString(
+                    "es-ES",
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  )}
                 </td>
               </tr>
-              {/* no mostrar maps_link si es null*/}
+              {/* No mostrar maps_link si es null */}
               {activity.maps_link && (
                 <tr className="table-separator">
                   <td>
-                    <MdLocationOn className="icon" style={{ color: "#EA4335" }} />
+                    <MdLocationOn
+                      className="icon"
+                      style={{ color: "#EA4335" }}
+                    />
                   </td>
                   <td className="text-large">
-                    <a href={activity.maps_link} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={activity.maps_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Ver en Google Maps
                     </a>
                   </td>
@@ -170,7 +184,8 @@ export const Activity = () => {
           </Table>
           <div className="activity-info-box">
             <p className="activity-info-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              {activity.details ||
+                "No hay detalles adicionales para esta actividad."}
             </p>
           </div>
         </Col>
@@ -179,16 +194,25 @@ export const Activity = () => {
       <Row className="justify-content-center mt-4">
         <Col xs={12} md={8} className="activity-buttons">
           <Button variant="primary" className="me-2 btn-large">
-            Unirse 1 / 2
+            Unirse {activity.num_assistants} /{" "}
+            {activity.limit_users || "Sin límite"}
           </Button>
-          <Button variant="secondary" className="btn-large" onClick={handleOpenModal}>
+          <Button
+            variant="secondary"
+            className="btn-large"
+            onClick={handleOpenModal}
+          >
             Añadir comentario
           </Button>
         </Col>
       </Row>
-      <hr /> 
+      <hr />
       {/* Modal para añadir comentario */}
-      <ModalCreateComment show={showModal} handleClose={handleCloseModal} handleCommentSubmit={handleCommentSubmit} />
+      <ModalCreateComment
+        show={showModal}
+        handleClose={handleCloseModal}
+        handleCommentSubmit={handleCommentSubmit}
+      />
       {/* Comentarios */}
       <Row className="justify-content-center mt-4">
         <Col xs={12}>
@@ -197,9 +221,17 @@ export const Activity = () => {
               <div className="comment-header d-flex justify-content-between">
                 <div className="d-flex align-items-center">
                   <Image
-                    src={comment.user_img ? `http://localhost:4000/images/users/${comment.user_img}` : fallbackImage}
+                    src={
+                      comment.user_img
+                        ? `http://localhost:4000/images/users/${comment.user_img}`
+                        : fallbackImage
+                    }
                     roundedCircle
-                    style={{ width: "30px", height: "30px", marginRight: "10px" }}
+                    style={{
+                      width: "30px",
+                      height: "30px",
+                      marginRight: "10px",
+                    }}
                     onError={(e) => {
                       e.target.onerror = null; // Evitar loops infinitos si la imagen de fallback también falla
                       e.target.src = fallbackImage;

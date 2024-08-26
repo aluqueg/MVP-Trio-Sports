@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 
-
-
 const ModalCreateComment = ({ show, handleClose, handleCommentSubmit }) => {
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = () => {
+    // longitud del comentario
+    if (comment.trim() === "") {
+      setError("El comentario no puede estar vacío.");
+      return;
+    }
+
+    // Si pasa las validaciones, envía el comentario
     handleCommentSubmit(comment);
     setComment(""); 
-    handleClose(); 
+    handleClose();
   };
 
   return (
@@ -28,8 +33,15 @@ const ModalCreateComment = ({ show, handleClose, handleCommentSubmit }) => {
               rows={3}
               placeholder="Escribe aquí tu comentario..."
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              maxLength={255}  
+              onChange={(e) => {
+                setComment(e.target.value);
+                if (e.target.value.length <= 255) setError("");  
+              }}
             />
+            <Form.Text className="text-muted">
+              {`${comment.length}/255 caracteres`}
+            </Form.Text>
           </Form.Group>
         </Form>
       </Modal.Body>
@@ -46,5 +58,6 @@ const ModalCreateComment = ({ show, handleClose, handleCommentSubmit }) => {
 };
 
 export default ModalCreateComment;
+
 
 
