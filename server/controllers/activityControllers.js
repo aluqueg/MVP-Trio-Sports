@@ -265,83 +265,157 @@ leaveActivity = (req, res) => {
   };
   
 
-getAllActivities = (req, res) => {
-  // Obtener el user_id del token
-  let token = req.headers.authorization.split(" ")[1];
-  let decoded = jwt.decode(token);
-  let user_id = decoded.id;
-
-  const sql = `
-    SELECT a.activity_id, a.date_time_activity, a.limit_users, a.text, a.activity_city, 
-           a.activity_address, a.details, a.maps_link, a.num_assistants, s.sport_name, s.sport_img,
-           CASE
-             WHEN a.date_time_activity >= NOW() THEN 0
-             ELSE 1
-           END AS is_past,
-           CASE
-             WHEN p.user_id IS NOT NULL THEN 1
-             ELSE 0
-           END AS is_user_participant,
-           CASE
-             WHEN a.user_id = ? THEN 1
-             ELSE 0
-           END AS is_creator
-    FROM activity a
-    JOIN sport s ON a.sport_id = s.sport_id
-    LEFT JOIN participate p ON a.activity_id = p.activity_id AND p.user_id = ?
-    ORDER BY is_past ASC, a.date_time_activity ASC`;
-
-  connection.query(sql, [user_id, user_id], (error, results) => {
-    if (error) {
-      console.error("Error al obtener las actividades:", error);
-      return res.status(500).json({ error: "Error al obtener las actividades" });
-    }
-    res.status(200).json(results);
-  });
-};
-getOneActivity = (req, res) => {
-  const { activity_id } = req.params;
-
-  // Obtener el user_id del token
-  let token = req.headers.authorization.split(" ")[1];
-  let decoded = jwt.decode(token);
-  let user_id = decoded.id;
-
-  const sqlGetActivity = `
-    SELECT a.*, s.sport_name, s.sport_img,
-           CASE
-             WHEN p.user_id IS NOT NULL THEN 1
-             ELSE 0
-           END AS is_user_participant,
-           CASE
-             WHEN a.user_id = ? THEN 1
-             ELSE 0
-           END AS is_creator
-    FROM activity a
-    JOIN sport s ON a.sport_id = s.sport_id
-    LEFT JOIN participate p ON a.activity_id = p.activity_id AND p.user_id = ?
-    WHERE a.activity_id = ?
-  `;
-
-  connection.query(sqlGetActivity, [user_id, user_id, activity_id], (err, result) => {
-    if (err) {
-      console.error("Error al obtener la actividad:", err);
-      return res.status(500).json({ error: "Error al obtener la actividad." });
-    }
-
-    if (result.length > 0) {
-      res.json(result[0]);
-    } else {
-      res.status(404).json({ message: "Actividad no encontrada" });
-    }
-  });
-};
+  getAllActivities = (req, res) => {
+    // Obtener el user_id del token
+    let token = req.headers.authorization.split(" ")[1];
+    let decoded = jwt.decode(token);
+    let user_id = decoded.id;
+  
+    const sql = `
+      SELECT a.activity_id, a.date_time_activity, a.limit_users, a.text, a.activity_city, 
+             a.activity_address, a.details, a.maps_link, a.num_assistants, s.sport_name, s.sport_img,
+             CASE
+               WHEN a.date_time_activity >= NOW() THEN 0
+               ELSE 1
+             END AS is_past,
+             CASE
+               WHEN p.user_id IS NOT NULL THEN 1
+               ELSE 0
+             END AS is_user_participant,
+             CASE
+               WHEN a.user_id = ? THEN 1
+               ELSE 0
+             END AS is_creator
+      FROM activity a
+      JOIN sport s ON a.sport_id = s.sport_id
+      LEFT JOIN participate p ON a.activity_id = p.activity_id AND p.user_id = ?
+      WHERE a.is_deleted = 0
+      ORDER BY is_past ASC, a.date_time_activity ASC`;
+  
+    connection.query(sql, [user_id, user_id], (error, results) => {
+      if (error) {
+        console.error("Error al obtener las actividades:", error);
+        return res.status(500).json({ error: "Error al obtener las actividades" });
+      }
+      res.status(200).json(results);
+    });
+  };
+  
+  getOneActivity = (req, res) => {
+    const { activity_id } = req.params;
+  
+    // Obtener el user_id del token
+    let token = req.headers.authorization.split(" ")[1];
+    let decoded = jwt.decode(token);
+    let user_id = decoded.id;
+  
+    const sqlGetActivity = `
+      SELECT a.*, s.sport_name, s.sport_img,
+             CASE
+               WHEN p.user_id IS NOT NULL THEN 1
+               ELSE 0
+             END AS is_user_participant,
+             CASE
+               WHEN a.user_id = ? THEN 1
+               ELSE 0
+             END AS is_creator
+      FROM activity a
+      JOIN sport s ON a.sport_id = s.sport_id
+      LEFT JOIN participate p ON a.activity_id = p.activity_id AND p.user_id = ?
+      WHERE a.activity_id = ? AND a.is_deleted = 0`;
+  
+    connection.query(sqlGetActivity, [user_id, user_id, activity_id], (err, result) => {
+      if (err) {
+        console.error("Error al obtener la actividad:", err);
+        return res.status(500).json({ error: "Error al obtener la actividad." });
+      }
+  
+      if (result.length > 0) {
+        res.json(result[0]);
+      } else {
+        res.status(404).json({ message: "Actividad no encontrada o ha sido eliminada" });
+      }
+    });
+  };
+  
 
 
   
-  editActivity = (req, res) => {
-    res.send("getOneActivity");
+  // obtener los datos de una actividad para su edición
+  getEditActivity = (req, res) => {
+    const { activity_id } = req.params;
+    const sql = 'SELECT * FROM activity WHERE activity_id = ? AND is_deleted = 0';
+  
+    connection.query(sql, [activity_id], (err, results) => {
+      if (err) {
+        console.error('Error al obtener la actividad:', err);
+        return res.status(500).json({ error: 'Error al obtener la actividad' });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ error: 'Actividad no encontrada o ha sido eliminada' });
+      }
+      res.json(results[0]);
+    });
   };
+  
+
+  // editar la actividad en db
+  editActivity = (req, res) => {
+    const { activity_id } = req.params;
+    const {
+      date_time_activity,
+      limit_users,
+      text,
+      activity_city,
+      activity_address,
+      details,
+      maps_link,
+    } = req.body; 
+
+    const sql = `
+      UPDATE activity 
+      SET date_time_activity = ?, limit_users = ?, text = ?, activity_city = ?, activity_address = ?, details = ?, maps_link = ?
+      WHERE activity_id = ?`;
+
+    const values = [
+      date_time_activity, 
+      limit_users, 
+      text, 
+      activity_city, 
+      activity_address, 
+      details, 
+      maps_link, 
+      activity_id
+    ];
+
+    connection.query(sql, values, (err, result) => {
+      if (err) {
+        console.error('Error al actualizar la actividad:', err);
+        return res.status(500).json({ error: 'Error al actualizar la actividad' });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Actividad no encontrada' });
+      }
+      res.json({ message: `Actividad con activity_id: ${activity_id} actualizada con éxito` });
+    });
+  };
+
+  deleteActivity = (req, res) => {
+    const { activity_id } = req.params;
+    const sql = 'UPDATE activity SET is_deleted = 1 WHERE activity_id = ? AND is_deleted = 0'; // Solo marcar como eliminada si no ha sido eliminada previamente
+  
+    connection.query(sql, [activity_id], (err, result) => {
+      if (err) {
+        console.error('Error al borrar (lógicamente) la actividad:', err);
+        return res.status(500).json({ error: 'Error al borrar (lógicamente) la actividad' });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Actividad no encontrada o ya eliminada' }); // Mensaje más claro
+      }
+      res.json({ message: `Actividad con activity_id: ${activity_id} marcada como eliminada` });
+    });
+  };
+  
 }
 
 module.exports = new ActivityController();

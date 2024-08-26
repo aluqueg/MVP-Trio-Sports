@@ -98,6 +98,61 @@ export const Activity = () => {
     }
   };
 
+    // unirse a la actividad
+    const handleJoinActivity = async () => {
+      try {
+        const response = await axios.put(
+          "http://localhost:4000/api/activity/joinActivity",
+          { activity_id },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+  
+        if (response.status === 200) {
+          setActivity((prev) => ({
+            ...prev,
+            num_assistants: prev.num_assistants + 1,
+            is_user_participant: true,
+          }));
+        }
+      } catch (error) {
+        console.error("Error al unirse a la actividad:", error);
+        setError("Error al unirse a la actividad. Inténtalo de nuevo.");
+      }
+    };
+  
+    // abandonar la actividad
+    const handleLeaveActivity = async () => {
+      try {
+        const response = await axios.put(
+          "http://localhost:4000/api/activity/leaveActivity",
+          { activity_id },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+  
+        if (response.status === 200) {
+          setActivity((prev) => ({
+            ...prev,
+            num_assistants: prev.num_assistants - 1,
+            is_user_participant: false,
+          }));
+        }
+      } catch (error) {
+        console.error("Error al abandonar la actividad:", error);
+        setError("Error al abandonar la actividad. Inténtalo de nuevo.");
+      }
+    };
+  
+    // Función para determinar el texto del botón de unirse
+    const getJoinButtonText = () => {
+      if (activity?.is_user_participant) {
+        return "Abandonar";
+      } else if (activity?.limit_users) {
+        return `Unirse ${activity.num_assistants}/${activity.limit_users}`;
+      } else {
+        return "Unirse";
+      }
+    };
+
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>{error}</div>;
 
@@ -193,9 +248,16 @@ export const Activity = () => {
       {/* Botones */}
       <Row className="justify-content-center mt-4">
         <Col xs={12} md={8} className="activity-buttons">
-          <Button variant="primary" className="me-2 btn-large">
-            Unirse {activity.num_assistants} /{" "}
-            {activity.limit_users || "Sin límite"}
+          <Button
+            variant={activity.is_user_participant ? "secondary" : "primary"}
+            className="me-2 btn-large"
+            onClick={
+              activity.is_user_participant
+                ? handleLeaveActivity
+                : handleJoinActivity
+            }
+          >
+            {getJoinButtonText()}
           </Button>
           <Button
             variant="secondary"
