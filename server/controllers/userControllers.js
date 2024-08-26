@@ -62,7 +62,7 @@ class userController {
                     process.env.SECRET_KEY,
                     { expiresIn: "14d" }
                   );
-                  sendMail(email,user_name,token)
+                  sendMail(email, user_name, token);
                   res.status(201).json(resPrac);
                 }
               });
@@ -161,6 +161,8 @@ class userController {
       }
     });
   };
+
+  
 
   profile = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
@@ -377,7 +379,6 @@ class userController {
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
 
-    // Definir la consulta SQL usando parámetros
     const sql = `
       (
     SELECT 
@@ -455,6 +456,7 @@ class userController {
   getUserParticipatedActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
+
   
     let sql = `
       SELECT activity.* 
@@ -466,6 +468,7 @@ class userController {
     `;
   
     connection.query(sql, [id], (err, result) => {
+
       if (err) {
         res.status(500).json(err);
       } else {
@@ -507,6 +510,11 @@ class userController {
       }
     });
   };
+
+  updateLastLog = (req,res) =>{
+    console.log(req.body)
+    res.send("hola")
+  }
 }
 
 module.exports = new userController();

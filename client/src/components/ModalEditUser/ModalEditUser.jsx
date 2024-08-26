@@ -5,11 +5,10 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { TrioContext } from "../../context/TrioContextProvider";
 import DatePicker from "react-datepicker";
-import { es } from "date-fns/locale/es";
 import { ModalCreateSport } from "../ModalCreateSport/ModalCreateSport";
 import axios from "axios";
-import * as formik from 'formik';
-import * as yup from 'yup';
+/* import * as formik from 'formik';
+import * as yup from 'yup'; */
 
 function ModalEditUser({ show, setShowModal, data }) {
   const [editUser, setEditUser] = useState(data);
@@ -126,7 +125,7 @@ function ModalEditUser({ show, setShowModal, data }) {
   };
 
   const onEditSubmit = (values) => {
-    const date = format(startDate, "dd/MM/yyyy");
+    const date = format(startDate, "yyyy/MM/dd");
     const updatedEditUser = {
       ...editUser,
       ...values,
@@ -142,6 +141,7 @@ function ModalEditUser({ show, setShowModal, data }) {
       })
       .then((res) => {
         console.log(res);
+        handleClose();
       })
       .catch((err) => console.log(err));
   };

@@ -11,8 +11,6 @@ export const UserParticipatedActivities = ({participated}) => {
   const { token } = useContext(TrioContext);
   const [userParticipatedActivities, setUserParticipatedActivities] = useState([]);
   const navigate = useNavigate();
-
-  console.log("participatedActivities", participated);
   
   useEffect(()=>{
     const userParticipated = async () => {
@@ -117,7 +115,7 @@ export const UserParticipatedActivities = ({participated}) => {
   };
 
   return (
-    <Container>
+    <Container fluid={"md"}>
             <Row>
           <div className="d-flex justify-content-center flex-wrap gap-3">
             {!Array.isArray(userParticipatedActivities) ? <p>No hay actividades disponibles</p> : userParticipatedActivities.map((e)=><CardOneActivity

@@ -134,7 +134,7 @@ export const UserActivities = () => {
   return (
     <Container fluid={"md"}>
       <Row>
-        <div className="d-flex flex-wrap gap-3">
+        <div className="d-flex justify-content-center flex-wrap gap-3">
           {!Array.isArray(userActivities) ? (
             <p>No hay actividades disponibles</p>
           ) : (

@@ -12,6 +12,8 @@ export const Chats = () => {
   const [viewMessages,setViewMessages] = useState()
   const [currentMessage,setCurrentMessage] = useState()
   const [currentSend,setCurrentSend] = useState() //EL USUARIO AL QUE MANDAR LOS MENSAJES
+  const currentDate = format(new Date(), `yyyy-MM-dd HH-mm-ss`)
+  console.log(currentDate);
   useEffect(()=>{
     axios.get("http://localhost:4000/api/users/allMessages", {headers: {Authorization:`Bearer ${token}`}})
     .then(res =>{
@@ -22,6 +24,9 @@ export const Chats = () => {
       console.error(error);
     })
   },[token])
+  console.log(user)
+
+
   const viewOneChat = async (senderUserID,userID)=>{
     try{
       const res = await axios.post(`http://localhost:4000/api/users/viewOneChat`, {user_sender_id : senderUserID , user_receiver_id : userID })
