@@ -9,7 +9,7 @@ router.post('/createUser',multerSingle("users"), userController.createUser);
 router.post('/login', userController.login)
 router.get('/profile',verifyToken, userController.profile)
 router.get('/getPracticeSports',verifyToken, userController.getPracticeSports)
-router.put('/editUser',verifyToken, userController.editUser)
+router.put('/editUser',verifyToken, multerSingle("users"), userController.editUser)
 router.post('/emailValidator', userController.emailValidation)
 router.post('/prueba',multerSingle("users"), userController.prueba)
 router.get('/getAllUsers', userController.getAllUsers)
