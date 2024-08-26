@@ -58,6 +58,8 @@ CREATE TABLE activity (
     user_id INT UNSIGNED NOT NULL,
     sport_id INT UNSIGNED NOT NULL,
     maps_link VARCHAR(350),
+    is_deleted BOOLEAN NOT NULL DEFAULT 0 -- nuevo campo añadido para el borrado lógico de una actividad
+
    
     -- disabled  -> el admin deshabilita una actividad
 	CONSTRAINT fk_activity_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
