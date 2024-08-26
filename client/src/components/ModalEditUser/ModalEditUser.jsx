@@ -7,8 +7,8 @@ import { TrioContext } from "../../context/TrioContextProvider";
 import DatePicker from "react-datepicker";
 import { ModalCreateSport } from "../ModalCreateSport/ModalCreateSport";
 import axios from "axios";
-import * as formik from 'formik';
-import * as yup from 'yup';
+/* import * as formik from 'formik';
+import * as yup from 'yup'; */
 
 function ModalEditUser({ show, setShowModal, data }) {
   const [editUser, setEditUser] = useState(data);

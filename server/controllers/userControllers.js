@@ -162,6 +162,8 @@ class userController {
     });
   };
 
+  
+
   profile = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
@@ -367,7 +369,6 @@ class userController {
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
 
-    // Definir la consulta SQL usando parámetros
     const sql = `
       (
     SELECT 
@@ -492,6 +493,11 @@ class userController {
       }
     });
   };
+
+  updateLastLog = (req,res) =>{
+    console.log(req.body)
+    res.send("hola")
+  }
 }
 
 module.exports = new userController();
