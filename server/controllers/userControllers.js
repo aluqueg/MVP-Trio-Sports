@@ -62,7 +62,7 @@ class userController {
                     process.env.SECRET_KEY,
                     { expiresIn: "14d" }
                   );
-                  sendMail(email,user_name,token)
+                  sendMail(email, user_name, token);
                   res.status(201).json(resPrac);
                 }
               });
@@ -162,6 +162,8 @@ class userController {
     });
   };
 
+  
+
   profile = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
@@ -199,7 +201,7 @@ class userController {
       user_city,
       description,
       sports,
-    } = req.body;
+    } = JSON.parse(req.body.editUser);
 
     let data = [
       user_name,
@@ -211,6 +213,18 @@ class userController {
     ];
 
     let sqlEditUser = `UPDATE user SET user_name = ?, last_name = ?, birth_date = ?, gender = ?, user_city = ?, description = ? WHERE user_id = ${user_id}`;
+    if (req.file != undefined) {
+      sqlEditUser = `UPDATE user SET user_name = ?, last_name = ?, birth_date = ?, gender = ?, user_city = ?, description = ?, user_img= ? WHERE user_id = ${user_id}`;
+      data = [
+        user_name,
+        last_name,
+        birth_date,
+        gender,
+        user_city,
+        description,
+        req.file.filename,
+      ];
+    }
 
     connection.query(sqlEditUser, data, (errEditUser, resultEditUser) => {
       if (errEditUser) {
@@ -219,72 +233,39 @@ class userController {
         let sqlDBSports = "SELECT sport_id FROM practice WHERE user_id = ?";
         connection.query(sqlDBSports, [user_id], (err, results) => {
           if (err) {
-            res.status(500).json(errDel);
+            res.status(500).json(err);
           } else {
             const currentSportIds = results.map((e) => e.sport_id);
+            let sqlDelSports =
+              "DELETE FROM practice WHERE user_id = ? AND sport_id IN (?)";
             console.log("req.body-----------------", req.body);
             console.log("sports-----------------", sports);
-            // Paso 2: Eliminar deportes desmarcados
-            const toRemove = currentSportIds.filter(
-              (id) => !sports.includes(id)
-            );
-            if (toRemove.length > 0) {
-              let sqlDelSports =
-                "DELETE FROM practice WHERE user_id = ? AND sport_id IN (?)";
-              connection.query(
-                sqlDelSports,
-                [user_id, toRemove],
-                (errDel, resultDel) => {
-                  if (err) {
-                    res.status(500).json(errDel);
-                  } else {
-                    // Paso 3: Añadir nuevos deportes
-                    const toAdd = sports.filter(
-                      (id) => !currentSportIds.includes(id)
-                    );
-                    if (toAdd.length > 0) {
-                      const values = toAdd.map((id) => [user_id, id]);
-                      let sqlAddSports =
-                        "INSERT INTO practice (user_id, sport_id) VALUES ?";
-                      connection.query(
-                        sqlAddSports,
-                        [values],
-                        (errAdd, resAdd) => {
-                          if (err) {
-                            res.status(500).json(errAdd);
-                          } else {
-                            res.status(201).json(resAdd);
-                          }
-                        }
-                      );
-                    }
-                  }
-                }
-              );
-            } else {
-              // Solo añadir si no hay deportes a eliminar
-              const toAdd = sports.filter(
-                (id) => !currentSportIds.includes(id)
-              );
-              if (toAdd.length > 0) {
-                const values = toAdd.map((id) => [user_id, id]);
-                let sqlAddSports2 =
-                  "INSERT INTO practice (user_id, sport_id) VALUES ?";
-                connection.query(
-                  sqlAddSports2,
-                  [values],
-                  (errAdd2, resAdd2) => {
-                    if (errAdd2) {
-                      res.status(500).json(errAdd2);
+            // Paso 2: Eliminar deportes
+            connection.query(
+              sqlDelSports,
+              [user_id, currentSportIds],
+              (errDel, resultDel) => {
+                if (err) {
+                  res.status(500).json(errDel);
+                } else {
+                  // Paso 3: Añadir deportes
+                  const values = sports.map((id) => [user_id, id]);
+                  let sqlAddSports =
+                    "INSERT INTO practice (user_id, sport_id) VALUES ?";
+                  connection.query(sqlAddSports, [values], (errAdd, resAdd) => {
+                    if (errAdd) {
+                      res.status(500).json(errAdd);
                     } else {
-                      res.status(201).json(resAdd2);
+                      if (req.file) {
+                        res.status(201).json({ img: req.file.filename });
+                      } else {
+                        res.status(201).json({ img: null });
+                      }
                     }
-                  }
-                );
-              } else {
-                res.status(201).json(resultEditUser);
+                  });
+                }
               }
-            }
+            );
           }
         });
       }
@@ -325,7 +306,7 @@ class userController {
   allMessages = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT user.user_id,user.user_name,user.last_name,user.user_img,MAX(message.date_time) AS last_message_date FROM message JOIN user ON message.sender_user_id = user.user_id WHERE message.receiver_user_id = ${id} GROUP BY user.user_id, user.user_name, user.last_name, user.user_img ORDER BY last_message_date DESC`;
+    let sql = `SELECT user.user_id, user.user_name, user.last_name, user.user_img, MAX(message.date_time) AS last_message_date, (SELECT m.opened FROM message m WHERE m.sender_user_id = user.user_id AND m.receiver_user_id = ${id} ORDER BY m.date_time DESC LIMIT 1) AS opened FROM message JOIN user ON message.sender_user_id = user.user_id WHERE message.receiver_user_id = ${id} GROUP BY user.user_id, user.user_name, user.last_name, user.user_img ORDER BY last_message_date DESC`;
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -334,27 +315,34 @@ class userController {
       }
     });
   };
-
   getUserActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-
-    // Modificación de la consulta SQL para hacer un JOIN con la tabla 'sport'
+  
     let sql = `
       SELECT 
-        activity.*, 
-        sport.sport_name, 
-        sport.sport_img 
+        a.*, 
+        s.sport_name, 
+        s.sport_img,
+        CASE 
+          WHEN p.user_id IS NOT NULL THEN 1 
+          ELSE 0 
+        END AS is_user_participant,
+        CASE 
+          WHEN a.user_id = ${id} THEN 1 
+          ELSE 0 
+        END AS is_creator
       FROM 
-        activity 
+        activity a
       JOIN 
-        sport 
-      ON 
-        activity.sport_id = sport.sport_id 
+        sport s ON a.sport_id = s.sport_id
+      LEFT JOIN 
+        participate p ON a.activity_id = p.activity_id AND p.user_id = ${id}
       WHERE 
-        activity.user_id = ${id}
+        a.user_id = ${id} 
+        AND a.is_deleted = 0  -- Filtra actividades no eliminadas
     `;
-
+  
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -363,66 +351,40 @@ class userController {
       }
     });
   };
+  
+  
+  
 
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
-
-    // Definir la consulta SQL usando parámetros
     const sql = `
-      (
-    SELECT 
-        message.message_id,
-        message.text,
-        message.date_time,
-        message.opened,
-        sender.user_id AS sender_user_id,
-        sender.user_name AS sender_user_name,
-        sender.last_name AS sender_user_last_name,
-        sender.user_img AS sender_user_img,
-        sender.last_log_date AS sender_user_last_log_date,
-        sender.type AS sender_user_type,
-        'sent' AS message_type
-    FROM 
-        message
-    JOIN 
-        user sender ON message.sender_user_id = sender.user_id
-    WHERE 
-        message.sender_user_id = ${receiver} AND message.receiver_user_id = ${sender}
-      )
-    UNION ALL
-      (
-    SELECT 
-        message.message_id,
-        message.text,
-        message.date_time,
-        message.opened,
-        sender.user_id AS sender_user_id,
-        sender.user_name AS sender_user_name,
-        sender.last_name AS sender_user_last_name,
-        sender.user_img AS sender_user_img,
-        sender.last_log_date AS sender_user_last_log_date,
-        sender.type AS sender_user_type,
-        'received' AS message_type
-    FROM 
-        message
-    JOIN 
-        user sender ON message.sender_user_id = sender.user_id
-    WHERE 
-        message.sender_user_id = ${sender} AND message.receiver_user_id = ${receiver}
-      )
-    ORDER BY 
-    date_time;
+      (SELECT message.message_id, message.text, message.date_time, message.opened, 
+              sender.user_id AS sender_user_id, sender.user_name AS sender_user_name, 
+              sender.last_name AS sender_user_last_name, sender.user_img AS sender_user_img, 
+              sender.last_log_date AS sender_user_last_log_date, sender.type AS sender_user_type, 
+              'sent' AS message_type 
+       FROM message 
+       JOIN user sender ON message.sender_user_id = sender.user_id 
+       WHERE message.sender_user_id = ? AND message.receiver_user_id = ?)
+      UNION ALL
+      (SELECT message.message_id, message.text, message.date_time, message.opened, 
+              sender.user_id AS sender_user_id, sender.user_name AS sender_user_name, 
+              sender.last_name AS sender_user_last_name, sender.user_img AS sender_user_img, 
+              sender.last_log_date AS sender_user_last_log_date, sender.type AS sender_user_type, 
+              'received' AS message_type 
+       FROM message 
+       JOIN user sender ON message.sender_user_id = sender.user_id 
+       WHERE message.sender_user_id = ? AND message.receiver_user_id = ?)
+      ORDER BY date_time;
     `;
-
-    connection.query(sql, (err, result) => {
+  
+    connection.query(sql, [receiver, sender, sender, receiver], (err, result) => {
       if (err) {
         console.error("Error en la consulta SQL:", err);
-        return res.status(500).json({
-          error: "Ocurrió un error en la consulta SQL.",
-          details: err.message,
-        });
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
       }
-      res.status(200).json(result);
     });
   };
 
@@ -445,12 +407,19 @@ class userController {
   getUserParticipatedActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT activity.* FROM activity JOIN participate
-    ON activity.activity_id = participate.activity_id
-    JOIN user ON participate.user_id = user.user_id
-    where user.user_id = ${id} ORDER BY date_time_activity DESC`;
 
-    connection.query(sql, (err, result) => {
+  
+    let sql = `
+      SELECT activity.* 
+      FROM activity 
+      JOIN participate ON activity.activity_id = participate.activity_id
+      JOIN user ON participate.user_id = user.user_id
+      WHERE user.user_id = ? AND activity.is_deleted = 0  -- Filtrar las actividades que no han sido eliminadas lógicamente
+      ORDER BY date_time_activity DESC
+    `;
+  
+    connection.query(sql, [id], (err, result) => {
+
       if (err) {
         res.status(500).json(err);
       } else {
@@ -458,6 +427,7 @@ class userController {
       }
     });
   };
+  
 
   recoverPassword = (req, res) => {
     const email = req.body.id;
@@ -492,12 +462,25 @@ class userController {
     });
   };
 
-
   getOneUser = (req, res) => {
     const id = req.params.id;
     console.log("para ver si llega la id", id);    
     let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE user.is_validated = 1 AND user.is_disabled = 0 AND user.type = 2 AND user.user_id = ${id};`;
     connection.query(sql, (err, result)=>{
+            if(err){
+        res.status(500).json(err);
+      }else{
+        res.status(200).json(result)
+      }
+    })
+  }
+
+  updateLastLog = (req,res) =>{
+    const {data} = req.body
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `UPDATE user SET last_log_date = "${data}" WHERE user_id = ${id}`
+    connection.query(sql,(err,result)=>{
       if(err){
         res.status(500).json(err);
       }else{
@@ -505,6 +488,7 @@ class userController {
       }
     })
   }
+
 
   getOneUserActivities = (req, res) => {
     const id = req.params.id    
@@ -550,6 +534,22 @@ class userController {
     });
   }
 
+
+
+  read = (req,res) =>{
+    const { user_sender_id: sender_user_id } = req.body;
+    console.log(req.body)
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
+    let sql = `UPDATE message SET opened = 1 WHERE sender_user_id = ${sender_user_id} AND receiver_user_id = ${id} AND opened = 0`
+    connection.query(sql,(err,result)=>{
+      if(err){
+        res.status(500).json(err);
+      }else{
+        res.status(200).json(result)
+      }
+    })
+  }
 
 }
 

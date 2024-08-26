@@ -1,7 +1,7 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Outlet, useNavigate } from "react-router-dom";
 import { TrioContext } from "../../context/TrioContextProvider";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 import "./profile.css";
 import ModalEditUser from "../../components/ModalEditUser/ModalEditUser";
@@ -9,7 +9,7 @@ import axios from "axios";
 
 export const Profile = () => {
   const navigate = useNavigate();
-  const { user, token } = useContext(TrioContext);
+  const { user, setUser, token } = useContext(TrioContext);
   const userBirthDate = parseInt(user?.birth_date);
   const today = parseInt(format(new Date(), "yyyy-MM-dd"));
   const age = today - userBirthDate;
@@ -27,7 +27,7 @@ export const Profile = () => {
           setPracticeSports(res.data)
         })
         .catch(err=>{console.log(err)})
-  },[])
+  },[user])
 
   return (
     <Container fluid="xxl">
@@ -67,7 +67,7 @@ export const Profile = () => {
           <Outlet />
         </Col>
       </Row>
-      <ModalEditUser show={showModal} setShowModal={setShowModal} data={user} token={token}/>
+      <ModalEditUser setUser={setUser} show={showModal} setShowModal={setShowModal} data={user} token={token}/>
     </Container>
   );
 };

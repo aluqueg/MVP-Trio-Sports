@@ -9,7 +9,7 @@ router.post('/createUser',multerSingle("users"), userController.createUser);
 router.post('/login', userController.login)
 router.get('/profile',verifyToken, userController.profile)
 router.get('/getPracticeSports',verifyToken, userController.getPracticeSports)
-router.put('/editUser',verifyToken, userController.editUser)
+router.put('/editUser',verifyToken, multerSingle("users"), userController.editUser)
 router.post('/emailValidator', userController.emailValidation)
 router.post('/prueba',multerSingle("users"), userController.prueba)
 router.get('/getAllUsers', verifyToken, userController.getAllUsers)
@@ -24,6 +24,8 @@ router.put('/editPassword', userController.editPassword)
 router.get('/getOneUser/:id', verifyToken, userController.getOneUser)
 router.get('/getOneUserActivities/:id', verifyToken, userController.getOneUserActivities)
 router.get('getOneUserParticipatedActivities/:id/1', verifyToken, userController.getOneUserParticipatedActivities)
+router.put('/updateLastLog', userController.updateLastLog)
+router.put('/read',verifyToken,userController.read)
 
 
 module.exports = router;

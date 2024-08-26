@@ -64,12 +64,11 @@ export const UserActivities = () => {
       console.error("Error al enviar el comentario:", error);
     }
   };
-
   const getButtonLabel = (activity) => {
     if (activity.limit_users === null) {
       return "Unirse";
     }
-    const numAsistants = activity.num_asistants || 1;
+    const numAsistants = activity.num_assistants || 1;
     return `Unirse ${numAsistants} / ${activity.limit_users}`;
   };
 
@@ -95,17 +94,37 @@ export const UserActivities = () => {
 
   const handleJoinActivity = async (activityId) => {
     try {
-      const response = await axios.put("http://localhost:4000/api/activity/joinActivity", {
-        activity_id: activityId,
-      });
+      const response = await axios.put(
+        "http://localhost:4000/api/activity/joinActivity",
+        { activity_id: activityId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       const updatedActivities = userActivities.map((activity) =>
         activity.activity_id === activityId
-          ? { ...activity, num_asistants: activity.num_asistants + 1 }
+          ? { ...activity, num_assistants: activity.num_assistants + 1, is_user_participant: true }
           : activity
       );
       setUserActivities(updatedActivities);
     } catch (error) {
-      console.error("Error al unirse a la actividad:", error);
+      console.error("Error al unirse a la actividad:", error.response?.data || error.message);
+    }
+  };
+
+  const handleLeaveActivity = async (activityId) => {
+    try {
+      const response = await axios.put(
+        "http://localhost:4000/api/activity/leaveActivity",
+        { activity_id: activityId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const updatedActivities = userActivities.map((activity) =>
+        activity.activity_id === activityId
+          ? { ...activity, num_assistants: activity.num_assistants - 1, is_user_participant: false }
+          : activity
+      );
+      setUserActivities(updatedActivities);
+    } catch (error) {
+      console.error("Error al abandonar la actividad:", error.response?.data || error.message);
     }
   };
   
@@ -113,21 +132,23 @@ export const UserActivities = () => {
   return (
     <Container fluid={"md"}>
       <Row>
-        <div className="d-flex flex-wrap gap-3">
+        <div className="d-flex justify-content-center flex-wrap gap-3">
           {!Array.isArray(userActivities) ? (
             <p>No hay actividades disponibles</p>
           ) : (
             userActivities.map((e) => (
               <CardOneActivity
-                key={e.activity_id}
-                activity={e}
-                handleJoinActivity={handleJoinActivity}
-                isActivityFull={isActivityFull}
-                isActivityPast={isActivityPast}
-                getButtonLabel={getButtonLabel}
-                getStatusLabel={getStatusLabel}
-                handleShowModal={handleShowModal}
-              />
+              key={e.activity_id}
+              activity={e}
+              handleJoinActivity={handleJoinActivity}
+              handleLeaveActivity={handleLeaveActivity}
+              isActivityFull={isActivityFull}
+              isActivityPast={isActivityPast}
+              getButtonLabel={getButtonLabel}
+              getStatusLabel={getStatusLabel}
+              handleShowModal={handleShowModal}
+              showEditButton={true} 
+            />
             ))
           )}
         </div>
@@ -140,6 +161,6 @@ export const UserActivities = () => {
     </Container>
   );
 };
-
+  
 
 

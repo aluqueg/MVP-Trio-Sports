@@ -17,16 +17,21 @@ import { UserParticipatedActivities } from "../pages/Profile/UserParticipatedAct
 import { Validation } from "../pages/Validation/Validation";
 import { RecoverPassword } from "../pages/RecoverPassword/RecoverPassword";
 import { EditPassword } from "../pages/EditPassword/EditPassword";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { TrioContext } from "../context/TrioContextProvider";
 import { Admin } from "../pages/Admin/Admin";
 import { OneUser } from "../pages/OneUser/OneUser";
 import { OneUserActivies } from "../pages/OneUser/OneUserActivities/OneUserActivies";
 import { OneUserParticipatedActivities } from "../pages/OneUser/OneUserParticipatedActivities/OneUserParticipatedActivities";
 
+import { EditActivity } from "../pages/EditActivity/EditActivity";
+import { AdminUsers } from "../pages/Admin/AdminUsers/AdminUsers";
+import { AdminSports } from "../pages/Admin/AdminSports/AdminSports";
+
+
 
 export const AppRoutes = () => {
-  const {user} = useContext(TrioContext)
+  const { user } = useContext(TrioContext);
   return (
     <BrowserRouter>
       <Row>
@@ -36,26 +41,41 @@ export const AppRoutes = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           {user && <Route path="/allActivities" element={<AllActivities />} />}
-          {user && <Route path="/activity/:activity_id" element={<Activity />} /> }
-          {user && <Route path="/addSport" element={<AddSport />} /> }
-          {user && <Route path="/addActivity" element={<AddActivity />} /> }
-          {user && <Route path='/allUsers' element={<AllUsers />} /> }
-          {user && <Route path="/chats" element={<Chats />} /> }
-          {user && <Route path="/profile" element={<Profile />}>
-            <Route index element={<UserActivities />} />
-            <Route path="1" element={<UserParticipatedActivities />} />
-          </Route> }
-          
+          {user && (
+            <Route path="/activity/:activity_id" element={<Activity />} />
+          )}
+          {user && <Route path="/addSport" element={<AddSport />} />}
+          {user && <Route path="/addActivity" element={<AddActivity />} />}
+          {user && (
+            <Route
+              path="/editActivity/:activity_id"
+              element={<EditActivity />}
+            />
+          )}
+
+          {user && <Route path="/allUsers" element={<AllUsers />} />}
+          {user && <Route path="/chats" element={<Chats />} />}
+          {user && (
+            <Route path="/profile" element={<Profile />}>
+              <Route index element={<UserActivities />} />
+              <Route path="1" element={<UserParticipatedActivities />} />
+            </Route>
+          )}
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/recoverPassword" element={<RecoverPassword />}/>
+          <Route path="/recoverPassword" element={<RecoverPassword />} />
           <Route path="/editPassword/:token" element={<EditPassword />} />
           <Route path="*" element={<ErrorPage />} />
+
           <Route path = "/validation/:token" element={<Validation/>}/>
-          <Route path="/admin" element={<Admin/>}/>
           <Route path="/oneUser/:id" element={<OneUser/>} >
             <Route index element={<OneUserActivies />} />
             <Route path="1" element={<OneUserParticipatedActivities />} />
+          </Route>
+          <Route path="/admin" element={<Admin/>}>
+            <Route index element = {<AdminUsers/>}/>
+            <Route path="1" element = {<AdminSports/>} />
           </Route>
         </Routes>
       </Container>
