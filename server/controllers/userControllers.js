@@ -199,7 +199,7 @@ class userController {
       user_city,
       description,
       sports,
-    } = req.body;
+    } = JSON.parse(req.body.editUser);
 
     let data = [
       user_name,
@@ -211,6 +211,18 @@ class userController {
     ];
 
     let sqlEditUser = `UPDATE user SET user_name = ?, last_name = ?, birth_date = ?, gender = ?, user_city = ?, description = ? WHERE user_id = ${user_id}`;
+    if (req.file != undefined) {
+      sqlEditUser = `UPDATE user SET user_name = ?, last_name = ?, birth_date = ?, gender = ?, user_city = ?, description = ?, user_img= ? WHERE user_id = ${user_id}`;
+      data = [
+        user_name,
+        last_name,
+        birth_date,
+        gender,
+        user_city,
+        description,
+        req.file.filename,
+      ];
+    }
 
     connection.query(sqlEditUser, data, (errEditUser, resultEditUser) => {
       if (errEditUser) {
@@ -219,72 +231,39 @@ class userController {
         let sqlDBSports = "SELECT sport_id FROM practice WHERE user_id = ?";
         connection.query(sqlDBSports, [user_id], (err, results) => {
           if (err) {
-            res.status(500).json(errDel);
+            res.status(500).json(err);
           } else {
             const currentSportIds = results.map((e) => e.sport_id);
+            let sqlDelSports =
+              "DELETE FROM practice WHERE user_id = ? AND sport_id IN (?)";
             console.log("req.body-----------------", req.body);
             console.log("sports-----------------", sports);
-            // Paso 2: Eliminar deportes desmarcados
-            const toRemove = currentSportIds.filter(
-              (id) => !sports.includes(id)
-            );
-            if (toRemove.length > 0) {
-              let sqlDelSports =
-                "DELETE FROM practice WHERE user_id = ? AND sport_id IN (?)";
-              connection.query(
-                sqlDelSports,
-                [user_id, toRemove],
-                (errDel, resultDel) => {
-                  if (err) {
-                    res.status(500).json(errDel);
-                  } else {
-                    // Paso 3: Añadir nuevos deportes
-                    const toAdd = sports.filter(
-                      (id) => !currentSportIds.includes(id)
-                    );
-                    if (toAdd.length > 0) {
-                      const values = toAdd.map((id) => [user_id, id]);
-                      let sqlAddSports =
-                        "INSERT INTO practice (user_id, sport_id) VALUES ?";
-                      connection.query(
-                        sqlAddSports,
-                        [values],
-                        (errAdd, resAdd) => {
-                          if (err) {
-                            res.status(500).json(errAdd);
-                          } else {
-                            res.status(201).json(resAdd);
-                          }
-                        }
-                      );
-                    }
-                  }
-                }
-              );
-            } else {
-              // Solo añadir si no hay deportes a eliminar
-              const toAdd = sports.filter(
-                (id) => !currentSportIds.includes(id)
-              );
-              if (toAdd.length > 0) {
-                const values = toAdd.map((id) => [user_id, id]);
-                let sqlAddSports2 =
-                  "INSERT INTO practice (user_id, sport_id) VALUES ?";
-                connection.query(
-                  sqlAddSports2,
-                  [values],
-                  (errAdd2, resAdd2) => {
-                    if (errAdd2) {
-                      res.status(500).json(errAdd2);
+            // Paso 2: Eliminar deportes
+            connection.query(
+              sqlDelSports,
+              [user_id, currentSportIds],
+              (errDel, resultDel) => {
+                if (err) {
+                  res.status(500).json(errDel);
+                } else {
+                  // Paso 3: Añadir deportes
+                  const values = sports.map((id) => [user_id, id]);
+                  let sqlAddSports =
+                    "INSERT INTO practice (user_id, sport_id) VALUES ?";
+                  connection.query(sqlAddSports, [values], (errAdd, resAdd) => {
+                    if (errAdd) {
+                      res.status(500).json(errAdd);
                     } else {
-                      res.status(201).json(resAdd2);
+                      if (req.file) {
+                        res.status(201).json({ img: req.file.filename });
+                      } else {
+                        res.status(201).json({ img: null });
+                      }
                     }
-                  }
-                );
-              } else {
-                res.status(201).json(resultEditUser);
+                  });
+                }
               }
-            }
+            );
           }
         });
       }
