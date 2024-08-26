@@ -62,7 +62,7 @@ class userController {
                     process.env.SECRET_KEY,
                     { expiresIn: "14d" }
                   );
-                  sendMail(email,user_name,token)
+                  sendMail(email, user_name, token);
                   res.status(201).json(resPrac);
                 }
               });
@@ -445,10 +445,11 @@ class userController {
   getUserParticipatedActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT activity.* FROM activity JOIN participate
-    ON activity.activity_id = participate.activity_id
-    JOIN user ON participate.user_id = user.user_id
-    where user.user_id = ${id} ORDER BY date_time_activity DESC`;
+    let sql = `SELECT activity.*, sport.sport_name, sport.sport_img 
+    FROM activity JOIN participate ON activity.activity_id = participate.activity_id 
+    JOIN user ON participate.user_id = user.user_id 
+    JOIN sport ON activity.sport_id = sport.sport_id 
+    WHERE user.user_id = ${id} ORDER BY date_time_activity DESC`;
 
     connection.query(sql, (err, result) => {
       if (err) {
