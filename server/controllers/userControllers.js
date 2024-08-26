@@ -334,27 +334,34 @@ class userController {
       }
     });
   };
-
   getUserActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-
-    // Modificación de la consulta SQL para hacer un JOIN con la tabla 'sport'
+  
     let sql = `
       SELECT 
-        activity.*, 
-        sport.sport_name, 
-        sport.sport_img 
+        a.*, 
+        s.sport_name, 
+        s.sport_img,
+        CASE 
+          WHEN p.user_id IS NOT NULL THEN 1 
+          ELSE 0 
+        END AS is_user_participant,
+        CASE 
+          WHEN a.user_id = ${id} THEN 1 
+          ELSE 0 
+        END AS is_creator
       FROM 
-        activity 
+        activity a
       JOIN 
-        sport 
-      ON 
-        activity.sport_id = sport.sport_id 
+        sport s ON a.sport_id = s.sport_id
+      LEFT JOIN 
+        participate p ON a.activity_id = p.activity_id AND p.user_id = ${id}
       WHERE 
-        activity.user_id = ${id}
+        a.user_id = ${id} 
+        AND a.is_deleted = 0  -- Filtra actividades no eliminadas
     `;
-
+  
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -363,6 +370,9 @@ class userController {
       }
     });
   };
+  
+  
+  
 
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
@@ -445,12 +455,17 @@ class userController {
   getUserParticipatedActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT activity.* FROM activity JOIN participate
-    ON activity.activity_id = participate.activity_id
-    JOIN user ON participate.user_id = user.user_id
-    where user.user_id = ${id} ORDER BY date_time_activity DESC`;
-
-    connection.query(sql, (err, result) => {
+  
+    let sql = `
+      SELECT activity.* 
+      FROM activity 
+      JOIN participate ON activity.activity_id = participate.activity_id
+      JOIN user ON participate.user_id = user.user_id
+      WHERE user.user_id = ? AND activity.is_deleted = 0  -- Filtrar las actividades que no han sido eliminadas lógicamente
+      ORDER BY date_time_activity DESC
+    `;
+  
+    connection.query(sql, [id], (err, result) => {
       if (err) {
         res.status(500).json(err);
       } else {
@@ -458,6 +473,7 @@ class userController {
       }
     });
   };
+  
 
   recoverPassword = (req, res) => {
     const email = req.body.id;
