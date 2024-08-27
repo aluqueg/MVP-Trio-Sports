@@ -1,7 +1,7 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Outlet, useNavigate } from "react-router-dom";
 import { TrioContext } from "../../context/TrioContextProvider";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { format } from "date-fns";
 import "./profile.css";
 import ModalEditUser from "../../components/ModalEditUser/ModalEditUser";
