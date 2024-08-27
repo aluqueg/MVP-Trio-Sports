@@ -4,6 +4,7 @@ import { TrioContext } from "../../../context/TrioContextProvider";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Container } from "react-bootstrap";
 import './login.css'
 
 //valor inicial login
@@ -67,39 +68,37 @@ export const Login = () => {
     }
   };
   return (
-    <div>
-      <Form className="m-5">
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Control
-            type="email"
-            placeholder="Correo electrónico"
-            name="email"
-            value={login.email}
-            onChange={handleChange}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            name="password"
-            value={login.password}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        {msg.show && <p>{msg.text}</p>}
-
-        <button type="button" className="trio-btn" onClick={onSubmit}>
-          Inicia sesión
-        </button>
-      </Form>
-      <p><Link to='/recoverPassword'>¿Has olvidado la contraseña?</Link></p>
-      <hr />
-      <button type="button" className="trio-btn"
-        onClick={()=>navigate("/register")}
-      >Crea cuenta nueva</button>
-    </div>
+      <Container fluid="xl">
+        <Form>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Control
+              type="email"
+              placeholder="Correo electrónico"
+              name="email"
+              value={login.email}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={login.password}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          {msg.show && <p>{msg.text}</p>}
+          <Button variant="primary" onClick={onSubmit}>
+            Inicia sesión
+          </Button>
+        </Form>
+        <p><Link to='/recoverPassword'>¿Has olvidado la contraseña?</Link></p>
+        <hr />
+        <Button
+          onClick={()=>navigate("/register")}
+        >Crea cuenta nueva</Button>
+      </Container>
   );
 };
