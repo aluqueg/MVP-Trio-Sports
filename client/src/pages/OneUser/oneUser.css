@@ -21,10 +21,6 @@
   aspect-ratio: 1;
 }
 
-.trio-button:hover {
-  background-color: #e04e2e;
-}
-
 .activity-button:hover{
   border-bottom: 2px solid black;
 }
