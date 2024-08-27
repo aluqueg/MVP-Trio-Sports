@@ -14,4 +14,5 @@ router.put('/joinActivity', verifyToken, activityController.joinActivity);
 router.put('/leaveActivity', verifyToken, activityController.leaveActivity);
 
 
+
 module.exports = router;

@@ -4,6 +4,7 @@ import { Container, Row, Col, Table, Button, Image } from "react-bootstrap";
 import axios from "axios";
 import { BsTrophy, BsMap, BsClock, BsCalendar3 } from "react-icons/bs";
 import { MdLocationOn } from "react-icons/md";
+import { parseISO, isBefore } from "date-fns";
 import { TrioContext } from "../../context/TrioContextProvider";
 import "../Activity/activityStyle.css";
 import ModalCreateComment from "../../components/ModalCreateComment/ModalCreateComment";
@@ -98,60 +99,87 @@ export const Activity = () => {
     }
   };
 
-    // unirse a la actividad
-    const handleJoinActivity = async () => {
-      try {
-        const response = await axios.put(
-          "http://localhost:4000/api/activity/joinActivity",
-          { activity_id },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-  
-        if (response.status === 200) {
-          setActivity((prev) => ({
-            ...prev,
-            num_assistants: prev.num_assistants + 1,
-            is_user_participant: true,
-          }));
-        }
-      } catch (error) {
-        console.error("Error al unirse a la actividad:", error);
-        setError("Error al unirse a la actividad. Inténtalo de nuevo.");
+  // Definir la función para comprobar si la actividad está pasada
+  const isActivityPast = (activityDate) => {
+    const currentDateTime = new Date();
+    return isBefore(activityDate, currentDateTime);
+  };
+
+  // Definir la función para comprobar si la actividad está completa
+  const isActivityFull = (activity) => {
+    return (
+      activity.limit_users !== null &&
+      activity.num_assistants >= activity.limit_users
+    );
+  };
+
+  const handleJoinActivity = async () => {
+    if (
+      isActivityFull(activity) ||
+      isActivityPast(parseISO(activity.date_time_activity))
+    ) {
+      setError("No puedes unirte a una actividad completa o pasada.");
+      return;
+    }
+
+    // Lógica para unirse a la actividad
+    try {
+      const response = await axios.put(
+        "http://localhost:4000/api/activity/joinActivity",
+        { activity_id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 200) {
+        setActivity((prev) => ({
+          ...prev,
+          num_assistants: prev.num_assistants + 1,
+          is_user_participant: true,
+        }));
       }
-    };
-  
-    // abandonar la actividad
-    const handleLeaveActivity = async () => {
-      try {
-        const response = await axios.put(
-          "http://localhost:4000/api/activity/leaveActivity",
-          { activity_id },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-  
-        if (response.status === 200) {
-          setActivity((prev) => ({
-            ...prev,
-            num_assistants: prev.num_assistants - 1,
-            is_user_participant: false,
-          }));
-        }
-      } catch (error) {
-        console.error("Error al abandonar la actividad:", error);
-        setError("Error al abandonar la actividad. Inténtalo de nuevo.");
+    } catch (error) {
+      console.error("Error al unirse a la actividad:", error);
+      setError("Error al unirse a la actividad. Inténtalo de nuevo.");
+    }
+  };
+
+  const handleLeaveActivity = async () => {
+    if (isActivityPast(parseISO(activity.date_time_activity))) {
+      setError("No puedes abandonar una actividad pasada.");
+      return;
+    }
+
+    // Lógica para abandonar la actividad
+    try {
+      const response = await axios.put(
+        "http://localhost:4000/api/activity/leaveActivity",
+        { activity_id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 200) {
+        setActivity((prev) => ({
+          ...prev,
+          num_assistants: prev.num_assistants - 1,
+          is_user_participant: false,
+        }));
       }
-    };
-  
-    // Función para determinar el texto del botón de unirse
-    const getJoinButtonText = () => {
-      if (activity?.is_user_participant) {
-        return "Abandonar";
-      } else if (activity?.limit_users) {
-        return `Unirse ${activity.num_assistants}/${activity.limit_users}`;
-      } else {
-        return "Unirse";
-      }
-    };
+    } catch (error) {
+      console.error("Error al abandonar la actividad:", error);
+      setError("Error al abandonar la actividad. Inténtalo de nuevo.");
+    }
+  };
+
+  // determinar el texto del botón de unirse
+  const getJoinButtonText = () => {
+    if (activity?.is_user_participant) {
+      return "Abandonar";
+    } else if (activity?.limit_users) {
+      return `Unirse ${activity.num_assistants}/${activity.limit_users}`;
+    } else {
+      return "Unirse";
+    }
+  };
 
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>{error}</div>;
@@ -249,16 +277,28 @@ export const Activity = () => {
       <Row className="justify-content-center mt-4">
         <Col xs={12} md={8} className="activity-buttons">
           <Button
-            variant={activity.is_user_participant ? "secondary" : "primary"}
+            variant={
+              isActivityFull(activity) ||
+              isActivityPast(parseISO(activity.date_time_activity))
+                ? "danger"
+                : activity.is_user_participant
+                ? "secondary"
+                : "primary"
+            }
             className="me-2 btn-large"
             onClick={
               activity.is_user_participant
                 ? handleLeaveActivity
                 : handleJoinActivity
             }
+            disabled={
+              isActivityFull(activity) ||
+              isActivityPast(parseISO(activity.date_time_activity))
+            }
           >
             {getJoinButtonText()}
           </Button>
+
           <Button
             variant="secondary"
             className="btn-large"
