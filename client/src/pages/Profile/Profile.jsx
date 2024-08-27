@@ -67,7 +67,7 @@ export const Profile = () => {
           <Outlet />
         </Col>
       </Row>
-      <ModalEditUser setUser={setUser} show={showModal} setShowModal={setShowModal} data={user} token={token}/>
+      <ModalEditUser show={showModal} setShowModal={setShowModal} data={user} token={token}/>
     </Container>
   );
 };

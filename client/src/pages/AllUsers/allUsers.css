@@ -28,3 +28,10 @@
 .filter-group {
   margin-bottom: 0;
 }
+
+.custom-divider {
+  height: 5px; 
+  background-color: #ff5733; 
+  margin: 20px 0; 
+  border-radius: 2px; 
+}

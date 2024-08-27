@@ -390,6 +390,8 @@ class userController {
 
   sendMessage = (req, res) => {
     const { message, date, receiver, userID } = req.body;
+    console.log("el req body", req.body);
+    
     let sql = `INSERT INTO message (text,date_time,sender_user_id,receiver_user_id) VALUES (?,?,?,?)`;
     let data = [message, date, userID, receiver];
     connection.query(sql, data, (err, result) => {

@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { format } from "date-fns";
 import "./oneUser.css";
 import axios from "axios";
+import { ModalCreateMessage } from "../../components/ModalCreateMessage/ModalCreateMessage";
 
 export const OneUser = () => {
 
@@ -15,18 +16,11 @@ export const OneUser = () => {
   const userBirthDate = parseInt(user?.birth_date);
   const today = parseInt(format(new Date(), "yyyy-MM-dd"));
   const [showModal, setShowModal] = useState(false)
-  const [practiceSports, setPracticeSports] = useState([])
 
-  // useEffect(()=>{
-  //   axios
-  //       .get(`http://localhost:4000/api/users/getPracticeSports`,{headers:{Authorization: `Bearer ${token}`}})
-  //       .then(res=>{
-  //         setPracticeSports(res.data)
-  //         console.log("los deportes", practiceSports);
-          
-  //       })
-  //       .catch(err=>{console.log(err)})
-  // },[])
+  const handleOpen = () => {
+    setShowModal(true)
+  }
+
 
   useEffect(()=>{
     const oneUser = async () => {
@@ -70,6 +64,7 @@ console.log("el oneuser", oneUser);
         </Col>
         <Col md lg="6">
           <h4>{oneUser?.description}</h4>
+          <Button onClick={handleOpen}>Enviar mensaje</Button>
         </Col>
       </Row>
       <Row className="my-3">
@@ -81,6 +76,7 @@ console.log("el oneuser", oneUser);
           <Outlet />
         </Col>
       </Row>
+      <ModalCreateMessage oneUser={oneUser} show={showModal} setShowModal={setShowModal} token={token}/>
     </Container>
   )
 }
