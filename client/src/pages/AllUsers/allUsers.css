@@ -1,5 +1,5 @@
-.filter-input,
-.filter-select{
+.filter-input-allusers,
+.filter-select-allusers{
   border-radius: 20px;
   padding: 5px 15px;
   height: 38px;
@@ -8,7 +8,8 @@
   transition: border-color 0.3s ease;
   outline: none;
   box-shadow: none;
-  width: 200px;
+  width: 100%;
+  min-width: 100px;
 }
 
 .filter-button {

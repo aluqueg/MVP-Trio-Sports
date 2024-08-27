@@ -43,7 +43,7 @@ console.log("el oneuser", oneUser);
       <Row className="my-3">
         <Col md lg="3">
           <img
-            className="profile-pic"
+            className="profile-pic-oneuser"
             src={
               oneUser?.user_img
                 ? `http://localhost:4000/images/users/${oneUser?.user_img}`
