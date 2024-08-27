@@ -13,8 +13,6 @@ export const OneUser = () => {
   const { user, token } = useContext(TrioContext);
   const {id} = useParams()
   const [oneUser, setOneUser] = useState({})
-  const userBirthDate = parseInt(user?.birth_date);
-  const today = parseInt(format(new Date(), "yyyy-MM-dd"));
   const [showModal, setShowModal] = useState(false)
   const [selectedButton, setSetselectedButton] = useState(true)
 
@@ -43,7 +41,7 @@ console.log("el oneuser", oneUser);
   return (
     <Container fluid="xxl">
       <Row className="my-3">
-        <Col className="profile-data-oneuser" xs md lg="3">
+        <Col className="profile-data-oneuser" xs md="4" lg="3">
           <img
             className="profile-pic-oneuser"
             src={
@@ -54,7 +52,7 @@ console.log("el oneuser", oneUser);
             alt="profile picture"
           />
         </Col>
-        <Col className="profile-data-oneuser" xs="12" md="4" lg="3">
+        <Col className="profile-data-oneuser" xs="12" md="4" lg="4">
           <h3>
             {oneUser?.user_name} {oneUser?.last_name}
           </h3>
@@ -62,11 +60,11 @@ console.log("el oneuser", oneUser);
             {oneUser.age} años, {oneUser?.gender}
           </h4>
           <h4>{oneUser?.user_city}</h4>
-          {oneUser.sports ? oneUser.sports : <p>No hay deportes seleccionados</p>}
+          <h4>{oneUser.sports ? oneUser.sports : <p>No hay deportes seleccionados</p>}</h4>
         </Col>
         <Col className="profile-data-oneuser" xs="12" md="4" lg="5">
           <h4>{oneUser?.description}</h4>
-          <button className="trio-button" onClick={handleOpen}>Enviar mensaje</button>
+          <button type="button" className="trio-btn" onClick={handleOpen}>Enviar mensaje</button>
         </Col>
       </Row>
       <div className="custom-divider"></div>

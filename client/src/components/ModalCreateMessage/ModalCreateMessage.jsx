@@ -65,10 +65,10 @@ export const ModalCreateMessage = ({show, setShowModal, oneUser}) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <button type="button" className="trio-cancel-btn" onClick={handleClose}>
           Cancelar
-        </Button>
-        <button className="trio-button"  onClick={handleSubmit}>
+        </button>
+        <button type="button" className="trio-btn"  onClick={handleSubmit}>
           Aceptar
         </button>
       </Modal.Footer>
