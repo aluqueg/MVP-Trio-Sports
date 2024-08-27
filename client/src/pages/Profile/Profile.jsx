@@ -15,6 +15,7 @@ export const Profile = () => {
   const age = today - userBirthDate;
   const [showModal, setShowModal] = useState(false)
   const [practiceSports, setPracticeSports] = useState([])
+  const [selectedButton, setSetselectedButton] = useState(true)
 
   const handleOpen = () => {
     setShowModal(true)
@@ -61,8 +62,8 @@ export const Profile = () => {
       <div className="custom-divider"></div>
       <Row className="my-3">
         <Col xxl="12" className="d-flex justify-content-center gap-3 mb-3">
-          <button className="activity-button" onClick={() => navigate("/profile")}>Mis Actividades</button>
-          <button className="activity-button" onClick={() => navigate("/profile/1")}>Participado</button>
+          <button className={`activity-button ${selectedButton && 'activity-button-selected'}`} onClick={() => {navigate("/profile"); setSetselectedButton(true)}}>Mis Actividades</button>
+          <button className={`activity-button ${!selectedButton && 'activity-button-selected'}`} onClick={() => {navigate("/profile/1");setSetselectedButton(false)}}>Participado</button>
         </Col>
         <Col>
           <Outlet />
