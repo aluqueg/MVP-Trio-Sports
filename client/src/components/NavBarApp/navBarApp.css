@@ -6,22 +6,6 @@
   height: 2rem;
 }
 
-
-.login-btn {
-  color: var(--trio2);
-  background-color: rgba(0, 0, 0, 0);
-  border: 2px solid var(--trio2);
-  border-radius: 25px;
-  font-size: 1.3rem;
-  transition: background-color 0.2s ease;
-}
-
-.login-btn:hover {
-  color: white;
-  background-color: var(--trio2);
-  border: 2px solid var(--trio2);
-}
-
 .select-borde{
   border-bottom: 2px solid rgb(115, 115, 115) !important;
 }

@@ -78,12 +78,12 @@ export const NavBarApp = () => {
                 {!user ? (
                   <button
                     onClick={() => navigate("/login")}
-                    className="login-btn"
+                    className="trio-outline-btn"
                   >
                     Iniciar Sesión
                   </button>
                 ) : (
-                  <button className="login-btn" onClick={logOut}>
+                  <button className="trio-outline-btn" onClick={logOut}>
                     Cerrar Sesión
                   </button>
                 )}

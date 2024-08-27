@@ -27,20 +27,6 @@
   border-radius: 2px; 
 }
 
-.trio-button {
-  border-radius: 20px;
-  padding: 5px 15px;
-  height: 38px;
-  background-color: #ff5733;
-  color: white;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.trio-button:hover {
-  background-color: #e04e2e;
-}
-
 .activity-button {
   background-color: transparent;
   color: black;
