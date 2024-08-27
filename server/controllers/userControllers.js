@@ -327,7 +327,36 @@ class userController {
   allMessages = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT user.user_id, user.user_name, user.last_name, user.user_img, MAX(message.date_time) AS last_message_date, (SELECT m.opened FROM message m WHERE m.sender_user_id = user.user_id AND m.receiver_user_id = ${id} ORDER BY m.date_time DESC LIMIT 1) AS opened FROM message JOIN user ON message.sender_user_id = user.user_id WHERE message.receiver_user_id = ${id} GROUP BY user.user_id, user.user_name, user.last_name, user.user_img ORDER BY last_message_date DESC`;
+    let sql = `SELECT 
+    user.user_id, 
+    user.user_name, 
+    user.last_name, 
+    user.user_img, 
+    MAX(message.date_time) AS last_message_date,
+    (SELECT 
+        m.opened 
+     FROM 
+        message m 
+     WHERE 
+        m.sender_user_id = user.user_id 
+        AND m.receiver_user_id = ${id} 
+     ORDER BY 
+        m.date_time DESC 
+     LIMIT 1
+    ) AS opened 
+FROM 
+    message 
+JOIN 
+    user ON message.sender_user_id = user.user_id 
+WHERE 
+    message.receiver_user_id = ${id} 
+GROUP BY 
+    user.user_id, 
+    user.user_name, 
+    user.last_name, 
+    user.user_img 
+ORDER BY 
+    last_message_date DESC`;
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -481,7 +510,6 @@ class userController {
   }
   read = (req,res) =>{
     const { user_sender_id: sender_user_id } = req.body;
-    console.log(req.body)
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
     let sql = `UPDATE message SET opened = 1 WHERE sender_user_id = ${sender_user_id} AND receiver_user_id = ${id} AND opened = 0`

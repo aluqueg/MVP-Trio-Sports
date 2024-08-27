@@ -19,7 +19,6 @@ const verifyToken = (req, res, next) => {
       return res.status(401).json({status:401, message:"3No autorizado"})
     }else{next()}
   })
-  console.log("hola4")
   
 }
 
