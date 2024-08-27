@@ -43,26 +43,36 @@ export const NavBarApp = () => {
                 defaultActiveKey="/allActivities"
                 className="justify-content-start flex-grow-1 pe-3"
               >
-                {user && <div className="d-flex">
+                {user &&
                   <Nav.Link as={Link} to="/allActivities" className={currentPage === "allActivities" ? "select-borde" : null}>
                     Actividades
                   </Nav.Link>
+                }
+                {user &&
                   <Nav.Link as={Link} to="/addActivity"className={currentPage === "addActivity" ? "select-borde" : null} >
                     Crear Actividad
                   </Nav.Link>
+                }
+                {user &&
                   <Nav.Link as={Link} to="/addSport" className={currentPage === "addSport" ? "select-borde" : null}>
                     Crear Deporte
                   </Nav.Link>
+                }
+                {user &&
                   <Nav.Link as={Link} to="/allUsers" className={currentPage === "allUsers" ? "select-borde" : null}>
                     Búsqueda
                   </Nav.Link>
+                }
+                {user &&
                   <Nav.Link as={Link} to="/chats" className={currentPage === "chats" ? "select-borde" : null}>
                     Mensajes
                   </Nav.Link>
+                }
+                {user &&
                   <Nav.Link as={Link} to="/profile" className={currentPage === "profile" ? "select-borde" : null}>
                     Perfil
                   </Nav.Link>
-                </div>}
+                }
               </Nav>
               <Nav className="d-flex">
                 {!user ? (
