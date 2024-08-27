@@ -410,13 +410,11 @@ class userController {
 
   
     let sql = `
-      SELECT activity.* 
-      FROM activity 
-      JOIN participate ON activity.activity_id = participate.activity_id
-      JOIN user ON participate.user_id = user.user_id
-      WHERE user.user_id = ? AND activity.is_deleted = 0  -- Filtrar las actividades que no han sido eliminadas lógicamente
-      ORDER BY date_time_activity DESC
-    `;
+      SELECT activity.*, sport.sport_name, sport.sport_img 
+      FROM activity JOIN participate ON activity.activity_id = participate.activity_id 
+      JOIN user ON participate.user_id = user.user_id 
+      JOIN sport ON activity.sport_id = sport.sport_id 
+      WHERE user.user_id = ${id} AND activity.is_deleted = 0 ORDER BY date_time_activity DESC`;
   
     connection.query(sql, [id], (err, result) => {
 
