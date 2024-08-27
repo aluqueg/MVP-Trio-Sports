@@ -13,9 +13,9 @@ export const OneUser = () => {
   const { user, token } = useContext(TrioContext);
   const {id} = useParams()
   const [oneUser, setOneUser] = useState({})
-  const userBirthDate = parseInt(user?.birth_date);
-  const today = parseInt(format(new Date(), "yyyy-MM-dd"));
   const [showModal, setShowModal] = useState(false)
+  const [selectedButton, setSetselectedButton] = useState(true)
+
 
   const handleOpen = () => {
     setShowModal(true)
@@ -41,7 +41,7 @@ console.log("el oneuser", oneUser);
   return (
     <Container fluid="xxl">
       <Row className="my-3">
-        <Col md lg="3">
+        <Col className="profile-data-oneuser" xs md="4" lg="3">
           <img
             className="profile-pic-oneuser"
             src={
@@ -52,7 +52,7 @@ console.log("el oneuser", oneUser);
             alt="profile picture"
           />
         </Col>
-        <Col md lg="3">
+        <Col className="profile-data-oneuser" xs="12" md="4" lg="4">
           <h3>
             {oneUser?.user_name} {oneUser?.last_name}
           </h3>
@@ -60,17 +60,18 @@ console.log("el oneuser", oneUser);
             {oneUser.age} años, {oneUser?.gender}
           </h4>
           <h4>{oneUser?.user_city}</h4>
-          {oneUser.sports ? oneUser.sports : <p>No hay deportes seleccionados</p>}
+          <h4>{oneUser.sports ? oneUser.sports : <p>No hay deportes seleccionados</p>}</h4>
         </Col>
-        <Col md lg="6">
+        <Col className="profile-data-oneuser" xs="12" md="4" lg="5">
           <h4>{oneUser?.description}</h4>
-          <Button onClick={handleOpen}>Enviar mensaje</Button>
+          <button type="button" className="trio-btn" onClick={handleOpen}>Enviar mensaje</button>
         </Col>
       </Row>
+      <div className="custom-divider"></div>
       <Row className="my-3">
-        <Col xxl="12" className="d-flex gap-3 mb-3">
-          <Button onClick={() => navigate(`/oneUser/${id}`)}>Actividades creadas</Button>
-          <Button onClick={() => navigate(`/oneUser/${id}/1`)}>Participado</Button>
+        <Col xxl="12" className="d-flex justify-content-center gap-3 mb-3">
+          <button className={`activity-button ${selectedButton && 'activity-button-selected'}`} onClick={() => {navigate(`/oneUser/${id}`); setSetselectedButton(true)}}>Actividades creadas</button>
+          <button className={`activity-button ${!selectedButton && 'activity-button-selected'}`} onClick={() => {navigate(`/oneUser/${id}/1`); setSetselectedButton(false)}}>Participado</button>
         </Col>
         <Col>
           <Outlet />

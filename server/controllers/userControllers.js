@@ -288,10 +288,10 @@ class userController {
     console.log(req.file);
   };
 
-  //revisar
   getAllUsers = (req, res) => {
-    // let token = req.headers.authorization.split(" ")[1]
-    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE is_validated = 1 AND user.is_disabled = 0 AND	user.type = 2 GROUP BY user.user_id ORDER BY user.user_name;`;
+    let token = req.headers.authorization.split(" ")[1]
+    let { id } = jwt.decode(token);    
+    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE is_validated = 1 AND user.is_disabled = 0 AND	user.type = 2 AND user.user_id != ${id} GROUP BY user.user_id ORDER BY user.user_name;`;
     connection.query(sql, (error, result) => {
       if (error) {
         res.status(500).json(error);
@@ -306,7 +306,62 @@ class userController {
   allMessages = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT user.user_id, user.user_name, user.last_name, user.user_img, MAX(message.date_time) AS last_message_date, (SELECT m.opened FROM message m WHERE m.sender_user_id = user.user_id AND m.receiver_user_id = ${id} ORDER BY m.date_time DESC LIMIT 1) AS opened FROM message JOIN user ON message.sender_user_id = user.user_id WHERE message.receiver_user_id = ${id} GROUP BY user.user_id, user.user_name, user.last_name, user.user_img ORDER BY last_message_date DESC`;
+    let sql = `SELECT 
+    u.user_id, 
+    u.user_name, 
+    u.last_name, 
+    u.user_img, 
+    MAX(m.date_time) AS last_message_date,
+    (
+        SELECT 
+            m2.opened 
+        FROM 
+            message m2 
+        WHERE 
+            m2.sender_user_id = ${id} 
+            AND m2.receiver_user_id = u.user_id
+        ORDER BY 
+            m2.date_time DESC 
+        LIMIT 1
+    ) AS opened_sent,
+    (
+        SELECT 
+            m3.opened 
+        FROM 
+            message m3 
+        WHERE 
+            m3.sender_user_id = u.user_id 
+            AND m3.receiver_user_id = ${id}
+        ORDER BY 
+            m3.date_time DESC 
+        LIMIT 1
+    ) AS opened_received,
+    (
+        SELECT 
+            m4.text 
+        FROM 
+            message m4 
+        WHERE 
+            (m4.sender_user_id = ${id} AND m4.receiver_user_id = u.user_id)
+            OR (m4.sender_user_id = u.user_id AND m4.receiver_user_id = ${id})
+        ORDER BY 
+            m4.date_time DESC 
+        LIMIT 1
+    ) AS last_message_text
+FROM 
+    user u
+JOIN 
+    message m ON m.sender_user_id = u.user_id OR m.receiver_user_id = u.user_id
+WHERE 
+    (m.sender_user_id = ${id} OR m.receiver_user_id = ${id}) 
+    AND u.user_id != ${id}
+GROUP BY 
+    u.user_id, 
+    u.user_name, 
+    u.last_name, 
+    u.user_img 
+ORDER BY 
+    last_message_date DESC;`;
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -539,7 +594,6 @@ class userController {
 
   read = (req,res) =>{
     const { user_sender_id: sender_user_id } = req.body;
-    console.log(req.body)
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
     let sql = `UPDATE message SET opened = 1 WHERE sender_user_id = ${sender_user_id} AND receiver_user_id = ${id} AND opened = 0`

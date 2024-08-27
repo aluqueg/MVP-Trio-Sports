@@ -124,9 +124,9 @@ export const AllUsers = () => {
             />
           </Col>
           <Col className="d-flex justify-content-center">
-            <Button className="filter-button" onClick={handleClick}>
+            <button type="button" className="trio-btn" onClick={handleClick}>
               Buscar
-            </Button>
+            </button>
           </Col>        
       </Row>
       <div className="custom-divider"></div>
