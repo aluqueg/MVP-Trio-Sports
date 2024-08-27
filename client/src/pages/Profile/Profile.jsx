@@ -9,7 +9,7 @@ import axios from "axios";
 
 export const Profile = () => {
   const navigate = useNavigate();
-  const { user, token } = useContext(TrioContext);
+  const { user, setUser, token } = useContext(TrioContext);
   const userBirthDate = parseInt(user?.birth_date);
   const today = parseInt(format(new Date(), "yyyy-MM-dd"));
   const age = today - userBirthDate;
@@ -27,7 +27,7 @@ export const Profile = () => {
           setPracticeSports(res.data)
         })
         .catch(err=>{console.log(err)})
-  },[])
+  },[user])
 
   return (
     <Container fluid="xxl">
