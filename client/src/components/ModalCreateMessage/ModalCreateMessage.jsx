@@ -68,9 +68,9 @@ export const ModalCreateMessage = ({show, setShowModal, oneUser}) => {
         <Button variant="secondary" onClick={handleClose}>
           Cancelar
         </Button>
-        <Button variant="primary" onClick={handleSubmit}>
+        <button className="trio-button"  onClick={handleSubmit}>
           Aceptar
-        </Button>
+        </button>
       </Modal.Footer>
     </Modal>
   )
