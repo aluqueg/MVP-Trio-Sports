@@ -201,7 +201,7 @@ class userController {
       user_city,
       description,
       sports,
-    } = req.body;
+    } = JSON.parse(req.body.editUser);
 
     let data = [
       user_name,
@@ -213,6 +213,18 @@ class userController {
     ];
 
     let sqlEditUser = `UPDATE user SET user_name = ?, last_name = ?, birth_date = ?, gender = ?, user_city = ?, description = ? WHERE user_id = ${user_id}`;
+    if (req.file != undefined) {
+      sqlEditUser = `UPDATE user SET user_name = ?, last_name = ?, birth_date = ?, gender = ?, user_city = ?, description = ?, user_img= ? WHERE user_id = ${user_id}`;
+      data = [
+        user_name,
+        last_name,
+        birth_date,
+        gender,
+        user_city,
+        description,
+        req.file.filename,
+      ];
+    }
 
     connection.query(sqlEditUser, data, (errEditUser, resultEditUser) => {
       if (errEditUser) {
@@ -221,72 +233,39 @@ class userController {
         let sqlDBSports = "SELECT sport_id FROM practice WHERE user_id = ?";
         connection.query(sqlDBSports, [user_id], (err, results) => {
           if (err) {
-            res.status(500).json(errDel);
+            res.status(500).json(err);
           } else {
             const currentSportIds = results.map((e) => e.sport_id);
+            let sqlDelSports =
+              "DELETE FROM practice WHERE user_id = ? AND sport_id IN (?)";
             console.log("req.body-----------------", req.body);
             console.log("sports-----------------", sports);
-            // Paso 2: Eliminar deportes desmarcados
-            const toRemove = currentSportIds.filter(
-              (id) => !sports.includes(id)
-            );
-            if (toRemove.length > 0) {
-              let sqlDelSports =
-                "DELETE FROM practice WHERE user_id = ? AND sport_id IN (?)";
-              connection.query(
-                sqlDelSports,
-                [user_id, toRemove],
-                (errDel, resultDel) => {
-                  if (err) {
-                    res.status(500).json(errDel);
-                  } else {
-                    // Paso 3: Añadir nuevos deportes
-                    const toAdd = sports.filter(
-                      (id) => !currentSportIds.includes(id)
-                    );
-                    if (toAdd.length > 0) {
-                      const values = toAdd.map((id) => [user_id, id]);
-                      let sqlAddSports =
-                        "INSERT INTO practice (user_id, sport_id) VALUES ?";
-                      connection.query(
-                        sqlAddSports,
-                        [values],
-                        (errAdd, resAdd) => {
-                          if (err) {
-                            res.status(500).json(errAdd);
-                          } else {
-                            res.status(201).json(resAdd);
-                          }
-                        }
-                      );
-                    }
-                  }
-                }
-              );
-            } else {
-              // Solo añadir si no hay deportes a eliminar
-              const toAdd = sports.filter(
-                (id) => !currentSportIds.includes(id)
-              );
-              if (toAdd.length > 0) {
-                const values = toAdd.map((id) => [user_id, id]);
-                let sqlAddSports2 =
-                  "INSERT INTO practice (user_id, sport_id) VALUES ?";
-                connection.query(
-                  sqlAddSports2,
-                  [values],
-                  (errAdd2, resAdd2) => {
-                    if (errAdd2) {
-                      res.status(500).json(errAdd2);
+            // Paso 2: Eliminar deportes
+            connection.query(
+              sqlDelSports,
+              [user_id, currentSportIds],
+              (errDel, resultDel) => {
+                if (err) {
+                  res.status(500).json(errDel);
+                } else {
+                  // Paso 3: Añadir deportes
+                  const values = sports.map((id) => [user_id, id]);
+                  let sqlAddSports =
+                    "INSERT INTO practice (user_id, sport_id) VALUES ?";
+                  connection.query(sqlAddSports, [values], (errAdd, resAdd) => {
+                    if (errAdd) {
+                      res.status(500).json(errAdd);
                     } else {
-                      res.status(201).json(resAdd2);
+                      if (req.file) {
+                        res.status(201).json({ img: req.file.filename });
+                      } else {
+                        res.status(201).json({ img: null });
+                      }
                     }
-                  }
-                );
-              } else {
-                res.status(201).json(resultEditUser);
+                  });
+                }
               }
-            }
+            );
           }
         });
       }
@@ -411,6 +390,8 @@ class userController {
 
   sendMessage = (req, res) => {
     const { message, date, receiver, userID } = req.body;
+    console.log("el req body", req.body);
+    
     let sql = `INSERT INTO message (text,date_time,sender_user_id,receiver_user_id) VALUES (?,?,?,?)`;
     let data = [message, date, userID, receiver];
     connection.query(sql, data, (err, result) => {
@@ -431,13 +412,11 @@ class userController {
 
   
     let sql = `
-      SELECT activity.* 
-      FROM activity 
-      JOIN participate ON activity.activity_id = participate.activity_id
-      JOIN user ON participate.user_id = user.user_id
-      WHERE user.user_id = ? AND activity.is_deleted = 0  -- Filtrar las actividades que no han sido eliminadas lógicamente
-      ORDER BY date_time_activity DESC
-    `;
+      SELECT activity.*, sport.sport_name, sport.sport_img 
+      FROM activity JOIN participate ON activity.activity_id = participate.activity_id 
+      JOIN user ON participate.user_id = user.user_id 
+      JOIN sport ON activity.sport_id = sport.sport_id 
+      WHERE user.user_id = ${id} AND activity.is_deleted = 0 ORDER BY date_time_activity DESC`;
   
     connection.query(sql, [id], (err, result) => {
 
@@ -455,7 +434,7 @@ class userController {
     console.log(req.body.id);
     try {
       const recoverToken = jwt.sign({ id: email }, process.env.SECRET_KEY, {
-        expiresIn: "14d",
+        expiresIn: "1h",
       });
       recuperarPassword(email, recoverToken);
     } catch (err) {
@@ -483,6 +462,19 @@ class userController {
     });
   };
 
+  getOneUser = (req, res) => {
+    const id = req.params.id;
+    console.log("para ver si llega la id", id);    
+    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE user.is_validated = 1 AND user.is_disabled = 0 AND user.type = 2 AND user.user_id = ${id};`;
+    connection.query(sql, (err, result)=>{
+            if(err){
+        res.status(500).json(err);
+      }else{
+        res.status(200).json(result)
+      }
+    })
+  }
+
   updateLastLog = (req,res) =>{
     const {data} = req.body
     let token = req.headers.authorization.split(" ")[1];
@@ -496,6 +488,54 @@ class userController {
       }
     })
   }
+
+
+  getOneUserActivities = (req, res) => {
+    const id = req.params.id    
+    let sql = `
+      SELECT 
+        activity.*, 
+        sport.sport_name, 
+        sport.sport_img 
+      FROM 
+        activity 
+      JOIN 
+        sport 
+      ON 
+        activity.sport_id = sport.sport_id 
+      WHERE 
+        activity.user_id = ${id}
+    `;
+
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+      console.log("el result", result);
+      
+    });        
+  }
+
+  getOneUserParticipatedActivities = (req, res) => {
+    let id = req.params.id
+    let sql = `SELECT activity.* FROM activity JOIN participate
+    ON activity.activity_id = participate.activity_id
+    JOIN user ON participate.user_id = user.user_id
+    where user.user_id = ${id} ORDER BY date_time_activity DESC`;
+
+    connection.query(sql, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  }
+
+
+
   read = (req,res) =>{
     const { user_sender_id: sender_user_id } = req.body;
     console.log(req.body)
@@ -510,6 +550,7 @@ class userController {
       }
     })
   }
+
 }
 
 module.exports = new userController();

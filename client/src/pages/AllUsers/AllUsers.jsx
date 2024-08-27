@@ -6,6 +6,7 @@ import axios from "axios";
 import { gender } from "../../helpers/genderData";
 import { Col, Container, Row, Form } from "react-bootstrap";
 import "./allUsers.css";
+import { Navigate } from "react-router-dom";
 
 export const AllUsers = () => {
   const { user, token, setToken, sports, setSports } = useContext(TrioContext);
@@ -63,14 +64,8 @@ export const AllUsers = () => {
 
   return (
     <Container>
-      <Row>
-        <Col
-          xs={12}
-          sm={6}
-          md={4}
-          lg={2}
-          className="d-flex justify-content-center gap-5"
-        >
+      <Row className="d-flex flex-wrap mt-3">
+        <Col>
           <Form.Group className="filter-group">
           <Form.Select
             id="deporte"
@@ -90,7 +85,7 @@ export const AllUsers = () => {
           </Form.Select>
             </Form.Group>
         </Col>
-        <Col xs={12} sm={6} md={4} lg={2}>
+        <Col>
           <input
             className="filter-input"
             type="text"
@@ -99,7 +94,7 @@ export const AllUsers = () => {
             onChange={handleChange}
           />
         </Col>
-        <Col xs={12} sm={6} md={4} lg={2}>
+        <Col>
         <Form.Group className="filter-group">
           <Form.Select
             id="sexo"
@@ -119,7 +114,7 @@ export const AllUsers = () => {
           </Form.Select>
             </Form.Group>
         </Col>
-        <Col xs={12} sm={6} md={4} lg={2}>
+        <Col>
           <input
             className="filter-input"
             type="text"
@@ -128,17 +123,16 @@ export const AllUsers = () => {
             onChange={(e) => setLocation(e.target.value)}
           />
         </Col>
-        <Col xs={12} sm={6} md={4} lg={2}>
+        <Col>
           <Button className="filter-button" onClick={handleClick}>
             Buscar
           </Button>
         </Col>
       </Row>
-      <hr />
-
+      <div className="custom-divider"></div>
       <Row>
         <Col>
-          <div className="d-flex flex-wrap gap-3">
+          <div className="d-flex justify-content-center flex-wrap gap-3">
             {userMostrados
               ? filteredUsers.map((e, index) => {
                   return <CardOneUser key={index} data={e} />;

@@ -1,13 +1,12 @@
 const jwt = require('jsonwebtoken');
 require ('dotenv').config();
-
 const verifyToken = (req, res, next) => {
   const auth = req.headers.authorization;
+  console.log("*************",auth)
   if(!auth){
     console.log("hola1")
     return res.status(401).json({status:401, message:"1No autorizado"})
   }
-
   const token = auth.split(" ")[1];
   if(!token){
     console.log("Hola 2")
@@ -20,7 +19,6 @@ const verifyToken = (req, res, next) => {
     }else{next()}
   })
   console.log("hola4")
-  
 }
 
 module.exports = verifyToken;
