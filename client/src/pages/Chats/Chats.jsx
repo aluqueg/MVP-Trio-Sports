@@ -3,6 +3,8 @@ import { TrioContext } from "../../context/TrioContextProvider";
 import axios from "axios";
 import "./chats.css";
 import { format } from "date-fns";
+import { Button, Col, Container, Row } from "react-bootstrap";
+
 
 export const Chats = () => {
   const { user, setUser , setToken,token} = useContext(TrioContext)
@@ -12,22 +14,7 @@ export const Chats = () => {
 
   const [currentSend,setCurrentSend] = useState() //EL USUARIO AL QUE MANDAR LOS MENSAJES
   const currentDate = format(new Date(), `yyyy-MM-dd HH-mm-ss`)
-  console.log(currentDate);
-  useEffect(()=>{
-    if(token){
-      axios.get("http://localhost:4000/api/users/allMessages", {headers: {Authorization:`Bearer ${token}`}})
-      .then(res =>{
-        console.log(res)
-        setReceived(res.data)
-      })
-      .catch(error =>{
-        console.error(error);
-      })
-    }
-  },[token])
 
-  console.log(received)
-  
   useEffect(()=>{
     if(token){
       axios.put("http://localhost:4000/api/users/updateLastLog",{data: currentDate} ,{headers: {Authorization:`Bearer ${token}`}}) 
@@ -40,6 +27,29 @@ export const Chats = () => {
     }
     
   },[token])
+
+  useEffect(()=>{
+    if(token){
+      axios.get("http://localhost:4000/api/users/allMessages", {headers: {Authorization:`Bearer ${token}`}})
+      .then(res =>{
+        setReceived(res.data)
+      })
+      .catch(error =>{
+        console.error(error);
+      })
+    }
+  },[token])
+
+  
+  const refreshChat = async ()=>{
+    try{
+      const res = await axios.get(`http://localhost:4000/api/users/allMessages`,{headers: {Authorization:`Bearer ${token}`}})
+      setReceived(res.data)
+      console.log(received)
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   const readed = async (senderUserID) =>{
     try{
@@ -55,14 +65,16 @@ export const Chats = () => {
       const res = await axios.post(`http://localhost:4000/api/users/viewOneChat`, {user_sender_id : senderUserID , user_receiver_id : userID })
       setViewMessages(res.data)
       setCurrentSend(senderUserID)
-      readed(senderUserID)
+      await readed(senderUserID)
+      refreshChat()
       console.log(res)
  
     }catch(err){
       console.log(err)
     }
   }
-  let today = format(new Date(), "yyyy-MM-dd HH-mm-ss")
+  const today = format(new Date(), "yyyy-MM-dd HH-mm-ss")
+  const actualDate = format(new Date(), "yyyy-MM-dd")
   const handleSend = (e)=>{
     const {value} = e.target;
     setCurrentMessage(value)
@@ -77,16 +89,29 @@ export const Chats = () => {
       console.log(err)
     }
   }
+  console.log(received)
   return (
-    <>
-    <div className="messages">
+    <Container fluid="xxl" className="chats-body">
+     <div className="messages">
       <div className="lateral-mensajes">
-        MENSAJES
       {received?.map((e,idx)=>{
+        const dateOnly = e.last_message_date.split(' ')[0];
+        const hourOnly = e.last_message_date.split(' ')[1]
+        const isToday = dateOnly === actualDate  
         return(
           <>
-          <div key={idx}>{e.user_name}</div>
-          <button onClick={() => viewOneChat(e.user_id,user.user_id)} type="button" className={e.opened =="0"?"readedFalse" : null}>ver mensajes </button>
+          <div key={idx} className="one-message" onClick={() => viewOneChat(e.user_id,user.user_id)}>
+          <Row>
+            <Col lg="3">
+              <img src="../../src/assets/images/default_user_img.png" alt="" />
+            </Col>
+            <Col lg="9" className="body-message">
+              <div className="name"><span>{e.user_name} {e.last_name}</span> <span>{isToday? hourOnly : dateOnly}</span></div>
+              <div className="prev-message">{e.last_message_text}</div>
+              <div className="datos">{e.opened_received == "0"? <span>Nuevo Mensaje</span> : null}</div>
+            </Col>
+          </Row>
+          </div>
           </>
         )
       })}
@@ -94,13 +119,13 @@ export const Chats = () => {
       <div className="cuerpo-mensajes">
         {viewMessages?.map((e,idx)=>{
           return(
-            <div className={e.message_type === "sent" ? "dch" : "izq"} key={idx}>{e.text}</div>
+            <div className={e.message_type === "sent" ? "chat-box dch" : " chat-box"} key={idx} >{e.message_type === "sent" ? null : <img src="../../src/assets/images/default_user_img.png" alt="" />}<span>{e.text}</span>{e.message_type === "sent" ? <img src="../../src/assets/images/default_user_img.png" alt="" /> : null}</div>
           )
         })}
       </div>
       <textarea id="message" name="message" placeholder="Escribe aquí..." className="chat" onChange={handleSend} value={currentMessage}></textarea>
       <button onClick={currentSend && currentMessage? ()=>sendMessage(currentMessage,today,currentSend,user.user_id) : null}>ENVIAR</button>
     </div>
-    </>
+    </Container>
   )
 }
