@@ -23,7 +23,7 @@ export const NavBarApp = () => {
     <>
       <Navbar expand="md" className="bg-body-tertiary ">
         <Container fluid="xl">
-          <Navbar.Brand as={Link} to="/allActivities">
+          <Navbar.Brand as={Link} to={user ? "/allActivities" : "/"}>
             <img className="nav-logo" src={logo} alt="logo" />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} />
