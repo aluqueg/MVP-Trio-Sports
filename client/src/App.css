@@ -1,42 +1,49 @@
+:root {
+  --trio: #ff5733;
+  --trio2: #DB4A2B;
+  --dark: #6C757D;
+  --dark2: #54595E;
+}
+
 .trio-btn {
   border-radius: 20px;
   padding: 5px 15px;
   height: 38px;
-  background-color: #ff5733;
+  background-color: var(--trio);
   color: white;
   border: none;
   transition: background-color 0.3s ease;
 }
 
 .trio-btn:hover {
-  background-color: #DB4A2B;
+  background-color: var(--trio2);
 }
 
 .trio-cancel-btn {
   border-radius: 20px;
   padding: 5px 15px;
   height: 38px;
-  background-color: #6C757D;
+  background-color: var(--dark);
   color: white;
   border: none;
   transition: background-color 0.3s ease;
 }
 
 .trio-cancel-btn:hover {
-  background-color: #54595E;
+  background-color: var(--dark2);
 }
 
 .trio-outline-btn {
-  color: var(--trio2);
+  color: var(--trio);
   background-color: rgba(0, 0, 0, 0);
-  border: 2px solid var(--trio2);
+  border: 2px solid var(--trio);
   border-radius: 25px;
   font-size: 1.3rem;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 .trio-outline-btn:hover {
   color: white;
-  background-color: #ff5733;
-  border: 2px solid #ff5733;
+  background-color: var(--trio);
+  border: 2px solid var(--trio);
 }
