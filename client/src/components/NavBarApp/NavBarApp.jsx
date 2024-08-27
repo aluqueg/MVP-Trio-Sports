@@ -77,13 +77,17 @@ export const NavBarApp = () => {
               <Nav className="d-flex">
                 {!user ? (
                   <button
+                    type="button"
                     onClick={() => navigate("/login")}
                     className="trio-outline-btn"
                   >
                     Iniciar Sesión
                   </button>
                 ) : (
-                  <button className="trio-outline-btn" onClick={logOut}>
+                  <button
+                   type="button"
+                   className="trio-outline-btn"
+                   onClick={logOut}>
                     Cerrar Sesión
                   </button>
                 )}

@@ -56,14 +56,14 @@ export const Profile = () => {
         </Col>
         <Col className="profile-data" xs="12" md="4" lg="5">
           <h4>{user?.description}</h4>
-          <button className="trio-btn" onClick={handleOpen}>Editar perfil</button>
+          <button type="button" className="trio-btn" onClick={handleOpen}>Editar perfil</button>
         </Col>
       </Row>
       <div className="custom-divider"></div>
       <Row className="my-3">
         <Col xxl="12" className="d-flex justify-content-center gap-3 mb-3">
-          <button className={`activity-button ${selectedButton && 'activity-button-selected'}`} onClick={() => {navigate("/profile"); setSetselectedButton(true)}}>Mis Actividades</button>
-          <button className={`activity-button ${!selectedButton && 'activity-button-selected'}`} onClick={() => {navigate("/profile/1");setSetselectedButton(false)}}>Participado</button>
+          <button type="button" className={`activity-button ${selectedButton && 'activity-button-selected'}`} onClick={() => {navigate("/profile"); setSetselectedButton(true)}}>Mis Actividades</button>
+          <button type="button" className={`activity-button ${!selectedButton && 'activity-button-selected'}`} onClick={() => {navigate("/profile/1");setSetselectedButton(false)}}>Participado</button>
         </Col>
         <Col>
           <Outlet />
