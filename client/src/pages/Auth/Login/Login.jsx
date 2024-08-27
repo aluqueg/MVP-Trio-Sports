@@ -4,6 +4,7 @@ import { TrioContext } from "../../../context/TrioContextProvider";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import './login.css'
 
 //valor inicial login
 const initialValue = {
@@ -67,7 +68,7 @@ export const Login = () => {
   };
   return (
     <div>
-      <Form>
+      <Form className="m-5">
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Control
             type="email"
@@ -90,15 +91,15 @@ export const Login = () => {
         </Form.Group>
         {msg.show && <p>{msg.text}</p>}
 
-        <Button variant="primary" onClick={onSubmit}>
+        <button type="button" className="trio-btn" onClick={onSubmit}>
           Inicia sesión
-        </Button>
+        </button>
       </Form>
       <p><Link to='/recoverPassword'>¿Has olvidado la contraseña?</Link></p>
       <hr />
-      <Button
+      <button type="button" className="trio-btn"
         onClick={()=>navigate("/register")}
-      >Crea cuenta nueva</Button>
+      >Crea cuenta nueva</button>
     </div>
   );
 };
