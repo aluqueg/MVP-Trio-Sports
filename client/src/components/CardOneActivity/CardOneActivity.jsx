@@ -28,7 +28,11 @@ export const CardOneActivity = ({
   };
 
   const getJoinButtonText = () => {
-    if (activity.is_user_participant) {
+    if (isActivityPast(activityDate)) {
+      return "Finalizada";
+    } else if (isActivityFull(activity)) {
+      return "Completa";
+    } else if (activity.is_user_participant) {
       return "Abandonar";
     } else if (activity.limit_users) {
       return `Unirse ${activity.num_assistants}/${activity.limit_users}`;
@@ -36,6 +40,7 @@ export const CardOneActivity = ({
       return "Unirse";
     }
   };
+  console.log(activity);
 
   const truncatedTitle = truncateText(activity.text, 50);
   const truncatedAddress = truncateText(activity.activity_address, 30);
@@ -69,20 +74,20 @@ export const CardOneActivity = ({
               backgroundColor: "white",
               borderRadius: "50%",
               padding: "5px",
-              border: "1px solid #ccc", // Borde gris claro para destacar el fondo blanco
+              border: "1px solid #ccc",
             }}
-            onClick={(e) => e.stopPropagation()} // Evita que el enlace a la actividad se active
+            onClick={(e) => e.stopPropagation()}
           >
             <BsPencil
               style={{
                 cursor: "pointer",
                 width: "24px",
                 height: "24px",
-                color: "gray", // Color gris para el ícono
-                transition: "color 0.3s ease", // Efecto suave al pasar el ratón
+                color: "gray",
+                transition: "color 0.3s ease",
               }}
-              onMouseOver={(e) => (e.target.style.color = "#000")} // Cambiar a negro al pasar el ratón
-              onMouseOut={(e) => (e.target.style.color = "gray")} // Restaurar color al salir del ratón
+              onMouseOver={(e) => (e.target.style.color = "#000")}
+              onMouseOut={(e) => (e.target.style.color = "gray")}
             />
           </Link>
         )}
@@ -119,30 +124,30 @@ export const CardOneActivity = ({
               <Button
                 variant={
                   isActivityFull(activity) || isActivityPast(activityDate)
-                    ? "danger"
-                    : activity.is_user_participant || activity.is_creator
-                    ? "secondary"
-                    : "primary"
+                    ? "danger" // Botón rojo si la actividad está completa o finalizada
+                    : activity.is_user_participant
+                    ? "secondary" // Botón gris si el usuario es participante (incluido el creador)
+                    : "primary" // Botón azul si se puede unir
                 }
                 className="w-100"
                 disabled={
-                  isActivityFull(activity) ||
-                  isActivityPast(activityDate) ||
-                  activity.loading
-                } // Deshabilita mientras carga o si la actividad está completa/pasada
+                  (isActivityFull(activity) || isActivityPast(activityDate)) &&
+                  !activity.is_user_participant // Deshabilitar si la actividad está completa o finalizada y el usuario no está inscrito
+                }
                 onClick={(e) => {
                   e.preventDefault();
                   if (!activity.loading) {
-                    // Solo permite clic si no está cargando
-                    if (activity.is_user_participant || activity.is_creator) {
-                      handleLeaveActivity(activity.activity_id);
+                    if (activity.is_user_participant) {
+                      handleLeaveActivity(activity.activity_id); // Permite abandonar si es participante
                     } else {
-                      handleJoinActivity(activity.activity_id);
+                      handleJoinActivity(activity.activity_id); // Permite unirse si no es participante
                     }
                   }
                 }}
               >
-                {getJoinButtonText()}
+                {isActivityFull(activity) || isActivityPast(activityDate)
+                  ? "Completo"
+                  : getJoinButtonText()}
               </Button>
             </Col>
             <Col xs={12} md={6}>
@@ -163,4 +168,3 @@ export const CardOneActivity = ({
     </Col>
   );
 };
-
