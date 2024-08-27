@@ -37,7 +37,7 @@ export const AppRoutes = () => {
       <Row>
         <NavBarApp />
       </Row>
-      <Container fluid="xl">
+      <Container fluid>
         <Routes>
           <Route path="/" element={<Home />} />
           {user && <Route path="/allActivities" element={<AllActivities />} />}
