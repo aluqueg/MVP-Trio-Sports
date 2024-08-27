@@ -397,15 +397,15 @@ function ModalEditUser({ show, setShowModal, data }) {
                           );
                         })}
                       </ListGroup>
-                      <Button onClick={() => setNoBinario(false)}>
+                      <button type="button" className="trio-btn" onClick={() => setNoBinario(false)}>
                         Volver
-                      </Button>
+                      </button>
                     </div>
                   ) : (
                     <div className="generos">
-                      <Button onClick={() => gender("Hombre")}>Hombre</Button>
-                      <Button onClick={() => gender("Mujer")}>Mujer</Button>
-                      <Button onClick={selectNobinario}>No Binario</Button>
+                      <button type="button" className="trio-btn" onClick={() => gender("Hombre")}>Hombre</button>
+                      <button type="button" className="trio-btn" onClick={() => gender("Mujer")}>Mujer</button>
+                      <button type="button" className="trio-btn" onClick={selectNobinario}>No Binario</button>
                     </div>
                   )}
                 </>
@@ -427,7 +427,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                         />
                       ))}
                     </div>
-                    <Button onClick={addSportStatus}>Añadir deporte</Button>
+                    <button type="button" className="trio-btn" onClick={addSportStatus}>Añadir deporte</button>
                   </Form.Group>
                   <ModalCreateSport
                     show={modalAddSports}
@@ -470,13 +470,15 @@ function ModalEditUser({ show, setShowModal, data }) {
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <button 
+              <button
+                type="button"
                 onClick={handleClose}
                 className="trio-cancel-btn"
               >
                 Close
               </button>
               <button
+                type="button"
                 onClick={handleSubmit}
                 disabled={!isValid || errorDate}
                 className="trio-btn"
