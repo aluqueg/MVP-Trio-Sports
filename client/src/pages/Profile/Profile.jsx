@@ -32,7 +32,7 @@ export const Profile = () => {
   return (
     <Container fluid="xxl">
       <Row className="my-3">
-        <Col md lg="3">
+        <Col className="profile-data" xs md="4" lg="3">
           <img
             className="profile-pic"
             src={
@@ -43,7 +43,7 @@ export const Profile = () => {
             alt="profile picture"
           />
         </Col>
-        <Col md lg="3">
+        <Col className="profile-data" xs="12" md="4" lg="4">
           <h3>
             {user?.user_name} {user?.last_name}
           </h3>
@@ -53,15 +53,16 @@ export const Profile = () => {
           <h4>{user?.user_city}</h4>
           {!Array.isArray(practiceSports) ? <p>No hay deportes seleccionados</p> : practiceSports?.map((e, idx)=><h4 key={idx}>{e.sport_name}</h4>)}
         </Col>
-        <Col md lg="6">
+        <Col className="profile-data" xs="12" md="4" lg="5">
           <h4>{user?.description}</h4>
-          <Button onClick={handleOpen}>Editar perfil</Button>
+          <button className="trio-button" onClick={handleOpen}>Editar perfil</button>
         </Col>
       </Row>
+      <div className="custom-divider"></div>
       <Row className="my-3">
-        <Col xxl="12" className="d-flex gap-3 mb-3">
-          <Button onClick={() => navigate("/profile")}>Mis Actividades</Button>
-          <Button onClick={() => navigate("/profile/1")}>Participado</Button>
+        <Col xxl="12" className="d-flex justify-content-center gap-3 mb-3">
+          <button className="activity-button" onClick={() => navigate("/profile")}>Mis Actividades</button>
+          <button className="activity-button" onClick={() => navigate("/profile/1")}>Participado</button>
         </Col>
         <Col>
           <Outlet />
