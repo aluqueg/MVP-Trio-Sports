@@ -56,7 +56,7 @@ export const Profile = () => {
         </Col>
         <Col className="profile-data" xs="12" md="4" lg="5">
           <h4>{user?.description}</h4>
-          <button className="trio-button" onClick={handleOpen}>Editar perfil</button>
+          <button className="trio-btn" onClick={handleOpen}>Editar perfil</button>
         </Col>
       </Row>
       <div className="custom-divider"></div>
