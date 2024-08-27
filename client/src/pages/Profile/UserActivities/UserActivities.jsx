@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { TrioContext } from "../../../context/TrioContextProvider";
-import { Col, Container, Row } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import { CardOneActivity } from "../../../components/CardOneActivity/CardOneActivity";
 import { isBefore, parseISO } from "date-fns";
 import ModalCreateComment from "../../../components/ModalCreateComment/ModalCreateComment";
@@ -130,9 +130,8 @@ export const UserActivities = () => {
   
 
   return (
-    <Container fluid={"md"}>
+    <Container >
       <Row>
-        <div className="d-flex justify-content-center flex-wrap gap-3">
           {!Array.isArray(userActivities) ? (
             <p>No hay actividades disponibles</p>
           ) : (
@@ -151,7 +150,6 @@ export const UserActivities = () => {
             />
             ))
           )}
-        </div>
       </Row>
       <ModalCreateComment
         show={showModal}

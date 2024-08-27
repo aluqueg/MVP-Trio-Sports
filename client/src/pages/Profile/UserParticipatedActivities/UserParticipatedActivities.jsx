@@ -115,9 +115,8 @@ export const UserParticipatedActivities = ({participated}) => {
   };
 
   return (
-    <Container fluid={"md"}>
+    <Container >
             <Row>
-          <div className="d-flex justify-content-center flex-wrap gap-3">
             {!Array.isArray(userParticipatedActivities) ? <p>No hay actividades disponibles</p> : userParticipatedActivities.map((e)=><CardOneActivity
               key={e.activity_id}
               activity={e}
@@ -128,7 +127,6 @@ export const UserParticipatedActivities = ({participated}) => {
               getStatusLabel={getStatusLabel}
               handleShowModal={handleShowModal}
             />)}
-          </div>
       </Row>
 
       <ModalCreateComment
