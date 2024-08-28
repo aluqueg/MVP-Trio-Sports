@@ -72,22 +72,23 @@ export const AddSport = () => {
     <Container
       fluid="xxl"
       className="d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
     >
       <div
         className="w-100 container-add-activity"
         style={{ maxWidth: "600px", padding: "20px" }}
       >
-        <h3 className="text-center mb-4">
+        <h4 className="text-center mb-2">
           Formulario de creación de un deporte
-        </h3>
+        </h4>
         {error && <div style={{ color: "red" }}>{error}</div>}
         {success && <div style={{ color: "green" }}>{success}</div>}
-        <div className="add-activity-custom-divider"></div>
+
+        <div className="add-activity-custom-divider mt-2 mb-2"></div>
+
         <Form onSubmit={handleSubmit}>
           <Row>
             <Col>
-              <Form.Group controlId="formText" className="mb-3">
+              <Form.Group controlId="formText" className="mb-2">
                 <Form.Label>Nombre del deporte</Form.Label>
                 <Form.Control
                   type="text"
@@ -101,7 +102,7 @@ export const AddSport = () => {
             </Col>
           </Row>
 
-          <div className="add-activity-custom-divider"></div>
+          <div className="add-activity-custom-divider mt-2 mb-3"></div>
 
           <div className="d-flex justify-content-end">
             <button

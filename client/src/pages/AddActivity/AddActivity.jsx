@@ -111,24 +111,25 @@ export const AddActivity = () => {
     <Container
       fluid="xxl"
       className="d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
     >
       <div
         className="w-100 container-add-activity"
         style={{ maxWidth: "600px", padding: "20px" }}
       >
-        <h3 className="text-center mb-4">
+        <h4 className="text-center mb-2">
           Formulario de creación de una actividad
-        </h3>
+        </h4>
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
-        <div className="add-activity-custom-divider"></div>
+
+        <div className="add-activity-custom-divider mt-2 mb-2"></div>
+
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formText" className="mb-3">
+          <Form.Group controlId="formText" className="mb-1">
             <Form.Label>Título</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Introduce el título de la actividad"
+              placeholder="Introduce el título"
               value={text}
               onChange={(e) => setText(e.target.value)}
               required
@@ -136,7 +137,7 @@ export const AddActivity = () => {
             />
           </Form.Group>
 
-          <Row className="mb-3">
+          <Row className="mb-2">
             <Col>
               <Form.Group controlId="formSportId">
                 <Form.Label>Deporte</Form.Label>
@@ -152,7 +153,7 @@ export const AddActivity = () => {
                   required
                   className="form-select"
                 >
-                  <option value="">Elegir deporte...</option>
+                  <option value="">Elegir...</option>
                   {sports.map((sport) => (
                     <option key={sport.sport_id} value={sport.sport_id}>
                       {sport.sport_name}
@@ -177,7 +178,7 @@ export const AddActivity = () => {
             </Col>
           </Row>
 
-          <Form.Group controlId="formDateTimeActivity" className="mb-3">
+          <Form.Group controlId="formDateTimeActivity" className="mb-1">
             <Form.Label>Día y hora</Form.Label>
             <div className="add-activity-datepicker-container">
               <DatePicker
@@ -194,7 +195,7 @@ export const AddActivity = () => {
                 minDate={new Date()}
                 dateFormat="Pp"
                 locale="es"
-                placeholderText="Selecciona el día y la hora"
+                placeholderText="Selecciona día y hora"
                 className="form-control add-activity-datepicker form-datepicker"
                 required
               />
@@ -202,11 +203,11 @@ export const AddActivity = () => {
             </div>
           </Form.Group>
 
-          <Form.Group controlId="formActivityCity" className="mb-3">
+          <Form.Group controlId="formActivityCity" className="mb-1">
             <Form.Label>Ciudad</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Introduce la ciudad donde se realizará la actividad"
+              placeholder="Introduce la ciudad"
               value={activityCity}
               onChange={(e) => setActivityCity(e.target.value)}
               required
@@ -214,11 +215,11 @@ export const AddActivity = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formActivityAddress" className="mb-3">
+          <Form.Group controlId="formActivityAddress" className="mb-1">
             <Form.Label>Dirección</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Introduce la dirección donde se realizará la actividad"
+              placeholder="Introduce la dirección"
               value={activityAddress}
               onChange={(e) => setActivityAddress(e.target.value)}
               required
@@ -226,7 +227,7 @@ export const AddActivity = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formMapsLink" className="mb-3">
+          <Form.Group controlId="formMapsLink" className="mb-1">
             <Form.Label>Enlace de Google Maps</Form.Label>
             <Form.Control
               type="url"
@@ -237,12 +238,12 @@ export const AddActivity = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formDetails" className="mb-3">
+          <Form.Group controlId="formDetails" className="mb-1">
             <Form.Label>Descripción breve</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
-              placeholder="Introduce una breve descripción de la actividad"
+              placeholder="Introduce una breve descripción"
               value={details}
               onChange={(e) => setDetails(e.target.value)}
               maxLength={255}
@@ -253,7 +254,7 @@ export const AddActivity = () => {
             </Form.Text>
           </Form.Group>
 
-          <div className="add-activity-custom-divider"></div>
+          <div className="add-activity-custom-divider mt-2 mb-3"></div>
 
           <div className="d-flex justify-content-end">
             <button
