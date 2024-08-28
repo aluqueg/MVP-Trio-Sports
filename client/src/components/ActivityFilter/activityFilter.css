@@ -27,7 +27,7 @@
 .filter-select:focus,
 .filter-input:focus,
 .filter-datepicker:focus {
-  border-color: #ff5733;
+  border-color: var(--trio);
   outline: none;
   box-shadow: none;
 }
