@@ -99,18 +99,20 @@ export const Activity = () => {
     }
   };
 
-  // Definir la función para comprobar si la actividad está pasada
+  const isActivityFull = (activity) => {
+    console.log(activity);
+    console.log(activity.limit_users);
+    console.log(activity.num_asistants);
+    let res =
+      activity.limit_users !== null &&
+      activity.num_assistants >= activity.limit_users;
+    console.log(res);
+    return res;
+  };
+
   const isActivityPast = (activityDate) => {
     const currentDateTime = new Date();
     return isBefore(activityDate, currentDateTime);
-  };
-
-  // Definir la función para comprobar si la actividad está completa
-  const isActivityFull = (activity) => {
-    return (
-      activity.limit_users !== null &&
-      activity.num_assistants >= activity.limit_users
-    );
   };
 
   const handleJoinActivity = async () => {
@@ -170,16 +172,21 @@ export const Activity = () => {
     }
   };
 
-  // determinar el texto del botón de unirse
+  const activityDate = activity ? parseISO(activity.date_time_activity) : null;
   const getJoinButtonText = () => {
-    if (activity?.is_user_participant) {
+    if (isActivityPast(activityDate)) {
+      return "Finalizada";
+    } else if (isActivityFull(activity)) {
+      return "Completa";
+    } else if (activity.is_user_participant) {
       return "Abandonar";
-    } else if (activity?.limit_users) {
+    } else if (activity.limit_users) {
       return `Unirse ${activity.num_assistants}/${activity.limit_users}`;
     } else {
       return "Unirse";
     }
   };
+  console.log(activity);
 
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>{error}</div>;
@@ -280,23 +287,33 @@ export const Activity = () => {
             variant={
               isActivityFull(activity) ||
               isActivityPast(parseISO(activity.date_time_activity))
-                ? "danger"
+                ? "danger" // Botón rojo si la actividad está completa o finalizada
                 : activity.is_user_participant
-                ? "secondary"
-                : "primary"
+                ? "secondary" // Botón gris si el usuario es participante (incluido el creador)
+                : "primary" // Botón azul si se puede unir
             }
-            className="me-2 btn-large"
-            onClick={
-              activity.is_user_participant
-                ? handleLeaveActivity
-                : handleJoinActivity
-            }
+            className="w-100"
             disabled={
-              isActivityFull(activity) ||
-              isActivityPast(parseISO(activity.date_time_activity))
+              (isActivityFull(activity) ||
+                isActivityPast(parseISO(activity.date_time_activity))) &&
+              !activity.is_user_participant // Deshabilitar si la actividad está completa o finalizada y el usuario no está inscrito
             }
+            onClick={(e) => {
+              e.preventDefault();
+              if (!activity.loading) {
+                if (activity.is_user_participant) {
+                  handleLeaveActivity(activity.activity_id); // Permite abandonar si es participante
+                } else {
+                  handleJoinActivity(activity.activity_id); // Permite unirse si no es participante
+                }
+              }
+            }}
           >
-            {getJoinButtonText()}
+            {isActivityPast(parseISO(activity.date_time_activity))
+              ? "Finalizada"
+              : isActivityFull(activity)
+              ? "Completo"
+              : getJoinButtonText()}
           </Button>
 
           <Button

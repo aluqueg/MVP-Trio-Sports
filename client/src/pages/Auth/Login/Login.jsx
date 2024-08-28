@@ -4,7 +4,9 @@ import { TrioContext } from "../../../context/TrioContextProvider";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Container } from "react-bootstrap";
 import './login.css'
+
 
 //valor inicial login
 const initialValue = {
@@ -67,10 +69,11 @@ export const Login = () => {
     }
   };
   return (
-    <div>
-      <Form className="m-5">
+    <Container fluid="xl" className="my-5 d-flex flex-column justify-content-center align-items-center ">
+      <Form className="my-5 d-flex flex-column">
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Control
+            className="login-input"
             type="email"
             placeholder="Correo electrónico"
             name="email"
@@ -80,8 +83,8 @@ export const Login = () => {
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
           <Form.Control
+            className="login-input"
             type="password"
             placeholder="Password"
             name="password"
@@ -91,15 +94,16 @@ export const Login = () => {
         </Form.Group>
         {msg.show && <p>{msg.text}</p>}
 
-        <button type="button" className="trio-btn" onClick={onSubmit}>
+        <button type="button" className="button-login trio-btn" onClick={onSubmit}>
           Inicia sesión
         </button>
       </Form>
-      <p><Link to='/recoverPassword'>¿Has olvidado la contraseña?</Link></p>
+      <p className="d-flex justify-content-center"><Link to='/recoverPassword'>¿Has olvidado la contraseña?</Link></p>
       <hr />
-      <button type="button" className="trio-btn"
+      <button type="button" className="login-input button-login trio-btn"
         onClick={()=>navigate("/register")}
       >Crea cuenta nueva</button>
-    </div>
+      <p className="d-flex justify-content-center m-5 frase-login">Conectando a través del deporte</p>
+    </Container>
   );
 };

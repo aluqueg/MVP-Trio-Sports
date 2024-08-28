@@ -13,6 +13,7 @@ export const CardOneActivity = ({
   getStatusLabel,
   handleShowModal,
   showEditButton,
+  disableActions, //deshabilitamos en vista participado el botón de unirse y se lo pasamos por props
 }) => {
   const activityDate = parseISO(activity.date_time_activity);
   const formattedDate = format(activityDate, "dd/MM/yyyy HH:mm", {
@@ -123,29 +124,34 @@ export const CardOneActivity = ({
             <Col xs={12} md={6} className="mb-2 mb-md-0">
               <Button
                 variant={
-                  isActivityFull(activity) || isActivityPast(activityDate)
-                    ? "danger" // Botón rojo si la actividad está completa o finalizada
+                  isActivityFull(activity) ||
+                  isActivityPast(parseISO(activity.date_time_activity))
+                    ? "danger"
                     : activity.is_user_participant
-                    ? "secondary" // Botón gris si el usuario es participante (incluido el creador)
-                    : "primary" // Botón azul si se puede unir
+                    ? "secondary"
+                    : "primary"
                 }
                 className="w-100"
                 disabled={
-                  (isActivityFull(activity) || isActivityPast(activityDate)) &&
-                  !activity.is_user_participant // Deshabilitar si la actividad está completa o finalizada y el usuario no está inscrito
+                  disableActions ||
+                  ((isActivityFull(activity) ||
+                    isActivityPast(parseISO(activity.date_time_activity))) &&
+                    !activity.is_user_participant)
                 }
                 onClick={(e) => {
                   e.preventDefault();
-                  if (!activity.loading) {
+                  if (!activity.loading && !disableActions) {
                     if (activity.is_user_participant) {
-                      handleLeaveActivity(activity.activity_id); // Permite abandonar si es participante
+                      handleLeaveActivity(activity.activity_id);
                     } else {
-                      handleJoinActivity(activity.activity_id); // Permite unirse si no es participante
+                      handleJoinActivity(activity.activity_id);
                     }
                   }
                 }}
               >
-                {isActivityFull(activity) || isActivityPast(activityDate)
+                {isActivityPast(parseISO(activity.date_time_activity))
+                  ? "Finalizada"
+                  : isActivityFull(activity)
                   ? "Completo"
                   : getJoinButtonText()}
               </Button>
