@@ -181,16 +181,16 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 -- Password123!
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
--- VALUES ('Juan', 'Pérez', '1990-05-15', 'Masculino', 'juan_perez.jpg', 'Madrid', 'juan.perez@example.com', '$08$vFcmRugGojrPJjnBSE8sl.XwtVVVtr.7VLuxivotg3jKBHNrY35GO', 'Amante de la tecnología y la programación.', '2024-08-13 12:00:00', 1, 0, 2);
+-- VALUES ('Juan', 'Pérez', '1990-05-15', 'Hombre', 'juan_perez.jpg', 'Madrid', 'juan.perez@example.com', '$08$vFcmRugGojrPJjnBSE8sl.XwtVVVtr.7VLuxivotg3jKBHNrY35GO', 'Amante de la tecnología y la programación.', '2024-08-13 12:00:00', 1, 0, 2);
 
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
--- VALUES ('María', 'López', '1985-10-20', 'Femenino', 'maria_lopez.jpg', 'Barcelona', 'maria.lopez@example.com', '$08$zfTgUshRIIycOgTXpHe9h.B6709/JHra3NT06BjAAlto8LGmrsUvi', 'Diseñadora gráfica apasionada por el arte.', '2024-08-13 12:30:00', 1, 0, 2);
+-- VALUES ('María', 'López', '1985-10-20', 'Mujer', 'maria_lopez.jpg', 'Barcelona', 'maria.lopez@example.com', '$08$zfTgUshRIIycOgTXpHe9h.B6709/JHra3NT06BjAAlto8LGmrsUvi', 'Diseñadora gráfica apasionada por el arte.', '2024-08-13 12:30:00', 1, 0, 2);
 
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
--- VALUES ('Carlos', 'González', '1978-03-12', 'Masculino', 'carlos_gonzalez.jpg', 'Valencia', 'carlos.gonzalez@example.com', '$08$m5t.4nujVrhoRzAn0Ni/KOG2k1Pze/A68vspFkF3cmX4.KK2RqdIu', 'Ingeniero en sistemas, apasionado por la música.', '2024-08-13 13:00:00', 1, 0, 2);
+-- VALUES ('Carlos', 'González', '1978-03-12', 'Hombre', 'carlos_gonzalez.jpg', 'Valencia', 'carlos.gonzalez@example.com', '$08$m5t.4nujVrhoRzAn0Ni/KOG2k1Pze/A68vspFkF3cmX4.KK2RqdIu', 'Ingeniero en sistemas, apasionado por la música.', '2024-08-13 13:00:00', 1, 0, 2);
 
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
--- VALUES ('Ana', 'Martínez', '1995-07-30', 'Femenino', 'ana_martinez.jpg', 'Sevilla', 'ana.martinez@example.com', '$08$Mez.wWZsGCLw56r3ySlPJut5yv/tjxbtH.5OIXm3tPFd4H5d/w7Cy', 'Administradora de empresas con interés en el marketing.', '2024-08-13 13:30:00', 0, 0, 2);
+-- VALUES ('Ana', 'Martínez', '1995-07-30', 'Mujer', 'ana_martinez.jpg', 'Sevilla', 'ana.martinez@example.com', '$08$Mez.wWZsGCLw56r3ySlPJut5yv/tjxbtH.5OIXm3tPFd4H5d/w7Cy', 'Administradora de empresas con interés en el marketing.', '2024-08-13 13:30:00', 0, 0, 2);
     
 -- MENSAJES
     

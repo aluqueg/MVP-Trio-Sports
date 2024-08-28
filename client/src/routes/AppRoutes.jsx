@@ -60,8 +60,9 @@ export const AppRoutes = () => {
                   <Route path="1" element={<UserParticipatedActivities />} />
                 </Route>
               )}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+
+              {!user && <Route path="/login" element={<Login />} /> }
+              {!user && <Route path="/register" element={<Register />} /> }
               <Route path="/recoverPassword" element={<RecoverPassword />} />
               <Route path="/editPassword/:token" element={<EditPassword />} />
               <Route path="*" element={<ErrorPage />} />

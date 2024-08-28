@@ -23,12 +23,12 @@ export const Home = () => {
         </Col>
       </Row>
       <Row className="home-info-section d-flex flex-column justify-content-center align-items-center">
-        <Col className="d-flex flex-column justify-content-center align-items-center gap-5">
-        <h1>Haz deporte, vive la aventura en TRIO</h1>
-        <div className="division-section">
-          <h2>Juega, disfruta, conéctate</h2>
-        </div>
-        <h2>¿Por qué TRIO?</h2>
+        <Col xs="12" className="d-flex flex-column justify-content-center align-items-center gap-5 w-100 gx-0">
+          <h1>Haz deporte, vive la aventura en TRIO</h1>
+          <div className="division-section">
+            <h2>Juega, disfruta, conéctate</h2>
+          </div>
+          <h2>¿Por qué TRIO?</h2>
         </Col>
         <Col className="d-flex flex-wrap justify-content-center gap-3">
             {HOME_CARD_DATA.map((e, idx)=>{
