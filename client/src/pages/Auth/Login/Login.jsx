@@ -7,7 +7,6 @@ import axios from "axios";
 import { Container } from "react-bootstrap";
 import './login.css'
 
-
 //valor inicial login
 const initialValue = {
   email: "",
@@ -69,41 +68,42 @@ export const Login = () => {
     }
   };
   return (
-    <Container fluid="xl" className="my-5 d-flex flex-column justify-content-center align-items-center ">
-      <Form className="my-5 d-flex flex-column">
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Control
-            className="login-input"
-            type="email"
-            placeholder="Correo electrónico"
-            name="email"
-            value={login.email}
-            onChange={handleChange}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Control
-            className="login-input"
-            type="password"
-            placeholder="Password"
-            name="password"
-            value={login.password}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        {msg.show && <p>{msg.text}</p>}
-
-        <button type="button" className="button-login trio-btn" onClick={onSubmit}>
-          Inicia sesión
-        </button>
-      </Form>
-      <p className="d-flex justify-content-center"><Link to='/recoverPassword'>¿Has olvidado la contraseña?</Link></p>
-      <hr />
-      <button type="button" className="login-input button-login trio-btn"
-        onClick={()=>navigate("/register")}
-      >Crea cuenta nueva</button>
-      <p className="d-flex justify-content-center m-5 frase-login">Conectando a través del deporte</p>
-    </Container>
+    <div className="bg-photo">
+      <Container fluid="xl" className="my-3 d-flex flex-column justify-content-center align-items-center ">
+      <img className="logo-login" src="/src/assets/images/logo.png" alt="" />
+        <Form className="my-5 d-flex flex-column">
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Control
+              className="login-input"
+              type="email"
+              placeholder="Correo electrónico"
+              name="email"
+              value={login.email}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Control
+              className="login-input"
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={login.password}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          {msg.show && <p>{msg.text}</p>}
+          <button type="button" className="login-input button-login trio-btn" onClick={onSubmit}>
+            Inicia sesión
+          </button>
+        </Form>
+        <p className="d-flex justify-content-center"><Link to='/recoverPassword'>¿Has olvidado la contraseña?</Link></p>
+        <hr />
+        <button type="button" className="login-input button-login trio-btn"
+          onClick={()=>navigate("/register")}
+        >Crear cuenta nueva</button>
+        <p className="d-flex justify-content-center m-5 frase-login">Conectando a través del deporte</p>
+      </Container>
+    </div>
   );
 };
