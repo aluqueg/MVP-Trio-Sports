@@ -13,6 +13,7 @@ export const CardOneActivity = ({
   getStatusLabel,
   handleShowModal,
   showEditButton,
+  disableActions, //deshabilitamos en vista participado el botón de unirse y se lo pasamos por props
 }) => {
   const activityDate = parseISO(activity.date_time_activity);
   const formattedDate = format(activityDate, "dd/MM/yyyy HH:mm", {
@@ -28,7 +29,11 @@ export const CardOneActivity = ({
   };
 
   const getJoinButtonText = () => {
-    if (activity.is_user_participant) {
+    if (isActivityPast(activityDate)) {
+      return "Finalizada";
+    } else if (isActivityFull(activity)) {
+      return "Completa";
+    } else if (activity.is_user_participant) {
       return "Abandonar";
     } else if (activity.limit_users) {
       return `Unirse ${activity.num_assistants}/${activity.limit_users}`;
@@ -36,6 +41,7 @@ export const CardOneActivity = ({
       return "Unirse";
     }
   };
+  console.log(activity);
 
   const truncatedTitle = truncateText(activity.text, 50);
   const truncatedAddress = truncateText(activity.activity_address, 30);
@@ -69,20 +75,20 @@ export const CardOneActivity = ({
               backgroundColor: "white",
               borderRadius: "50%",
               padding: "5px",
-              border: "1px solid #ccc", // Borde gris claro para destacar el fondo blanco
+              border: "1px solid #ccc",
             }}
-            onClick={(e) => e.stopPropagation()} // Evita que el enlace a la actividad se active
+            onClick={(e) => e.stopPropagation()}
           >
             <BsPencil
               style={{
                 cursor: "pointer",
                 width: "24px",
                 height: "24px",
-                color: "gray", // Color gris para el ícono
-                transition: "color 0.3s ease", // Efecto suave al pasar el ratón
+                color: "gray",
+                transition: "color 0.3s ease",
               }}
-              onMouseOver={(e) => (e.target.style.color = "#000")} // Cambiar a negro al pasar el ratón
-              onMouseOut={(e) => (e.target.style.color = "gray")} // Restaurar color al salir del ratón
+              onMouseOver={(e) => (e.target.style.color = "#000")}
+              onMouseOut={(e) => (e.target.style.color = "gray")}
             />
           </Link>
         )}
@@ -118,23 +124,24 @@ export const CardOneActivity = ({
             <Col xs={12} md={6} className="mb-2 mb-md-0">
               <Button
                 variant={
-                  isActivityFull(activity) || isActivityPast(activityDate)
+                  isActivityFull(activity) ||
+                  isActivityPast(parseISO(activity.date_time_activity))
                     ? "danger"
-                    : activity.is_user_participant || activity.is_creator
+                    : activity.is_user_participant
                     ? "secondary"
                     : "primary"
                 }
                 className="w-100"
                 disabled={
-                  isActivityFull(activity) ||
-                  isActivityPast(activityDate) ||
-                  activity.loading
-                } // Deshabilita mientras carga o si la actividad está completa/pasada
+                  disableActions ||
+                  ((isActivityFull(activity) ||
+                    isActivityPast(parseISO(activity.date_time_activity))) &&
+                    !activity.is_user_participant)
+                }
                 onClick={(e) => {
                   e.preventDefault();
-                  if (!activity.loading) {
-                    // Solo permite clic si no está cargando
-                    if (activity.is_user_participant || activity.is_creator) {
+                  if (!activity.loading && !disableActions) {
+                    if (activity.is_user_participant) {
                       handleLeaveActivity(activity.activity_id);
                     } else {
                       handleJoinActivity(activity.activity_id);
@@ -142,7 +149,11 @@ export const CardOneActivity = ({
                   }
                 }}
               >
-                {getJoinButtonText()}
+                {isActivityPast(parseISO(activity.date_time_activity))
+                  ? "Finalizada"
+                  : isActivityFull(activity)
+                  ? "Completo"
+                  : getJoinButtonText()}
               </Button>
             </Col>
             <Col xs={12} md={6}>
@@ -163,4 +174,3 @@ export const CardOneActivity = ({
     </Col>
   );
 };
-

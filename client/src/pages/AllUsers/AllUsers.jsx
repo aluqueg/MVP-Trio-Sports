@@ -64,70 +64,70 @@ export const AllUsers = () => {
 
   return (
     <Container>
-      <Row className="d-flex flex-wrap mt-3">
-        <Col>
+      <Row className="d-flex justify-content-center align-items-center flex-wrap mt-3">        
+          <Col className="d-flex justify-content-center">
+            <Form.Group className="filter-group">
+            <Form.Select
+              id="deporte"
+              title="Deporte"
+              value={selectedSport}
+              onChange={(e) => setSelectedSport(e.target.value)}
+              className="filter-select-allusers"
+              >
+                <option value="">Deportes</option>
+              {sports.map((e) => {
+                return (
+                  <option key={e.sport_id} value={e.sport_name}>
+                    {e.sport_name}
+                  </option>
+                );
+              })}
+            </Form.Select>
+              </Form.Group>
+          </Col>
+          <Col className="d-flex justify-content-center">
+            <input
+              className="filter-input-allusers"
+              type="text"
+              placeholder="Edad"
+              value={age ? age : ""}
+              onChange={handleChange}
+            />
+          </Col>
+          <Col className="d-flex justify-content-center">
           <Form.Group className="filter-group">
-          <Form.Select
-            id="deporte"
-            title="Deporte"
-            value={selectedSport}
-            onChange={(e) => setSelectedSport(e.target.value)}
-            className="filter-select"
-            >
-              <option value="">Todos los deportes</option>
-            {sports.map((e) => {
-              return (
-                <option key={e.sport_id} value={e.sport_name}>
-                  {e.sport_name}
-                </option>
-              );
-            })}
-          </Form.Select>
-            </Form.Group>
-        </Col>
-        <Col>
-          <input
-            className="filter-input"
-            type="text"
-            placeholder="Edad"
-            value={age ? age : ""}
-            onChange={handleChange}
-          />
-        </Col>
-        <Col>
-        <Form.Group className="filter-group">
-          <Form.Select
-            id="sexo"
-            title="Sexo"
-            value={selectedGender}
-            className="filter-select"
-            onChange={(e) => setSelectedGender(e.target.value)}
-            >
-            <option value="">Sexo</option>
-            {gender.map((e, index) => {
-              return (
-                <option key={index} >
-                  {e}
-                </option>
-              );
-            })}
-          </Form.Select>
-            </Form.Group>
-        </Col>
-        <Col>
-          <input
-            className="filter-input"
-            type="text"
-            placeholder="Ubicación"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
-        </Col>
-        <Col>
-          <Button className="filter-button" onClick={handleClick}>
-            Buscar
-          </Button>
-        </Col>
+            <Form.Select
+              id="sexo"
+              title="Sexo"
+              value={selectedGender}
+              className="filter-select-allusers"
+              onChange={(e) => setSelectedGender(e.target.value)}
+              >
+              <option value="">Sexo</option>
+              {gender.map((e, index) => {
+                return (
+                  <option key={index} >
+                    {e}
+                  </option>
+                );
+              })}
+            </Form.Select>
+              </Form.Group>
+          </Col>
+          <Col className="d-flex justify-content-center">
+            <input
+              className="filter-input-allusers"
+              type="text"
+              placeholder="Ubicación"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          </Col>
+          <Col className="d-flex justify-content-center">
+            <button type="button" className="trio-btn" onClick={handleClick}>
+              Buscar
+            </button>
+          </Col>        
       </Row>
       <div className="custom-divider"></div>
       <Row>

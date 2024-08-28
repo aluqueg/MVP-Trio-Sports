@@ -1,14 +1,15 @@
 import { format, getMonth, getYear, isValid, parse, subYears } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 import { Form, ListGroup } from "react-bootstrap";
-import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { TrioContext } from "../../context/TrioContextProvider";
 import DatePicker from "react-datepicker";
 import { ModalCreateSport } from "../ModalCreateSport/ModalCreateSport";
 import axios from "axios";
-import * as formik from 'formik';
-import * as yup from 'yup';
+import * as formik from "formik";
+import * as yup from "yup";
+import "./modalEditUser.css"
+
 
 function ModalEditUser({ show, setShowModal, data }) {
   const [editUser, setEditUser] = useState(data);
@@ -218,6 +219,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                       name="email"
                       value={values.email}
                       disabled
+                      className="form-input"
                     />
                     <Form.Text className="text-muted"></Form.Text>
                   </Form.Group>
@@ -235,6 +237,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                       onChange={handleChange}
                       value={values.user_name}
                       isInvalid={!!errors.user_name}
+                      className="form-input"
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.user_name}
@@ -257,6 +260,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                         onChange={handleChange}
                         value={values.last_name}
                         isInvalid={!!errors.last_name}
+                        className="form-input"
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.last_name}
@@ -269,6 +273,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                 {/* CUMPLEAÑOS */}
                 <>
                   <DatePicker
+                    className="filter-datepicker"
                     showIcon
                     dateFormat="dd/MM/yyyy"
                     locale="es"
@@ -363,6 +368,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                       onChange={handleChange}
                       value={values.user_city}
                       isInvalid={!!errors.user_city}
+                      className="form-input"
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.user_city}
@@ -390,15 +396,15 @@ function ModalEditUser({ show, setShowModal, data }) {
                           );
                         })}
                       </ListGroup>
-                      <Button onClick={() => setNoBinario(false)}>
+                      <button type="button" className="trio-btn" onClick={() => setNoBinario(false)}>
                         Volver
-                      </Button>
+                      </button>
                     </div>
                   ) : (
                     <div className="generos">
-                      <Button onClick={() => gender("Hombre")}>Hombre</Button>
-                      <Button onClick={() => gender("Mujer")}>Mujer</Button>
-                      <Button onClick={selectNobinario}>No Binario</Button>
+                      <button type="button" className="trio-btn" onClick={() => gender("Hombre")}>Hombre</button>
+                      <button type="button" className="trio-btn" onClick={() => gender("Mujer")}>Mujer</button>
+                      <button type="button" className="trio-btn" onClick={selectNobinario}>No Binario</button>
                     </div>
                   )}
                 </>
@@ -416,10 +422,11 @@ function ModalEditUser({ show, setShowModal, data }) {
                           label={e.sport_name}
                           checked={selectedSport.includes(e.sport_id)}
                           onChange={() => handleCheckboxChange(e.sport_id)}
+                          className="form-checkbox"
                         />
                       ))}
                     </div>
-                    <Button onClick={addSportStatus}>Añadir deporte</Button>
+                    <button type="button" className="trio-btn" onClick={addSportStatus}>Añadir deporte</button>
                   </Form.Group>
                   <ModalCreateSport
                     show={modalAddSports}
@@ -441,6 +448,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                       name="description"
                       onChange={handleChange}
                       value={values.description}
+                      className="form-input"
                     />
                     <Form.Text className="text-muted"></Form.Text>
                   </Form.Group>
@@ -461,16 +469,21 @@ function ModalEditUser({ show, setShowModal, data }) {
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
+              <button
+                type="button"
+                onClick={handleClose}
+                className="trio-cancel-btn"
+              >
                 Close
-              </Button>
-              <Button
-                variant="primary"
+              </button>
+              <button
+                type="button"
                 onClick={handleSubmit}
                 disabled={!isValid || errorDate}
+                className="trio-btn"
               >
                 Guardar Cambios
-              </Button>
+              </button>
             </Modal.Footer>
           </Modal>
         </>

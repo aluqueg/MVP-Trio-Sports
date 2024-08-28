@@ -23,7 +23,7 @@ router.post('/recoverPassword', userController.recoverPassword)
 router.put('/editPassword', userController.editPassword)
 router.get('/getOneUser/:id', verifyToken, userController.getOneUser)
 router.get('/getOneUserActivities/:id', verifyToken, userController.getOneUserActivities)
-router.get('getOneUserParticipatedActivities/:id/1', verifyToken, userController.getOneUserParticipatedActivities)
+router.get('/getOneUserParticipatedActivities/:id', verifyToken, userController.getOneUserParticipatedActivities)
 router.put('/updateLastLog', userController.updateLastLog)
 router.put('/read',verifyToken,userController.read)
 

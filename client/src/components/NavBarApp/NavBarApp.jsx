@@ -18,12 +18,12 @@ export const NavBarApp = () => {
   const url = `${location.pathname}`
   const partes = url.split('/')
   const currentPage = partes[1]
-  console.log(currentPage)
+
   return (
     <>
       <Navbar expand="md" className="bg-body-tertiary ">
         <Container fluid="xl">
-          <Navbar.Brand as={Link} to="/allActivities">
+          <Navbar.Brand as={Link} to={user ? "/allActivities" : "/"}>
             <img className="nav-logo" src={logo} alt="logo" />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} />
@@ -43,37 +43,51 @@ export const NavBarApp = () => {
                 defaultActiveKey="/allActivities"
                 className="justify-content-start flex-grow-1 pe-3"
               >
-                {user && <div className="d-flex">
+                {user &&
                   <Nav.Link as={Link} to="/allActivities" className={currentPage === "allActivities" ? "select-borde" : null}>
                     Actividades
                   </Nav.Link>
+                }
+                {user &&
                   <Nav.Link as={Link} to="/addActivity"className={currentPage === "addActivity" ? "select-borde" : null} >
                     Crear Actividad
                   </Nav.Link>
+                }
+                {user &&
                   <Nav.Link as={Link} to="/addSport" className={currentPage === "addSport" ? "select-borde" : null}>
                     Crear Deporte
                   </Nav.Link>
+                }
+                {user &&
                   <Nav.Link as={Link} to="/allUsers" className={currentPage === "allUsers" ? "select-borde" : null}>
                     Búsqueda
                   </Nav.Link>
+                }
+                {user &&
                   <Nav.Link as={Link} to="/chats" className={currentPage === "chats" ? "select-borde" : null}>
                     Mensajes
                   </Nav.Link>
+                }
+                {user &&
                   <Nav.Link as={Link} to="/profile" className={currentPage === "profile" ? "select-borde" : null}>
                     Perfil
                   </Nav.Link>
-                </div>}
+                }
               </Nav>
               <Nav className="d-flex">
                 {!user ? (
                   <button
+                    type="button"
                     onClick={() => navigate("/login")}
-                    className="login-btn"
+                    className="trio-outline-btn"
                   >
                     Iniciar Sesión
                   </button>
                 ) : (
-                  <button className="login-btn" onClick={logOut}>
+                  <button
+                   type="button"
+                   className="trio-outline-btn"
+                   onClick={logOut}>
                     Cerrar Sesión
                   </button>
                 )}
