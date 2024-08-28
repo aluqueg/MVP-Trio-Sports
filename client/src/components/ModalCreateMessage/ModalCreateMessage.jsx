@@ -22,8 +22,7 @@ export const ModalCreateMessage = ({show, setShowModal, oneUser}) => {
       let receiver = oneUser?.user_id
       let userID = user?.user_id
       try{
-        const res = await axios.post('http://localhost:4000/api/users/sendMessage', {message, date, receiver, userID } )
-        console.log("la res", res);        
+        const res = await axios.post('http://localhost:4000/api/users/sendMessage', {message, date, receiver, userID } )     
         setMessage(""); 
         handleClose();
       }catch(err){

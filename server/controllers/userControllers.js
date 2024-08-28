@@ -8,7 +8,6 @@ require("dotenv").config();
 
 class userController {
   createUser = (req, res) => {
-    console.log(req.file, "***** file");
     let user = JSON.parse(req.body.userRegister);
     let sports = req.body.sports.split(",").map(Number);
     const {
@@ -22,7 +21,6 @@ class userController {
       sport_id,
       description,
     } = user;
-    console.log("user", user);
     const caps_user_name = user_name.charAt(0).toUpperCase() + user_name.slice(1)
     let saltRounds = 8;
     bcrypt.hash(password, saltRounds, (err, hash) => {
@@ -115,11 +113,9 @@ class userController {
     try {
       const token = req.params.token;
       const decoded = jwt.verify(token, process.env.SECRET_KEY);
-      console.log("*********", decoded);
       let sql = `UPDATE user SET is_validated = 1 WHERE email = "${decoded.id}"`;
       connection.query(sql, (err, dbres) => {
         if (err) {
-          console.log("rompe aqui", decoded.id);
           res.status(500).json(err);
         } else {
           res.status(200).json({ message: "Token validado", data: decoded });
@@ -190,7 +186,6 @@ class userController {
   };
 
   editUser = (req, res) => {
-    console.log("editUser", req.body);
     const {
       user_id,
       user_name,
@@ -237,8 +232,6 @@ class userController {
             const currentSportIds = results.map((e) => e.sport_id);
             let sqlDelSports =
               "DELETE FROM practice WHERE user_id = ? AND sport_id IN (?)";
-            console.log("req.body-----------------", req.body);
-            console.log("sports-----------------", sports);
             // Paso 2: Eliminar deportes
             connection.query(
               sqlDelSports,
@@ -284,7 +277,7 @@ class userController {
   };
 
   prueba = (req, res) => {
-    console.log(req.file);
+
   };
 
   //revisar
@@ -295,10 +288,8 @@ class userController {
     connection.query(sql, (error, result) => {
       if (error) {
         res.status(500).json(error);
-        console.log("****************", error);
       } else {
         res.status(200).json(result);
-        console.log(result);
       }
     });
   };
@@ -446,9 +437,7 @@ ORDER BY
   };
 
   sendMessage = (req, res) => {
-    const { message, date, receiver, userID } = req.body;
-    console.log("el req body", req.body);
-
+    const { message, date, receiver, userID } = req.body;  
     let sql = `INSERT INTO message (text,date_time,sender_user_id,receiver_user_id) VALUES (?,?,?,?)`;
     let data = [message, date, userID, receiver];
     connection.query(sql, data, (err, result) => {
@@ -506,14 +495,13 @@ ORDER BY
 
   recoverPassword = (req, res) => {
     const email = req.body.id;
-    console.log(req.body.id);
     try {
       const recoverToken = jwt.sign({ id: email }, process.env.SECRET_KEY, {
         expiresIn: "1h",
       });
       recuperarPassword(email, recoverToken);
     } catch (err) {
-      console.log(err);
+      res.status(500).json(err);
     }
   };
 
@@ -538,8 +526,7 @@ ORDER BY
   };
 
   getOneUser = (req, res) => {
-    const id = req.params.id;
-    console.log("para ver si llega la id", id);
+    const id = req.params.id;  
     let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE user.is_validated = 1 AND user.is_disabled = 0 AND user.type = 2 AND user.user_id = ${id};`;
     connection.query(sql, (err, result) => {
       if (err) {
@@ -604,8 +591,9 @@ ORDER BY
         res.status(500).json(err);
       } else {
         res.status(200).json(result);
+
       }
-      console.log("el result", result);
+
     });
   };
 

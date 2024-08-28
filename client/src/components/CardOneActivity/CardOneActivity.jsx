@@ -42,7 +42,6 @@ export const CardOneActivity = ({
       return "Unirse";
     }
   };
-  console.log(activity);
 
   const truncatedTitle = truncateText(activity.text, 50);
   const truncatedAddress = truncateText(activity.activity_address, 30);

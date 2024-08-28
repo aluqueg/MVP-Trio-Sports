@@ -21,20 +21,20 @@
   box-shadow: none;
 } 
 
+
 .bg-photo{
-  background-image: url('/src/assets/images/pexels-pixabay-163407.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),url("/src/assets/images/pexels-pixabay-163407.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 58.72px);
 }
 
 .logo-login{
-  width: 35%;
+  width: 28%;
   margin-top: 100px;
 }
 
-.caja-login{
-  color: lightgray;
-  margin: 1rem;
+.validation-color{
+  color: white;
 }

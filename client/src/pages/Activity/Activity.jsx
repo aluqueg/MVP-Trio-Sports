@@ -100,13 +100,9 @@ export const Activity = () => {
   };
 
   const isActivityFull = (activity) => {
-    console.log(activity);
-    console.log(activity.limit_users);
-    console.log(activity.num_asistants);
     let res =
       activity.limit_users !== null &&
       activity.num_assistants >= activity.limit_users;
-    console.log(res);
     return res;
   };
 
@@ -186,7 +182,6 @@ export const Activity = () => {
       return "Unirse";
     }
   };
-  console.log(activity);
 
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>{error}</div>;

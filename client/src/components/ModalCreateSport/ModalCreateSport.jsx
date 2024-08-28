@@ -35,8 +35,6 @@ export const ModalCreateSport = ({
         { sport_name: sportName }
       );
 
-      console.log("Respuesta del servidor:", response);
-
       if (response.status === 201) {
         onSportCreated(response.data);
         setSportName("");

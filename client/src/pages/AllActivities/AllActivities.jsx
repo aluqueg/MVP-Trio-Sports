@@ -64,21 +64,13 @@ export const AllActivities = () => {
       if (filterDate) {
         filterDate.setDate(filterDate.getDate() + 1);
         filterDate.setHours(0, 0, 0, 0);
-      }
-
-      console.log("Activity Date:", activityDate);
-      console.log("Filter Date:", filterDate);
-
-      const matchesDate = filters.date
-        ? activityDate.getTime() === filterDate?.getTime()
-        : true;
-
-      console.log("Matches Date:", matchesDate);
-
+      } 
+   
+      const matchesDate = filters.date ? activityDate.getTime() === filterDate?.getTime() : true;
+  
       return matchesSport && matchesCity && matchesDate;
     });
 
-    console.log("Filtered Activities:", filtered);
     setFilteredActivities(filtered);
   };
 
@@ -121,14 +113,12 @@ export const AllActivities = () => {
   };
 
   const isActivityFull = (activity) => {
-    console.log(activity);
-    console.log(activity.limit_users);
-    console.log(activity.num_assistants);
-    let res =
-      activity.limit_users !== null &&
-      activity.num_assistants >= activity.limit_users;
-    console.log(res);
-    return res;
+
+   let res =  activity.limit_users !== null &&
+    activity.num_assistants >= activity.limit_users
+
+    return res 
+
   };
 
   const isActivityPast = (activityDate) => {
@@ -150,33 +140,61 @@ export const AllActivities = () => {
     return null;
   };
 
-  // Lógica para unirse a la actividad
-  const handleJoinActivity = async (activityId) => {
-    console.log("JOINNNNNNNNN", activityId);
-    try {
-      const response = await axios.put(
-        "http://localhost:4000/api/activity/joinActivity",
-        { activity_id: activityId },
-        { headers: { Authorization: `Bearer ${token}` } }
+
+// Lógica para unirse a la actividad
+const handleJoinActivity = async (activityId) => {
+
+  try {
+    const response = await axios.put(
+      "http://localhost:4000/api/activity/joinActivity",
+      { activity_id: activityId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (response.status === 200) {
+      setFilteredActivities((prevActivities) =>
+        prevActivities.map((activity) =>
+          activity.activity_id === activityId
+            ? { 
+                ...activity, 
+                num_assistants: activity.num_assistants + 1, 
+                is_user_participant: true 
+              }
+            : activity
+        )
+
       );
 
-      if (response.status === 200) {
-        setFilteredActivities((prevActivities) =>
-          prevActivities.map((activity) =>
-            activity.activity_id === activityId
-              ? {
-                  ...activity,
-                  num_assistants: activity.num_assistants + 1,
-                  is_user_participant: true,
-                }
-              : activity
-          )
+
+// Lógica para abandonar la actividad
+const handleLeaveActivity = async (activityId) => {
+
+  try {
+    const response = await axios.put(
+      "http://localhost:4000/api/activity/leaveActivity",
+      { activity_id: activityId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (response.status === 200) {
+      setFilteredActivities((prevActivities) =>
+        prevActivities.map((activity) =>
+          activity.activity_id === activityId
+            ? { 
+                ...activity, 
+                num_assistants: Math.max(activity.num_assistants - 1, 0), 
+                is_user_participant: false 
+              }
+            : activity
+        )
+
         );
       }
     } catch (error) {
       console.error(
         "Error al unirse a la actividad:",
         error.response?.data || error.message
+
       );
     }
   };
