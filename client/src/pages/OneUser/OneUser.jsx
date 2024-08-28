@@ -35,8 +35,6 @@ export const OneUser = () => {
       oneUser()
     }
   },[token])
-  
-console.log("el oneuser", oneUser);
 
   return (
     <Container fluid="xxl">

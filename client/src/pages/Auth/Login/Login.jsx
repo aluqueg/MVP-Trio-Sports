@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Container } from "react-bootstrap";
 import './login.css'
-import { Container } from "react-bootstrap";
 
 //valor inicial login
 const initialValue = {
