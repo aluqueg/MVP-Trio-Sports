@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { TrioContext } from "../../../context/TrioContextProvider";
-import { Col, Container, Row } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import { CardOneActivity } from "../../../components/CardOneActivity/CardOneActivity";
 import { isBefore, parseISO } from "date-fns";
 import ModalCreateComment from "../../../components/ModalCreateComment/ModalCreateComment";
@@ -11,7 +11,6 @@ export const OneUserParticipatedActivities = () => {
 
   const navigate = useNavigate();
   const {id} = useParams()
-  const [filteredActivities, setFilteredActivities] = useState([]);
   const { user, token } = useContext(TrioContext);
   const [userActivities, setUserActivities] = useState([]);
   
@@ -21,7 +20,7 @@ export const OneUserParticipatedActivities = () => {
         let res = await axios.get(`http://localhost:4000/api/users/getOneUserParticipatedActivities/${id}`, {headers: {Authorization: `Bearer ${token}`}})
         
         setUserActivities(res.data); 
-        setFilteredActivities(res.data); // Inicialmente, muestra todas las actividades
+       
 
         console.log("la data", res.data);
                
@@ -72,16 +71,8 @@ export const OneUserParticipatedActivities = () => {
      }
    };
 
-   const getButtonLabel = (activity) => {
-    if (activity.limit_users === null) {
-      return "Unirse";
-    }
-    const numAsistants = activity.num_asistants || 1;
-    return `Unirse ${numAsistants} / ${activity.limit_users}`;
-  };
-
   const isActivityFull = (activity) => {
-    return activity.limit_users !== null && activity.num_asistants >= activity.limit_users;
+    return activity.limit_users !== null && activity.num_assistants >= activity.limit_users;
   };
 
   const isActivityPast = (activityDate) => {
@@ -195,7 +186,6 @@ export const OneUserParticipatedActivities = () => {
               handleLeaveActivity={handleLeaveActivity} 
               isActivityFull={isActivityFull}
               isActivityPast={isActivityPast}
-              getButtonLabel={getButtonLabel}
               getStatusLabel={getStatusLabel}
               handleShowModal={handleShowModal}
             />

@@ -12,7 +12,7 @@ export const UserActivities = () => {
   const [userActivities, setUserActivities] = useState([]);
 
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const userActivities = async () => {
       try {
@@ -66,14 +66,6 @@ export const UserActivities = () => {
     } catch (error) {
       console.error("Error al enviar el comentario:", error);
     }
-  };
-
-  const getButtonLabel = (activity) => {
-    if (activity.limit_users === null) {
-      return "Unirse";
-    }
-    const numAsistants = activity.num_assistants || 1;
-    return `Unirse ${numAsistants} / ${activity.limit_users}`;
   };
 
   const isActivityFull = (activity) => {
@@ -171,7 +163,6 @@ export const UserActivities = () => {
               handleLeaveActivity={handleLeaveActivity}
               isActivityFull={isActivityFull}
               isActivityPast={isActivityPast}
-              getButtonLabel={getButtonLabel}
               getStatusLabel={getStatusLabel}
               handleShowModal={handleShowModal}
               showEditButton={true}

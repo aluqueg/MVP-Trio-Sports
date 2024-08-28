@@ -33,7 +33,7 @@ export const Profile = () => {
   return (
     <Container fluid="xxl">
       <Row className="my-3">
-        <Col className="profile-data" xs md="4" lg="3">
+        <Col className="profile-data" xs="12" md="4" lg="3">
           <img
             className="profile-pic"
             src={
@@ -49,7 +49,7 @@ export const Profile = () => {
             {user?.user_name} {user?.last_name}
           </h3>
           <h4>
-            {age} años, {user?.gender}
+            {age} años, {user?.gender === "Prefiero no contestar" ? null : user.gender}
           </h4>
           <h4>{user?.user_city}</h4>
           {!Array.isArray(practiceSports) ? <p>No hay deportes seleccionados</p> : practiceSports?.map((e, idx)=><h4 key={idx}>{e.sport_name}</h4>)}

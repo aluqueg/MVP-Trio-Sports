@@ -120,14 +120,6 @@ export const AllActivities = () => {
     }
   };
 
-  const getButtonLabel = (activity) => {
-    if (activity.limit_users === null) {
-      return "Unirse";
-    }
-    const numAsistants = activity.num_assistants || 1;
-    return `Unirse ${numAsistants} / ${activity.limit_users}`;
-  };
-
   const isActivityFull = (activity) => {
     console.log(activity);
     console.log(activity.limit_users);
@@ -237,7 +229,6 @@ export const AllActivities = () => {
               handleLeaveActivity={handleLeaveActivity}
               isActivityFull={isActivityFull}
               isActivityPast={isActivityPast}
-              getButtonLabel={getButtonLabel}
               getStatusLabel={getStatusLabel}
               handleShowModal={handleShowModal}
             />
