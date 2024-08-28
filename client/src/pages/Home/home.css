@@ -26,6 +26,7 @@
 
   h1{
     color: white;
+    text-align: center;
   }
   
 }
@@ -33,11 +34,29 @@
 .home-info-section{
   min-height: 100vh;
 
+  h1{
+    text-align: center;
+  }
+
   .division-section{
     background-color: var(--trio);
     color: white;
-    width: calc(100vw - 24px);
+    width: 100%;
     text-align: center;
     padding-block: 20px;
+  }
+}
+
+.home-card{
+  img {
+    height: 200px;
+    object-fit: cover;
+    object-position: top;
+}
+}
+
+.home-logo{
+  img{
+    width: 300px;
   }
 }

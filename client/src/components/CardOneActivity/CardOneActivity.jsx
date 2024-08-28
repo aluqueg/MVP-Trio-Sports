@@ -13,7 +13,6 @@ export const CardOneActivity = ({
   getStatusLabel,
   handleShowModal,
   showEditButton,
-  disableActions, //deshabilitamos en vista participado el botón de unirse y se lo pasamos por props
 }) => {
   const activityDate = parseISO(activity.date_time_activity);
   const formattedDate = format(activityDate, "dd/MM/yyyy HH:mm", {
@@ -27,6 +26,8 @@ export const CardOneActivity = ({
     }
     return text;
   };
+
+  console.log(activity);
 
   const getJoinButtonText = () => {
     if (isActivityPast(activityDate)) {
@@ -123,8 +124,9 @@ export const CardOneActivity = ({
             <Col xs={12} md={6} className="mb-2 mb-md-0">
               <Button
                 variant={
-                  isActivityFull(activity) ||
-                  isActivityPast(parseISO(activity.date_time_activity))
+                  isActivityPast(activityDate)
+                    ? "secondary"
+                    : isActivityFull(activity)
                     ? "danger"
                     : activity.is_user_participant
                     ? "secondary"
@@ -132,14 +134,12 @@ export const CardOneActivity = ({
                 }
                 className="w-100"
                 disabled={
-                  disableActions ||
-                  ((isActivityFull(activity) ||
-                    isActivityPast(parseISO(activity.date_time_activity))) &&
-                    !activity.is_user_participant)
+                  isActivityPast(activityDate) ||
+                  (isActivityFull(activity) && !activity.is_user_participant)
                 }
                 onClick={(e) => {
                   e.preventDefault();
-                  if (!activity.loading && !disableActions) {
+                  if (!activity.loading) {
                     if (activity.is_user_participant) {
                       handleLeaveActivity(activity.activity_id);
                     } else {
@@ -148,7 +148,7 @@ export const CardOneActivity = ({
                   }
                 }}
               >
-                {isActivityPast(parseISO(activity.date_time_activity))
+                {isActivityPast(activityDate)
                   ? "Finalizada"
                   : isActivityFull(activity)
                   ? "Completo"

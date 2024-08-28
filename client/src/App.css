@@ -48,3 +48,17 @@
   background-color: var(--trio);
   border: 2px solid var(--trio);
 }
+
+.trio-input{
+  border-radius: 20px;
+  transition: border-color 0.3s ease;
+  outline: none;
+  box-shadow: none;
+  width: 30vw;
+}
+
+.trio-input:focus{
+  border-color: var(--trio);
+  outline: none;
+  box-shadow: none;
+} 

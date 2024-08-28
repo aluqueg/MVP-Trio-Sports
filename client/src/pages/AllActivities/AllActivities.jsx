@@ -39,7 +39,7 @@ export const AllActivities = () => {
     }
   }, [token]);
 
-//filtros deportes, fecha, ciudad
+  //filtros deportes, fecha, ciudad
 
   const handleFilter = (filters) => {
     const filtered = activities.filter((activity) => {
@@ -47,17 +47,19 @@ export const AllActivities = () => {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
-  
-      const matchesSport = filters.sport ? activity.sport_name === filters.sport : true;
-      const matchesCity = filters.city ? normalizedActivityCity.includes(filters.city.toLowerCase()) : true;
-  
-     
+
+      const matchesSport = filters.sport
+        ? activity.sport_name === filters.sport
+        : true;
+      const matchesCity = filters.city
+        ? normalizedActivityCity.includes(filters.city.toLowerCase())
+        : true;
+
       const activityDate = new Date(activity.date_time_activity.split(" ")[0]);
       let filterDate = filters.date ? new Date(filters.date) : null;
-  
-      
+
       activityDate.setHours(0, 0, 0, 0);
-  
+
       // Sumar un día a la filterDate para ajustar la diferencia
       if (filterDate) {
         filterDate.setDate(filterDate.getDate() + 1);
@@ -68,15 +70,15 @@ export const AllActivities = () => {
   
       return matchesSport && matchesCity && matchesDate;
     });
+
     setFilteredActivities(filtered);
   };
-  
-  
+
   const handleReset = () => {
     setFilteredActivities(activities); // Restablecer todas las actividades
   };
 
-    const handleShowModal = (activity) => {
+  const handleShowModal = (activity) => {
     setSelectedActivity(activity);
     setShowModal(true);
   };
@@ -99,7 +101,7 @@ export const AllActivities = () => {
           headers: { Authorization: `Bearer ${token}` }, // token
         }
       );
-  
+
       if (response.status === 201) {
         navigate(`/activity/${selectedActivity.activity_id}`);
       } else {
@@ -110,23 +112,16 @@ export const AllActivities = () => {
     }
   };
 
-  const getButtonLabel = (activity) => {
-    if (activity.limit_users === null) {
-      return "Unirse";
-    }
-    const numAsistants = activity.num_assistants || 1;
-    return `Unirse ${numAsistants} / ${activity.limit_users}`;
-  };
-
   const isActivityFull = (activity) => {
+
    let res =  activity.limit_users !== null &&
     activity.num_assistants >= activity.limit_users
 
     return res 
+
   };
 
   const isActivityPast = (activityDate) => {
-   
     const currentDateTime = new Date();
     return isBefore(activityDate, currentDateTime);
   };
@@ -139,12 +134,12 @@ export const AllActivities = () => {
     }
 
     if (isActivityFull(activity)) {
-
       return "Completa";
     }
 
     return null;
   };
+
 
 // Lógica para unirse a la actividad
 const handleJoinActivity = async (activityId) => {
@@ -167,12 +162,9 @@ const handleJoinActivity = async (activityId) => {
               }
             : activity
         )
+
       );
-    }
-  } catch (error) {
-    console.error("Error al unirse a la actividad:", error.response?.data || error.message);
-  }
-};
+
 
 // Lógica para abandonar la actividad
 const handleLeaveActivity = async (activityId) => {
@@ -195,17 +187,50 @@ const handleLeaveActivity = async (activityId) => {
               }
             : activity
         )
+
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Error al unirse a la actividad:",
+        error.response?.data || error.message
+
       );
     }
-  } catch (error) {
-    console.error("Error al abandonar la actividad:", error.response?.data || error.message);
-  }
-};
-  
-  
-  
+  };
 
+  // Lógica para abandonar la actividad
+  const handleLeaveActivity = async (activityId) => {
+    console.log("holaaaaa", activityId);
 
+    try {
+      console.log("hola");
+      const response = await axios.put(
+        "http://localhost:4000/api/activity/leaveActivity",
+        { activity_id: activityId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 200) {
+        setFilteredActivities((prevActivities) =>
+          prevActivities.map((activity) =>
+            activity.activity_id === activityId
+              ? {
+                  ...activity,
+                  num_assistants: Math.max(activity.num_assistants - 1, 0),
+                  is_user_participant: false,
+                }
+              : activity
+          )
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Error al abandonar la actividad:",
+        error.response?.data || error.message
+      );
+    }
+  };
   return (
     <Container>
       {/* Filtro de actividades */}
@@ -216,24 +241,23 @@ const handleLeaveActivity = async (activityId) => {
         {filteredActivities.length > 0 ? (
           filteredActivities.map((activity) => (
             <CardOneActivity
-            key={activity.activity_id}
-            activity={activity}
-            handleJoinActivity={handleJoinActivity}
-            handleLeaveActivity={handleLeaveActivity} 
-            isActivityFull={isActivityFull}
-            isActivityPast={isActivityPast}
-            getButtonLabel={getButtonLabel}
-            getStatusLabel={getStatusLabel}
-            handleShowModal={handleShowModal}
-          />
-          
-          
+              key={activity.activity_id}
+              activity={activity}
+              handleJoinActivity={handleJoinActivity}
+              handleLeaveActivity={handleLeaveActivity}
+              isActivityFull={isActivityFull}
+              isActivityPast={isActivityPast}
+              getStatusLabel={getStatusLabel}
+              handleShowModal={handleShowModal}
+            />
           ))
         ) : (
-          <p className="no-results-message">No hay actividades disponibles para los criterios de búsqueda.</p>
+          <p className="no-results-message">
+            No hay actividades disponibles para los criterios de búsqueda.
+          </p>
         )}
       </Row>
-  
+
       {/* Modal para añadir comentarios */}
       <ModalCreateComment
         show={showModal}
@@ -241,6 +265,5 @@ const handleLeaveActivity = async (activityId) => {
         handleCommentSubmit={handleCommentSubmit}
       />
     </Container>
- 
   );
 };

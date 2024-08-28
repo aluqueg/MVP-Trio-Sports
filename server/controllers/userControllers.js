@@ -21,6 +21,7 @@ class userController {
       sport_id,
       description,
     } = user;
+    const caps_user_name = user_name.charAt(0).toUpperCase() + user_name.slice(1)
     let saltRounds = 8;
     bcrypt.hash(password, saltRounds, (err, hash) => {
       if (err) {
@@ -29,7 +30,7 @@ class userController {
         let userId = null;
         if (req.file) {
           let data = [
-            user_name,
+            caps_user_name,
             last_name,
             birth_date,
             gender,
@@ -158,8 +159,6 @@ class userController {
     });
   };
 
-  
-
   profile = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
@@ -281,9 +280,10 @@ class userController {
 
   };
 
+  //revisar
   getAllUsers = (req, res) => {
-    let token = req.headers.authorization.split(" ")[1]
-    let { id } = jwt.decode(token);    
+    let token = req.headers.authorization.split(" ")[1];
+    let { id } = jwt.decode(token);
     let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE is_validated = 1 AND user.is_disabled = 0 AND	user.type = 2 AND user.user_id != ${id} GROUP BY user.user_id ORDER BY user.user_name;`;
     connection.query(sql, (error, result) => {
       if (error) {
@@ -361,11 +361,11 @@ ORDER BY
       }
     });
   };
-  
+
   getUserActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-  
+
     let sql = `
       SELECT 
         a.*, 
@@ -389,7 +389,7 @@ ORDER BY
         a.user_id = ${id} 
         AND a.is_deleted = 0  -- Filtra actividades no eliminadas
     `;
-  
+
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
@@ -398,9 +398,6 @@ ORDER BY
       }
     });
   };
-  
-  
-  
 
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
@@ -424,19 +421,23 @@ ORDER BY
        WHERE message.sender_user_id = ? AND message.receiver_user_id = ?)
       ORDER BY date_time;
     `;
-  
-    connection.query(sql, [receiver, sender, sender, receiver], (err, result) => {
-      if (err) {
-        console.error("Error en la consulta SQL:", err);
-        res.status(500).json(err);
-      } else {
-        res.status(200).json(result);
+
+    connection.query(
+      sql,
+      [receiver, sender, sender, receiver],
+      (err, result) => {
+        if (err) {
+          console.error("Error en la consulta SQL:", err);
+          res.status(500).json(err);
+        } else {
+          res.status(200).json(result);
+        }
       }
-    });
+    );
   };
 
   sendMessage = (req, res) => {
-    const { message, date, receiver, userID } = req.body;    
+    const { message, date, receiver, userID } = req.body;  
     let sql = `INSERT INTO message (text,date_time,sender_user_id,receiver_user_id) VALUES (?,?,?,?)`;
     let data = [message, date, userID, receiver];
     connection.query(sql, data, (err, result) => {
@@ -450,21 +451,40 @@ ORDER BY
       }
     });
   };
-
   getUserParticipatedActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
 
-  
     let sql = `
-      SELECT activity.*, sport.sport_name, sport.sport_img 
-      FROM activity JOIN participate ON activity.activity_id = participate.activity_id 
-      JOIN user ON participate.user_id = user.user_id 
-      JOIN sport ON activity.sport_id = sport.sport_id 
-      WHERE user.user_id = ${id} AND activity.is_deleted = 0 ORDER BY date_time_activity DESC`;
-  
-    connection.query(sql, [id], (err, result) => {
+      SELECT 
+        activity.*, 
+        sport.sport_name, 
+        sport.sport_img,
+        CASE 
+          WHEN participate.user_id IS NOT NULL THEN 1 
+          ELSE 0 
+        END AS is_user_participant,
+        CASE 
+          WHEN activity.user_id = ? THEN 1 
+          ELSE 0 
+        END AS is_creator
+      FROM 
+        activity 
+      JOIN 
+        participate ON activity.activity_id = participate.activity_id 
+      JOIN 
+        sport ON activity.sport_id = sport.sport_id 
+      LEFT JOIN 
+        participate AS user_participation 
+        ON activity.activity_id = user_participation.activity_id 
+        AND user_participation.user_id = ?
+      WHERE 
+        participate.user_id = ? 
+        AND activity.is_deleted = 0 
+      ORDER BY 
+        activity.date_time_activity DESC`;
 
+    connection.query(sql, [id, id, id], (err, result) => {
       if (err) {
         res.status(500).json(err);
       } else {
@@ -472,7 +492,6 @@ ORDER BY
       }
     });
   };
-  
 
   recoverPassword = (req, res) => {
     const email = req.body.id;
@@ -509,91 +528,108 @@ ORDER BY
   getOneUser = (req, res) => {
     const id = req.params.id;  
     let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE user.is_validated = 1 AND user.is_disabled = 0 AND user.type = 2 AND user.user_id = ${id};`;
-    connection.query(sql, (err, result)=>{
-            if(err){
+    connection.query(sql, (err, result) => {
+      if (err) {
         res.status(500).json(err);
-      }else{
-        res.status(200).json(result)
+      } else {
+        res.status(200).json(result);
       }
-    })
-  }
+    });
+  };
 
-  updateLastLog = (req,res) =>{
-    const {data} = req.body
+  updateLastLog = (req, res) => {
+    const { data } = req.body;
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `UPDATE user SET last_log_date = "${data}" WHERE user_id = ${id}`
-    connection.query(sql,(err,result)=>{
-      if(err){
+    let sql = `UPDATE user SET last_log_date = "${data}" WHERE user_id = ${id}`;
+    connection.query(sql, (err, result) => {
+      if (err) {
         res.status(500).json(err);
-      }else{
-        res.status(200).json(result)
+      } else {
+        res.status(200).json(result);
       }
-    })
-  }
-
+    });
+  };
 
   getOneUserActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let decoded = jwt.decode(token);
     let user_id = decoded.id;
-    const id = req.params.id    
+    const id = req.params.id;
     // let sql = `
-    //   SELECT 
-    //     activity.*, 
-    //     sport.sport_name, 
-    //     sport.sport_img 
-    //   FROM 
-    //     activity 
-    //   JOIN 
-    //     sport 
-    //   ON 
-    //     activity.sport_id = sport.sport_id 
-    //   WHERE 
+    //   SELECT
+    //     activity.*,
+    //     sport.sport_name,
+    //     sport.sport_img
+    //   FROM
+    //     activity
+    //   JOIN
+    //     sport
+    //   ON
+    //     activity.sport_id = sport.sport_id
+    //   WHERE
     //     activity.user_id = ${id}
     // `;
 
     let sql = `
-    SELECT 
-      a.*, 
-      s.sport_name, 
-      s.sport_img,
-      CASE 
-        WHEN p.user_id IS NOT NULL THEN 1 
-        ELSE 0 
-      END AS is_user_participant,
-      CASE 
-        WHEN a.user_id = ${id} THEN 1 
-        ELSE 0 
-      END AS is_creator
-    FROM 
-      activity a
-    JOIN 
-      sport s ON a.sport_id = s.sport_id
-    LEFT JOIN 
-      participate p ON a.activity_id = p.activity_id AND p.user_id = ${user_id}
-    WHERE 
-      a.user_id = ${id} 
-      AND a.is_deleted = 0  -- Filtra actividades no eliminadas
-  `;
+      SELECT 
+        activity.*, 
+        sport.sport_name, 
+        sport.sport_img 
+      FROM 
+        activity 
+      JOIN 
+        sport 
+      ON 
+        activity.sport_id = sport.sport_id 
+      WHERE 
+        activity.user_id = ${id}
+    `;
 
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
       } else {
         res.status(200).json(result);
-      }      
-    });        
-  }
+
+      }
+
+    });
+  };
 
   getOneUserParticipatedActivities = (req, res) => {
-    let id = req.params.id
+    let id = req.params.id;
+    let token = req.headers.authorization.split(" ")[1];
+    let decoded = jwt.decode(token);
+    let user_id = decoded.id;
+
     let sql = `
-    SELECT activity.*, sport.sport_name, sport.sport_img 
-    FROM activity JOIN participate ON activity.activity_id = participate.activity_id 
-    JOIN user ON participate.user_id = user.user_id 
-    JOIN sport ON activity.sport_id = sport.sport_id 
-    WHERE user.user_id = ${id} AND activity.is_deleted = 0 ORDER BY date_time_activity DESC`;
+        SELECT 
+            a.*, 
+            s.sport_name, 
+            s.sport_img, 
+            CASE 
+                WHEN p2.user_id IS NOT NULL THEN 1 
+                ELSE 0 
+            END AS is_user_participant, -- Verifica si el usuario autenticado participa en la actividad
+            CASE 
+                WHEN a.user_id = ${user_id} THEN 1 
+                ELSE 0 
+            END AS is_creator -- Verifica si el usuario autenticado es el creador
+        FROM 
+            activity a
+        JOIN 
+            sport s ON a.sport_id = s.sport_id
+        LEFT JOIN 
+            participate p2 ON a.activity_id = p2.activity_id AND p2.user_id = ${user_id} -- Verifica participación del usuario autenticado
+        WHERE 
+            a.activity_id IN (
+                SELECT p.activity_id FROM participate p WHERE p.user_id = ${id}
+            ) -- Filtra actividades en las que el usuario específico ha participado
+            AND a.is_deleted = 0 
+        ORDER BY 
+            a.date_time_activity DESC;
+    `;
 
     connection.query(sql, (err, result) => {
       if (err) {
@@ -602,24 +638,21 @@ ORDER BY
         res.status(200).json(result);
       }
     });
-  }
+  };
 
-
-
-  read = (req,res) =>{
+  read = (req, res) => {
     const { user_sender_id: sender_user_id } = req.body;
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `UPDATE message SET opened = 1 WHERE sender_user_id = ${sender_user_id} AND receiver_user_id = ${id} AND opened = 0`
-    connection.query(sql,(err,result)=>{
-      if(err){
+    let sql = `UPDATE message SET opened = 1 WHERE sender_user_id = ${sender_user_id} AND receiver_user_id = ${id} AND opened = 0`;
+    connection.query(sql, (err, result) => {
+      if (err) {
         res.status(500).json(err);
-      }else{
-        res.status(200).json(result)
+      } else {
+        res.status(200).json(result);
       }
-    })
-  }
-
+    });
+  };
 }
 
 module.exports = new userController();
