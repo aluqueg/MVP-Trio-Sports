@@ -213,7 +213,6 @@ export const AllActivities = () => {
       );
     }
   };
-
   return (
     <Container>
       {/* Filtro de actividades */}

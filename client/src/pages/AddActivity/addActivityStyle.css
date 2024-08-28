@@ -35,5 +35,16 @@
     text-overflow: ellipsis;
   }
   
+  .container-add-activity{
+    border: 2px solid var(--trio2);
+    margin-block: 20px;
+    border-radius: 20px;
+  }
   
+  .add-activity-custom-divider {
+    height: 2px; 
+    background-color: var(--trio2); 
+    margin: 20px 0; 
+    border-radius: 2px; 
+  }
   
