@@ -129,7 +129,7 @@ export const AllActivities = () => {
   const isActivityFull = (activity) => {
     console.log(activity)
     console.log(activity.limit_users)
-    console.log(activity.num_asistants)
+    console.log(activity.num_assistants)
    let res =  activity.limit_users !== null &&
     activity.num_assistants >= activity.limit_users
    console.log(res)
