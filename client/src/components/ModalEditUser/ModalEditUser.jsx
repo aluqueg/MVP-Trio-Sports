@@ -8,8 +8,7 @@ import { ModalCreateSport } from "../ModalCreateSport/ModalCreateSport";
 import axios from "axios";
 import * as formik from "formik";
 import * as yup from "yup";
-import "./modalEditUser.css"
-
+import "./modalEditUser.css";
 
 function ModalEditUser({ show, setShowModal, data }) {
   const [editUser, setEditUser] = useState(data);
@@ -91,11 +90,14 @@ function ModalEditUser({ show, setShowModal, data }) {
   const [noBinario, setNoBinario] = useState(false);
   const selectNobinario = () => setNoBinario(!noBinario);
   const generos = [
+    "Hombre",
+    "Mujer",
     "Hombre trans",
     "Mujer trans",
     "Género Fluido",
     "No binario",
     "Pangénero",
+    "Prefiero no contestar"
   ];
   const gender = (genero) => {
     setEditUser({ ...editUser, gender: genero });
@@ -161,7 +163,7 @@ function ModalEditUser({ show, setShowModal, data }) {
       birth_date: date,
       sports: selectedSport,
     };
-    console.log("updatedEditUser",updatedEditUser)
+    console.log("updatedEditUser", updatedEditUser);
     setEditUser(updatedEditUser);
 
     const newFormData = new FormData();
@@ -174,10 +176,10 @@ function ModalEditUser({ show, setShowModal, data }) {
       })
       .then((res) => {
         console.log(res);
-        if(res.data.img){
-          setUser({...updatedEditUser, user_img: res.data.img});
+        if (res.data.img) {
+          setUser({ ...updatedEditUser, user_img: res.data.img });
           handleClose();
-        }else{
+        } else {
           setUser(updatedEditUser);
           handleClose();
         }
@@ -381,32 +383,19 @@ function ModalEditUser({ show, setShowModal, data }) {
 
                 <>
                   <Form.Label className="mb-3">GENERO</Form.Label>
-                  {noBinario ? (
-                    <div className="generos">
-                      <ListGroup as="ul" className="all_generos">
-                        {generos.map((e, idx) => {
-                          return (
-                            <ListGroup.Item
-                              as="li"
-                              key={idx}
-                              onClick={() => gender(e)}
-                            >
-                              {e}
-                            </ListGroup.Item>
-                          );
-                        })}
-                      </ListGroup>
-                      <button type="button" className="trio-btn" onClick={() => setNoBinario(false)}>
-                        Volver
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="generos">
-                      <button type="button" className="trio-btn" onClick={() => gender("Hombre")}>Hombre</button>
-                      <button type="button" className="trio-btn" onClick={() => gender("Mujer")}>Mujer</button>
-                      <button type="button" className="trio-btn" onClick={selectNobinario}>No Binario</button>
-                    </div>
-                  )}
+                  <Form.Group controlId="formGenderId">
+                    <Form.Select
+                      className="form-select"
+                      onChange={(e) => gender(e.target.value)}
+                      value={editUser.gender}
+                    >
+                      {generos.map((e, idx) => (
+                        <option key={idx} value={e}>
+                          {e}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
                 </>
 
                 {/* SPORTS */}
@@ -426,7 +415,13 @@ function ModalEditUser({ show, setShowModal, data }) {
                         />
                       ))}
                     </div>
-                    <button type="button" className="trio-btn" onClick={addSportStatus}>Añadir deporte</button>
+                    <button
+                      type="button"
+                      className="trio-btn"
+                      onClick={addSportStatus}
+                    >
+                      Añadir deporte
+                    </button>
                   </Form.Group>
                   <ModalCreateSport
                     show={modalAddSports}
@@ -457,7 +452,9 @@ function ModalEditUser({ show, setShowModal, data }) {
 
                 <>
                   <Form.Group className="mb-3">
-                    <Form.Label htmlFor="file">Editar foto de perfil</Form.Label>
+                    <Form.Label htmlFor="file">
+                      Editar foto de perfil
+                    </Form.Label>
                     <Form.Control
                       id="file"
                       type="file"

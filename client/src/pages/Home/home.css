@@ -36,7 +36,7 @@
   .division-section{
     background-color: var(--trio);
     color: white;
-    width: calc(100vw - 24px);
+
     text-align: center;
     padding-block: 20px;
   }
