@@ -46,7 +46,13 @@ export const AddActivity = () => {
   }, [sports, setSports, token]);
 
   const handleSportCreated = (newSport) => {
-    setSports((prevSports) => [...prevSports, newSport]);
+    setSports((prevSports) => {
+      // Añade el nuevo deporte y ordena alfabéticamente
+      const updatedSports = [...prevSports, newSport].sort((a, b) =>
+        a.sport_name.localeCompare(b.sport_name, "es", { sensitivity: "base" })
+      );
+      return updatedSports;
+    });
     setSportId(newSport.sport_id);
   };
 
