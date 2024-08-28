@@ -1,28 +1,140 @@
-.button-color{
-  background-color: lightgray;
-  border-color: lightgray;
+:root {
+  --trio: #ff5733;
+  --trio2: #DB4A2B;
+  --dark: #6C757D;
+  --dark2: #54595E;
 }
 
-.generos{
+
+.body-register{
+  display: flex;
+  justify-content: center;
+  padding-top: 15vh;
+  height: calc(100vh - 98.43px);
+}
+
+.container1{
+  height: 156px;
+  display: flex;
+  align-items: center;
+}
+
+.list-genders, .list-sports, .block{
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 30px;
-  background-color: grey;
-  width: 500px;
-  max-height: 200px;
-
+  background-color: #F6F6F6;
+  width: 30vw;
+  height: 260.89px;
+  gap: 10px;
+  border-radius: 15px;
 }
-.all_generos{
+
+.list-genders button{
+  width: 80%;
+}
+
+.all_genders{
   max-height: 150px;
   overflow-y: auto;
+  width: 20vw;
+  overflow-x: hidden
+}
+
+.list-group-item.active {
+  background-color: #ff5733;
 }
 
 .error-msg{
   color: red;
   font-size: 14px;
 }
-.prueba{
-  background-color:rgba(219, 74, 43, 1) ;
+
+.trio-input{
+  border-radius: 20px;
+  transition: border-color 0.3s ease;
+  outline: none;
+  box-shadow: none;
+  width: 30vw;
+}
+.trio-input:focus{
+  border-color: var(--trio);
+  outline: none;
+  box-shadow: none;
+} 
+
+.custom-progress .progress-bar {
+  background-color:var(--trio);
+}
+.custom-progress{
+  margin-bottom: 5vh;
+  width: 40vw;
+}
+.email-password ,.name ,.birthDate, .city, .gender, .sports, .description, .photo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.buttons-email{
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  width: 25vw;
+  margin-top: 10vh;
+  flex-wrap: wrap;
+}
+
+.buttons-general{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 25vw;
+  margin-top: 10vh;
+}
+.buttons-general-block{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 25vw;
+  margin-top: 2vh;
+}
+.register-text{
+  margin-bottom: 5vh;
+  text-align: center;
+}
+.register-text-block{
+  margin-bottom: 2vh;
+}
+.list-sports p, h3 {
+  margin: 0;
+}
+.all_sports{
+  max-height: 180px;
+  overflow-y: auto;
+  width: 20vw;
+  overflow-x: hidden
+}
+.tittle{
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.list-sports p{
+  font-size: small;
+}
+.description-text{
+  width: 25vw;
+  resize: none;
+  border-radius: 25px;
+}
+
+.block p{
+  margin: 0;
+}
+.block img{
+  max-height: 150px;
 }
