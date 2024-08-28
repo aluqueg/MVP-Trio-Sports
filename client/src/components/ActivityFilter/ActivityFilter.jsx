@@ -45,14 +45,14 @@ export const ActivityFilter = ({ onFilter, onReset }) => {
       </Form.Group>
 
       <div className="filter-input-group">
-      <DatePicker
-  selected={selectedDate}
-  onChange={(date) => setSelectedDate(date)}
-  className="filter-datepicker"
-  placeholderText="Fecha"
-  dateFormat="dd/MM/yyyy"
-/>
-<BsCalendar3 className="calendar-icon" />
+        <DatePicker
+          selected={selectedDate}
+          onChange={(date) => setSelectedDate(date)}
+          className="filter-datepicker"
+          placeholderText="Fecha"
+          dateFormat="dd/MM/yyyy"
+        />
+        <BsCalendar3 className="calendar-icon" />
       </div>
 
       <input
@@ -75,4 +75,3 @@ export const ActivityFilter = ({ onFilter, onReset }) => {
     </div>
   );
 };
-
