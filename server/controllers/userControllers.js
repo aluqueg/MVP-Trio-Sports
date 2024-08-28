@@ -547,6 +547,9 @@ ORDER BY
 
 
   getOneUserActivities = (req, res) => {
+    let token = req.headers.authorization.split(" ")[1];
+    let decoded = jwt.decode(token);
+    let user_id = decoded.id;
     const id = req.params.id    
     // let sql = `
     //   SELECT 
@@ -581,7 +584,7 @@ ORDER BY
     JOIN 
       sport s ON a.sport_id = s.sport_id
     LEFT JOIN 
-      participate p ON a.activity_id = p.activity_id AND p.user_id = ${id}
+      participate p ON a.activity_id = p.activity_id AND p.user_id = ${user_id}
     WHERE 
       a.user_id = ${id} 
       AND a.is_deleted = 0  -- Filtra actividades no eliminadas

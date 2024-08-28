@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 export const OneUserActivies = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [filteredActivities, setFilteredActivities] = useState([]);
+
   const { user, token } = useContext(TrioContext);
   const [userActivities, setUserActivities] = useState([]);
   useEffect(() => {
@@ -20,14 +20,14 @@ export const OneUserActivies = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserActivities(res.data);
-        setFilteredActivities(res.data); // Inicialmente, muestra todas las actividades
+      
         console.log("la data", res.data);
       } catch (err) {
         console.log(err);
       }
     };
     userActivities();
-  }, [id, token]); // Añade 'id' a las dependencias
+  }, [id, token]); 
   
   /* NECESARIO PARA LA CARD */
   const [showModal, setShowModal] = useState(false);
