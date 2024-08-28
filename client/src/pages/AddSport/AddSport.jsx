@@ -20,8 +20,6 @@ export const AddSport = () => {
     setError("");
     setSuccess("");
 
-    console.log("Enviando deporte:", sportName);
-
     try {
       const response = await axios.post(
         "http://localhost:4000/api/sports/createSport",
@@ -30,8 +28,6 @@ export const AddSport = () => {
           headers: { Authorization: `Bearer ${token}` }, // token
         }
       );
-
-      console.log("Respuesta del servidor:", response);
 
       if (response.status === 201) {
         setSuccess("Deporte creado con éxito");
