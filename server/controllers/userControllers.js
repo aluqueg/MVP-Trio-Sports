@@ -23,6 +23,7 @@ class userController {
       description,
     } = user;
     console.log("user", user);
+    const caps_user_name = user_name.charAt(0).toUpperCase() + user_name.slice(1)
     let saltRounds = 8;
     bcrypt.hash(password, saltRounds, (err, hash) => {
       if (err) {
@@ -31,7 +32,7 @@ class userController {
         let userId = null;
         if (req.file) {
           let data = [
-            user_name,
+            caps_user_name,
             last_name,
             birth_date,
             gender,
@@ -286,6 +287,7 @@ class userController {
     console.log(req.file);
   };
 
+  //revisar
   getAllUsers = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
@@ -583,28 +585,19 @@ ORDER BY
     // `;
 
     let sql = `
-    SELECT 
-      a.*, 
-      s.sport_name, 
-      s.sport_img,
-      CASE 
-        WHEN p.user_id IS NOT NULL THEN 1 
-        ELSE 0 
-      END AS is_user_participant,
-      CASE 
-        WHEN a.user_id = ${id} THEN 1 
-        ELSE 0 
-      END AS is_creator
-    FROM 
-      activity a
-    JOIN 
-      sport s ON a.sport_id = s.sport_id
-    LEFT JOIN 
-      participate p ON a.activity_id = p.activity_id AND p.user_id = ${user_id}
-    WHERE 
-      a.user_id = ${id} 
-      AND a.is_deleted = 0  -- Filtra actividades no eliminadas
-  `;
+      SELECT 
+        activity.*, 
+        sport.sport_name, 
+        sport.sport_img 
+      FROM 
+        activity 
+      JOIN 
+        sport 
+      ON 
+        activity.sport_id = sport.sport_id 
+      WHERE 
+        activity.user_id = ${id}
+    `;
 
     connection.query(sql, (err, result) => {
       if (err) {
