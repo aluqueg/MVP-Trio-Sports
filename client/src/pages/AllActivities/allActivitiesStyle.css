@@ -43,6 +43,55 @@ body, html {
   margin-top: 20px;
 }
 
+/* General Styles */
+body, html {
+  height: auto;
+  overflow-y: visible;
+}
+
+/* Custom Divider */
+.custom-divider {
+  height: 5px;
+  background-color: #ff5733;
+  margin: 20px 0;
+  border-radius: 2px;
+}
+
+/* No Results Message */
+.no-results-message {
+  text-align: center;
+  color: #ff5733;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+/* Media Queries */
+
+/* Tablets and medium devices (768px and below) */
+@media (max-width: 768px) {
+  .custom-divider {
+    margin: 15px 0; /* Adjust margin for medium devices */
+  }
+
+  .no-results-message {
+    font-size: 1.2rem; /* Slightly reduce font size for medium devices */
+    margin-top: 15px;
+  }
+}
+
+/* Mobile and small devices (576px and below) */
+@media (max-width: 576px) {
+  .custom-divider {
+    margin: 10px 0; /* Further adjust margin for small devices */
+  }
+
+  .no-results-message {
+    font-size: 1rem; /* Reduce font size for small devices */
+    margin-top: 10px;
+  }
+}
+
+
 
 
 

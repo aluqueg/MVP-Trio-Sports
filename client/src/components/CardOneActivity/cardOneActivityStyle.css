@@ -1,0 +1,177 @@
+.trio-btn {
+  background-color: var(--trio);
+  color: white;
+  border-radius: 20px;
+  padding: 5px 15px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.trio-btn:hover {
+  background-color: var(--trio2);
+}
+
+.complete-btn {
+  background-color: darkred;
+  color: white;
+  border-radius: 20px;
+  padding: 5px 15px;
+  border: none;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+.complete-btn:hover {
+  background-color: red;
+}
+
+.complete-btn .complete-text {
+  display: block;
+}
+
+.complete-btn:hover .complete-text {
+  display: none;
+}
+
+.complete-btn .abandon-text {
+  display: none;
+}
+
+.complete-btn:hover .abandon-text {
+  display: block;
+}
+
+.finalized-btn {
+  background-color: var(--dark);
+  color: white;
+  border-radius: 20px;
+  padding: 5px 15px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.finalized-btn:hover {
+  background-color: var(--dark2);
+}
+
+.trio-comment-btn {
+  background-color: var(--dark);
+  color: white;
+  border-radius: 20px;
+  padding: 5px 15px;
+  border: none;
+  min-height: 38px;
+  transition: background-color 0.3s ease;
+}
+
+.trio-comment-btn:hover {
+  background-color: var(--dark2);
+}
+
+/* Estilos para pantallas grandes (tarjetas y filtros) */
+.card-img-custom {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (min-width: 1400px) {
+  .btn-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .btn-group .col-md-12 {
+    flex: 0 0 48%;
+    max-width: 48%;
+  }
+
+  .btn-group .btn {
+    width: 100%;
+  }
+}
+
+/* Para Pantallas Pequeñas y Medianas (1399px y menos) */
+@media (max-width: 1399px) {
+  .btn-group .col-md-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .btn-group .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-body {
+    text-align: center;
+  }
+
+  .card-title,
+  .card-text {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .btn-group {
+    justify-content: center;
+  }
+
+  .card-img-custom {
+    object-position: top;
+    height: 200px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .card {
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .card-img-custom {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .btn-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .btn-group .col-md-12 {
+    flex: 0 0 48%;
+    max-width: 48%;
+  }
+
+  .btn-group .btn {
+    width: 100%;
+  }
+
+  .row {
+    margin: 0;
+    padding: 0;
+  }
+}
