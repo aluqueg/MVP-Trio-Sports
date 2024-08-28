@@ -20,15 +20,15 @@ export const OneUserActivies = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserActivities(res.data);
-      
+
         console.log("la data", res.data);
       } catch (err) {
         console.log(err);
       }
     };
     userActivities();
-  }, [id, token]); 
-  
+  }, [id, token]);
+
   /* NECESARIO PARA LA CARD */
   const [showModal, setShowModal] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
@@ -64,17 +64,11 @@ export const OneUserActivies = () => {
       console.error("Error al enviar el comentario:", error);
     }
   };
-  const getButtonLabel = (activity) => {
-    if (activity.limit_users === null) {
-      return "Unirse";
-    }
-    const numAsistants = activity.num_asistants || 1;
-    return `Unirse ${numAsistants} / ${activity.limit_users}`;
-  };
+
   const isActivityFull = (activity) => {
     return (
       activity.limit_users !== null &&
-      activity.num_asistants >= activity.limit_users
+      activity.num_assistants >= activity.limit_users
     );
   };
   const isActivityPast = (activityDate) => {
@@ -192,7 +186,6 @@ export const OneUserActivies = () => {
                 handleLeaveActivity={handleLeaveActivity}
                 isActivityFull={isActivityFull}
                 isActivityPast={isActivityPast}
-                getButtonLabel={getButtonLabel}
                 getStatusLabel={getStatusLabel}
                 handleShowModal={handleShowModal}
               />

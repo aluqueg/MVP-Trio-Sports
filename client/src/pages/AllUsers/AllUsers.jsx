@@ -1,4 +1,3 @@
-import Button from "react-bootstrap/esm/Button";
 import { TrioContext } from "../../context/TrioContextProvider";
 import { useContext, useEffect, useState } from "react";
 import { CardOneUser } from "../../components/CardOneUser/CardOneUser";
@@ -6,7 +5,6 @@ import axios from "axios";
 import { gender } from "../../helpers/genderData";
 import { Col, Container, Row, Form } from "react-bootstrap";
 import "./allUsers.css";
-import { Navigate } from "react-router-dom";
 
 export const AllUsers = () => {
   const { user, token, setToken, sports, setSports } = useContext(TrioContext);
@@ -43,13 +41,21 @@ export const AllUsers = () => {
   };
 
   const handleClick = () => {
+    const normalizeString = (str) => {
+      return str
+          .normalize("NFD") 
+          .replace(/[\u0300-\u036f]/g, "") 
+          .toLowerCase(); 
+  };
     const filtered = allUsers.filter((user) => {
+      const normalizedLocation = normalizeString(user.user_city)
+      const normalizedSearchLocation = normalizeString(location)
       return (
         (selectedSport ? user.sports.includes(selectedSport) : true) &&
         (age ? user.age === age : true) &&
         (selectedGender ? user.gender === selectedGender : true) &&
         (location
-          ? user.user_city.toLowerCase().includes(location.toLowerCase())
+          ? normalizedLocation.includes(normalizedSearchLocation)
           : true)
       );
     });
@@ -61,6 +67,10 @@ export const AllUsers = () => {
     console.log(selectedGender);
     console.log(location);
   };
+
+  const handleReset = () => {
+    setFilteresUsers(allUsers)
+  }
 
   return (
     <Container>
@@ -127,6 +137,11 @@ export const AllUsers = () => {
             <button type="button" className="trio-btn" onClick={handleClick}>
               Buscar
             </button>
+          </Col>
+          <Col className="d-flex justify-content-center">
+          <button type="button" onClick={handleReset} className="trio-btn">
+            Mostrar todo
+          </button>
           </Col>        
       </Row>
       <div className="custom-divider"></div>

@@ -57,7 +57,7 @@ export const ModalCreateSport = ({
   return (
     <Modal show={show} onHide={closeModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Crear nuevo deporte</Modal.Title>
+        <Modal.Title>Creación de un nuevo deporte</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
@@ -69,6 +69,7 @@ export const ModalCreateSport = ({
               value={sportName}
               onChange={handleChange}
               required
+              className="form-input"
             />
             {/* Mostrar el mensaje de error  debajo del input */}
             {error && (
@@ -81,12 +82,12 @@ export const ModalCreateSport = ({
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={closeModal}>
+        <button type="button" className="trio-cancel-btn me-2" onClick={closeModal}>
           Cancelar
-        </Button>
-        <Button variant="primary" onClick={handleSubmit}>
+        </button>
+        <button type="button" className="trio-btn" onClick={handleSubmit}>
           Aceptar
-        </Button>
+        </button>
       </Modal.Footer>
     </Modal>
   );

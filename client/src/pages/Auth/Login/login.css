@@ -1,5 +1,6 @@
 .frase-login{
   font-size: 2rem;
+  color: white;
 }
 
 .button-login{
@@ -19,3 +20,21 @@
   outline: none;
   box-shadow: none;
 } 
+
+.bg-photo{
+  background-image: url('/src/assets/images/pexels-pixabay-163407.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: calc(100vh - 90px);
+}
+
+.logo-login{
+  width: 35%;
+  margin-top: 100px;
+}
+
+.caja-login{
+  color: lightgray;
+  margin: 1rem;
+}

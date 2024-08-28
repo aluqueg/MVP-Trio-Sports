@@ -66,29 +66,24 @@ export const UserParticipatedActivities = ({participated}) => {
   };
   
 
-  const getButtonLabel = (activity) => {
-    if (activity.limit_users === null) {
-      return "Unirse";
-    }
-    const numAsistants = activity.num_assistants || 1;
-    return `Unirse ${numAsistants} / ${activity.limit_users}`;
-  };
+
   const isActivityFull = (activity) => {
-    console.log(activity)
-    console.log(activity.limit_users)
-    console.log(activity.num_assistants)
-   let res =  activity.limit_users !== null &&
-    activity.num_assistants >= activity.limit_users
-   console.log(res)
-    return res 
+    let res = activity.limit_users !== null &&
+              activity.num_assistants >= activity.limit_users;
+    console.log('isActivityFull:', res);
+    return res;
   };
+  
 
   const isActivityPast = (activityDate) => {
     const currentDateTime = new Date();
-    return isBefore(activityDate, currentDateTime);
+    let res = isBefore(activityDate, currentDateTime);
+    console.log('isActivityPast:', res);
+    return res;
   };
+  
 
-  const disableActions = true;//deshabilitamos los botones de unirse
+ 
 
   const getStatusLabel = (activity) => {
     const activityDate = parseISO(activity.date_time_activity);
@@ -102,8 +97,6 @@ export const UserParticipatedActivities = ({participated}) => {
   };
 
   const handleJoinActivity = async (activityId) => {
-    console.log("Joining Activity ID:", activityId);
-  
     try {
       const response = await axios.put(
         "http://localhost:4000/api/activity/joinActivity",
@@ -113,7 +106,7 @@ export const UserParticipatedActivities = ({participated}) => {
   
       if (response.status === 200) {
         setUserParticipatedActivities((prevActivities) => {
-          const updatedActivities = prevActivities.map((activity) =>
+          return prevActivities.map((activity) =>
             activity.activity_id === activityId
               ? {
                   ...activity,
@@ -122,8 +115,6 @@ export const UserParticipatedActivities = ({participated}) => {
                 }
               : activity
           );
-          console.log("Updated Activities:", updatedActivities); 
-          return updatedActivities;
         });
       }
     } catch (error) {
@@ -131,7 +122,6 @@ export const UserParticipatedActivities = ({participated}) => {
     }
   };
   
-
   const handleLeaveActivity = async (activityId) => {
     try {
       const response = await axios.put(
@@ -139,7 +129,7 @@ export const UserParticipatedActivities = ({participated}) => {
         { activity_id: activityId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
+  
       if (response.status === 200) {
         setUserParticipatedActivities((prevActivities) =>
           prevActivities.map((activity) =>
@@ -160,6 +150,7 @@ export const UserParticipatedActivities = ({participated}) => {
       );
     }
   };
+  
 
 
   return (
@@ -172,10 +163,9 @@ export const UserParticipatedActivities = ({participated}) => {
               handleLeaveActivity={handleLeaveActivity}
               isActivityFull={isActivityFull}
               isActivityPast={isActivityPast}
-              getButtonLabel={getButtonLabel}
               getStatusLabel={getStatusLabel}
               handleShowModal={handleShowModal}
-              disableActions={disableActions}
+           
             />)}
       </Row>
 
