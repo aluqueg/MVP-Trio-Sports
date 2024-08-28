@@ -31,7 +31,7 @@ class userController {
         let userId = null;
         if (req.file) {
           let data = [
-            user_name,
+            caps_user_name,
             last_name,
             birth_date,
             gender,
