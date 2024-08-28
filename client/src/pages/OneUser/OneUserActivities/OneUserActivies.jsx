@@ -20,8 +20,6 @@ export const OneUserActivies = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserActivities(res.data);
-
-        console.log("la data", res.data);
       } catch (err) {
         console.log(err);
       }
@@ -87,8 +85,6 @@ export const OneUserActivies = () => {
   };
   const handleJoinActivity = async (activityId) => {
     try {
-      console.log("Activity ID:", activityId);
-      console.log("Token:", token);
       const response = await axios.put(
         "http://localhost:4000/api/activity/joinActivity",
         { activity_id: activityId },
@@ -125,7 +121,6 @@ export const OneUserActivies = () => {
   };
   const handleLeaveActivity = async (activityId) => {
     try {
-      console.log("Activity ID:", activityId); // Verificar activityId
       // Desactiva temporalmente el botón
       setUserActivities((prevActivities) =>
         prevActivities.map((activity) =>

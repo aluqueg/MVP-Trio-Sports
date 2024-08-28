@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { ModalCreateSport } from "../../../components/ModalCreateSport/ModalCreateSport";
 import { TrioContext } from "../../../context/TrioContextProvider";
 setDefaultLocale("es");
+import ProgressBar from 'react-bootstrap/ProgressBar'
 
 export const Register = () => {
   const [userRegister, setUserRegister] = useState({});
@@ -250,19 +251,24 @@ export const Register = () => {
   };
 
   console.log(selectedSport)
+  console.log(userRegister)
   return (
-    <Container>
+    <Container className="body-register">
       <Form action="">
         {page == 0 ? (
-          <>
+          
+          <div className="email-password">
+            <ProgressBar animated now={12.5} className="custom-progress"/>
+            <h2 className="register-text">Correo y Contraseña</h2>
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email</Form.Label>
+            <Form.Label></Form.Label>
               <Form.Control
                 type="email"
-                placeholder="Enter email"
+                placeholder="Escribe email"
                 name="email"
                 onChange={handleRegister}
                 value={userRegister?.email}
+                className="trio-input trio-input:focus"
               />
               {formErrors.email ? (
                 <span className="error-msg">{formErrors.email}</span>
@@ -270,87 +276,85 @@ export const Register = () => {
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
-              <Form.Label>Contraseña</Form.Label>
+              <Form.Label></Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Enter password"
+                placeholder="Escribe tu contraseña"
                 name="password"
                 onChange={handleRegister}
                 value={userRegister?.password}
+                className="trio-input trio-input:focus"
               />
               {formErrors.password ? (
                 <span className="error-msg">{formErrors.password}</span>
               ) : null}
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
+            <div className="buttons-email">
             {!userRegister.email || !userRegister.password ? (
-              <Button className="button-color">Continuar</Button>
+              <button className="trio-cancel-btn" type="button">Continuar</button>
             ) : (
-              <Button onClick={continuarEmail}>Continuar</Button>
+              <button className="trio-btn" type="button" onClick={continuarEmail}>Continuar</button>
             )}
-          </>
+            </div>
+          </div>
         ) : null}
 
-        {/* NOMBRE */}
+        {/* NOMBRE Y APELLIDOS*/}
 
         {page == 1 ? (
-          <>
+          <div className="name">
+            <ProgressBar animated now={25} className="custom-progress"/>
+            <h2 className="register-text">¿Cómo te llamas?</h2>
             <Form.Group className="mb-3" controlId="user_name">
-              <Form.Label>NOMBRE</Form.Label>
+              <Form.Label></Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter name"
+                placeholder="Nombre"
                 name="user_name"
                 onChange={handleRegister}
                 value={userRegister?.user_name}
+                className="trio-input trio-input:focus"
               />
               {formErrors.user_name ? (
                 <span className="error-msg">{formErrors.user_name}</span>
               ) : null}
               <Form.Text className="text-muted"></Form.Text>{" "}
             </Form.Group>
-            <Button onClick={volver}>Volver</Button>
-            {!userRegister.user_name ? (
-              <Button className="button-color">Continuar</Button>
-            ) : (
-              <Button onClick={continuar}>Continuar</Button>
-            )}
-          </>
-        ) : null}
-
-        {/* APELLIDOS */}
-        {page == 2 ? (
-          <>
-            <Form.Group className="mb-3" controlId="user_name">
-              <Form.Text className="text-muted"></Form.Text>
-              <Form.Group className="mb-3" controlId="last_name">
-                <Form.Label>APELLIDOS</Form.Label>
+            <Form.Group className="mb-3" controlId="last_name">
+            <Form.Label></Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter name"
+                  placeholder="Apellidos"
                   name="last_name"
                   onChange={handleRegister}
                   value={userRegister?.last_name}
+                  className="trio-input trio-input:focus"
                 />
                 {formErrors.last_name ? (
                   <span className="error-msg">{formErrors.last_name}</span>
                 ) : null}
               </Form.Group>
-              <Form.Text className="text-muted"></Form.Text>{" "}
-            </Form.Group>
-            <Button onClick={volver}>Volver</Button>
-            {!userRegister.last_name ? (
-              <Button className="button-color">Continuar</Button>
+            
+            <div className="buttons-general">
+            <button onClick={volver} className="trio-btn" type="button">Volver</button>
+            {!userRegister.user_name ? (
+              <button className="trio-cancel-btn " type="button">Continuar</button>
             ) : (
-              <Button onClick={continuar}>Continuar</Button>
+              <button onClick={continuar} className="trio-btn" type="button">Continuar</button>
             )}
-          </>
+            </div>
+          </div>
         ) : null}
 
         {/* CUMPLEAÑOS */}
-        {page === 3 ? (
-          <>
+        {page === 2 ? (
+          <div className="birthDate">
+            <ProgressBar animated now={37.5} className="custom-progress"/>
+            <h2 className="register-text">¿Cuándo es tu cumpleaños?</h2>
+            <div className="container1">
             <DatePicker
+              className="trio-input trio-input:focus"
               isClearable
               showIcon
               locale={es}
@@ -415,47 +419,56 @@ export const Register = () => {
               selected={startDate}
               onChange={(date) => setStartDate(date)}
             />
-            <Button onClick={volver}>Volver</Button>
+            </div>
+            <div className="buttons-general">
+            <button onClick={volver} type="button" className="trio-btn">Volver</button>
             {startDate? (
-              <Button onClick={continuarBirthDate}>Continuar</Button>
+              <button onClick={continuarBirthDate} type="button" className="trio-btn">Continuar</button>
             ) : (     
-              <Button className="button-color">Continuar</Button>
+              <button className="trio-cancel-btn " type="button">Continuar</button>
             )}
-          </>
+            </div>
+          </div>
         ) : null}
 
         {/* CIUDAD */}
-        {page == 4 ? (
-          <>
-            <Form.Group className="mb-3" controlId="user_city">
-              <Form.Label>CUAL ES TU CIUDAD</Form.Label>
+        {page == 3 ? (
+          <div className="city">
+                        <ProgressBar animated now={50} className="custom-progress"/>
+                        <h2 className="register-text">¿Dónde vives?</h2>
+            <div className="container1">
+              <Form.Group className="mb-3" controlId="user_city">
               <Form.Control
                 type="text"
                 placeholder="cual es tu ciudad"
                 name="user_city"
                 onChange={handleRegister}
                 value={userRegister?.user_city}
+                className="trio-input trio-input:focus"
               />
               {formErrors.user_city ? (
                 <span className="error-msg">{formErrors.user_city}</span>
               ) : null}
-              <Form.Text className="text-muted"></Form.Text>
-            </Form.Group>
-            <Button onClick={volver}>Volver</Button>
+            </Form.Group></div>
+              <div className="buttons-general">
+              <button onClick={volver} className="trio-btn">Volver</button>
             {!userRegister.user_city ? (
-              <Button className="button-color">Continuar</Button>
+              <button className="trio-cancel-btn ">Continuar</button>
             ) : (
-              <Button onClick={continuar}>Continuar</Button>
+              <button onClick={continuar} className="trio-btn ">Continuar</button>
             )}
-          </>
+              </div>
+          </div>
         ) : null}
 
         {/* GENERO */}
-        {page == 5 ? (
-          <>
+        {page == 4 ? (
+          <div className="gender">
+          <ProgressBar animated now={62.5} className="custom-progress"/>
+          <h2 className="register-text-block">¿Cuál es tu género?</h2>
             {noBinario ? (
-              <div className="generos">
-                <ListGroup as="ul" className="all_generos">
+              <div className="list-genders">
+                <ListGroup as="ul" className="all_genders custom-active">
                   {generos.map((e, idx) => (
                     <ListGroup.Item
                       as="li"
@@ -467,29 +480,33 @@ export const Register = () => {
                     </ListGroup.Item>
                   ))}
                 </ListGroup>
-                <Button onClick={()=>setNoBinario(false)}>Atras</Button>
+                <button  type="button" onClick={()=>setNoBinario(false)} className="trio-btn">Atras</button>
               </div>
             ) : (
-              <div className="generos">
-                <Button onClick={() => gender("Hombre")}>Hombre</Button>
-                <Button onClick={() => gender("Mujer")}>Mujer</Button>
-                <Button onClick={selectNobinario}>No Binario</Button>
+              <div className="list-genders">
+                <button type="button" className="trio-btn" onClick={() => gender("Hombre")}>Hombre</button>
+                <button type="button" className="trio-btn" onClick={() => gender("Mujer")}>Mujer</button>
+                <button type="button" className="trio-btn" onClick={selectNobinario}>No Binario</button>
               </div>
             )}
-            <Button onClick={volver}>Volver</Button>
+            <div className="buttons-general-block">
+            <button type="button" onClick={volver} className="trio-btn">Volver</button>
             {!userRegister.gender ? (
-              <Button className="button-color">Continuar</Button>
+              <button className="trio-cancel-btn" >Continuar</button>
             ) : (
-              <Button onClick={continuar}>Continuar</Button>
+              <button type="button" className="trio-btn " onClick={continuar}>Continuar</button>
             )}
-          </>
+            </div>
+          </div>
         ) : null}
         {/* SPORTS */}
-        {page == 6 ? (
-          <>
-            <Form.Group controlId="formSportId">
-              <Form.Label>Deporte</Form.Label>
-              <ListGroup as="ul" className="all_generos">
+        {page == 5 ? (
+          <div className="sports">
+            <ProgressBar animated now={75} className="custom-progress"/>
+            <h2 className="register-text-block">Elige tus deportes preferidos</h2>
+           <div className="list-sports"> <Form.Group controlId="formSportId"  className="tittle">
+              <Form.Label><h3>Deportes</h3></Form.Label>
+              <ListGroup as="ul" className="all_sports">
                 {sports.map((e, idx) => {
                   return (
                     <>
@@ -518,49 +535,60 @@ export const Register = () => {
                   Añadir Deporte
                 </ListGroup.Item>
               </ListGroup>
-            </Form.Group>
+             <p>Debes elegir entre 1 y 5 deportes</p>
+            </Form.Group></div>
             <ModalCreateSport
               show={modalAddSports}
               closeModal={addSportStatus}
               onSportCreated={handleSportCreated}
-              existingSports={sports} //pasamos la lista de deportes existentes al modal
+              existingSports={sports} 
             />
-            {selectedSport.length > 5 ?<p>Debes elegir entre 1 y 5 deportes</p> : null}
-            {selectedSport.length < 1 ?<p>Debes elegir entre 1 y 5 deportes</p> : null}
-            <Button onClick={volver}>Volver</Button>
+            <div className="buttons-general-block">
+            <button onClick={volver} className="trio-btn">Volver</button>
             {selectedSport.length > 5 || selectedSport.length < 1 ? (
-              <Button className="button-color">Continuar</Button>
+              <button className="trio-cancel-btn" type="button">Continuar</button>
             ) : (
-              <Button onClick={() => addUserSportsContinuar(selectedSport)}>
+              <button onClick={() => addUserSportsContinuar(selectedSport)} className="trio-btn" type="button">
                 Continuar
-              </Button>
+              </button>
             )}
-          </>
+            </div>
+          </div>
         ) : null}
         {/* DESCRIPCION */}
-        {page == 7 ? (
-          <>
-            <Form.Group className="mb-3">
-              <Form.Label>Describete</Form.Label>
+        {page == 6 ? (
+          <div className="description">
+          <ProgressBar animated now={87.5} className="custom-progress"/>
+          <h2 className="register-text-block">Cuéntanos más sobre ti</h2>
+            <div className="block">
+            <Form.Group className="mb-1">
               <Form.Control
                 as="textarea"
-                rows={3}
+                rows={7}
                 placeholder="Enter your text here"
                 onChange={handleRegister}
                 name="description"
                 maxlength="255"
+                className="description-text"
               />
             </Form.Group>
             <p>{contador.length}/255</p>
-            <Button onClick={volver}>Volver</Button>
-            <Button onClick={continuar}>Continuar</Button>
-          </>
+            </div>
+            <div className="buttons-general-block">
+            <button onClick={volver} type="button" className="trio-btn">Volver</button>
+            {userRegister?.description ? <button onClick={continuar} type="button" className="trio-btn">Continuar</button> : <button className="trio-cancel-btn" type="button">Continuar</button>}
+            </div>
+          </div>
         ) : null}
         {/* FOTO */}
-        {page == 8 ? (
-          <>
-            <Form.Group className="mb-3">
-              <Form.Label htmlFor="file">Sube una foto</Form.Label>
+        {page == 7 ? (
+          <div className="photo">
+            <ProgressBar animated now={100} className="custom-progress"/>
+            <h2 className="register-text-block">Elige una foto para ti</h2>
+            <div className="block">
+            <img src="../../src/assets/images/default_user_img.png" alt="" className="mb-3"/>
+            <Form.Group>
+              <Form.Label htmlFor="file" className="trio-btn">Sube una foto</Form.Label>
               <Form.Control
                 id="file"
                 type="file"
@@ -570,9 +598,12 @@ export const Register = () => {
                 onChange={handleFile}
               />
             </Form.Group>
-            <Button onClick={volver}>Volver</Button>
-            <Button onClick={onSubmit}>Continuar</Button>
-          </>
+            </div>
+            <div className="buttons-general-block">
+            <button onClick={volver} type="button" className="trio-btn">Volver</button>
+            {file? <button onClick={onSubmit} type="button" className="trio-btn">Continuar</button> : <button  type="button" className="trio-cancel-btn">Continuar</button>}
+            </div>
+          </div>
         ) : null}
       </Form>
       <ModalCreateSport

@@ -163,7 +163,6 @@ function ModalEditUser({ show, setShowModal, data }) {
       birth_date: date,
       sports: selectedSport,
     };
-    console.log("updatedEditUser", updatedEditUser);
     setEditUser(updatedEditUser);
 
     const newFormData = new FormData();
@@ -175,9 +174,9 @@ function ModalEditUser({ show, setShowModal, data }) {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        console.log(res);
-        if (res.data.img) {
-          setUser({ ...updatedEditUser, user_img: res.data.img });
+
+        if(res.data.img){
+          setUser({...updatedEditUser, user_img: res.data.img});
           handleClose();
         } else {
           setUser(updatedEditUser);

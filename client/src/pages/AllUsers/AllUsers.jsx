@@ -24,7 +24,6 @@ export const AllUsers = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setAllUsers(res.data);
-        console.log("todos los datos de res", res);
       } catch (err) {
         console.log(err);
       }
@@ -61,11 +60,6 @@ export const AllUsers = () => {
     });
     setUserMostrados(true);
     setFilteresUsers(filtered);
-    console.log("handleClick");
-    console.log(selectedSport);
-    console.log(age);
-    console.log(selectedGender);
-    console.log(location);
   };
 
   const handleReset = () => {

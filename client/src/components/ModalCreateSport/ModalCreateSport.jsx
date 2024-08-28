@@ -19,7 +19,7 @@ export const ModalCreateSport = ({
     e.preventDefault();
     setError("");
 
-    // Verificar si el deporte ya existe en la lista
+    // Verificamos si el deporte ya existe en la lista
     const sportExists = existingSports.some(
       (sport) => sport.sport_name.toLowerCase() === sportName.toLowerCase()
     );
@@ -35,13 +35,11 @@ export const ModalCreateSport = ({
         { sport_name: sportName }
       );
 
-      console.log("Respuesta del servidor:", response);
-
       if (response.status === 201) {
         onSportCreated(response.data);
         setSportName("");
         closeModal();
-        addSports(response.data.sport_name);
+        //addSports(response.data.sport_name);
       }
     } catch (error) {
       console.log("Error en la solicitud:", error.response || error);
@@ -57,7 +55,7 @@ export const ModalCreateSport = ({
   return (
     <Modal show={show} onHide={closeModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Crear nuevo deporte</Modal.Title>
+        <Modal.Title>Creación de un nuevo deporte</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
@@ -69,6 +67,7 @@ export const ModalCreateSport = ({
               value={sportName}
               onChange={handleChange}
               required
+              className="form-input"
             />
             {/* Mostrar el mensaje de error  debajo del input */}
             {error && (
@@ -81,12 +80,12 @@ export const ModalCreateSport = ({
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={closeModal}>
+        <button type="button" className="trio-cancel-btn me-2" onClick={closeModal}>
           Cancelar
-        </Button>
-        <Button variant="primary" onClick={handleSubmit}>
+        </button>
+        <button type="button" className="trio-btn" onClick={handleSubmit}>
           Aceptar
-        </Button>
+        </button>
       </Modal.Footer>
     </Modal>
   );

@@ -15,10 +15,10 @@ export const NavBarApp = () => {
     setUser();
     navigate("/");
   };
-  const url = `${location.pathname}`
-  const partes = url.split('/')
-  const currentPage = partes[1]
-
+  const url = `${location.pathname}`;
+  const partes = url.split("/");
+  const currentPage = partes[1];
+  console.log("navBar user", user);
   return (
     <>
       <Navbar expand="md" className="bg-body-tertiary ">
@@ -38,41 +38,98 @@ export const NavBarApp = () => {
               </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
-              <Nav
-                variant="underline"
-                defaultActiveKey="/allActivities"
-                className="justify-content-start flex-grow-1 pe-3"
-              >
-                {user &&
-                  <Nav.Link as={Link} to="/allActivities" className={currentPage === "allActivities" ? "select-borde" : null}>
-                    Actividades
+              <Nav className="justify-content-start flex-grow-1 pe-3">
+              {user?.type === 1 && (
+                <Nav
+                  variant="underline"
+                  defaultActiveKey="/allActivities"
+                  className="justify-content-start flex-grow-1 pe-3"
+                >
+                  <Nav.Link
+                    as={Link}
+                    to="/admin"
+                    className={
+                      currentPage === "admin" ? "select-borde" : null
+                    }
+                  >
+                    Panel administrador
                   </Nav.Link>
-                }
-                {user &&
-                  <Nav.Link as={Link} to="/addActivity"className={currentPage === "addActivity" ? "select-borde" : null} >
-                    Crear Actividad
-                  </Nav.Link>
-                }
-                {user &&
-                  <Nav.Link as={Link} to="/addSport" className={currentPage === "addSport" ? "select-borde" : null}>
-                    Crear Deporte
-                  </Nav.Link>
-                }
-                {user &&
-                  <Nav.Link as={Link} to="/allUsers" className={currentPage === "allUsers" ? "select-borde" : null}>
-                    Búsqueda
-                  </Nav.Link>
-                }
-                {user &&
-                  <Nav.Link as={Link} to="/chats" className={currentPage === "chats" ? "select-borde" : null}>
-                    Mensajes
-                  </Nav.Link>
-                }
-                {user &&
-                  <Nav.Link as={Link} to="/profile" className={currentPage === "profile" ? "select-borde" : null}>
-                    Perfil
-                  </Nav.Link>
-                }
+                </Nav>
+              )}
+              {user?.type === 2 && (
+                <Nav
+                  variant="underline"
+                  defaultActiveKey="/allActivities"
+                  className="justify-content-start flex-grow-1 pe-3"
+                >
+                  {user && (
+                    <Nav.Link
+                      as={Link}
+                      to="/allActivities"
+                      className={
+                        currentPage === "allActivities" ? "select-borde" : null
+                      }
+                    >
+                      Actividades
+                    </Nav.Link>
+                  )}
+                  {user && (
+                    <Nav.Link
+                      as={Link}
+                      to="/addActivity"
+                      className={
+                        currentPage === "addActivity" ? "select-borde" : null
+                      }
+                    >
+                      Crear Actividad
+                    </Nav.Link>
+                  )}
+                  {user && (
+                    <Nav.Link
+                      as={Link}
+                      to="/addSport"
+                      className={
+                        currentPage === "addSport" ? "select-borde" : null
+                      }
+                    >
+                      Crear Deporte
+                    </Nav.Link>
+                  )}
+                  {user && (
+                    <Nav.Link
+                      as={Link}
+                      to="/allUsers"
+                      className={
+                        currentPage === "allUsers" ? "select-borde" : null
+                      }
+                    >
+                      Búsqueda
+                    </Nav.Link>
+                  )}
+                  {user && (
+                    <Nav.Link
+                      as={Link}
+                      to="/chats"
+                      className={
+                        currentPage === "chats" ? "select-borde" : null
+                      }
+                    >
+                      Mensajes
+                    </Nav.Link>
+                  )}
+                  {user && (
+                    <Nav.Link
+                      as={Link}
+                      to="/profile"
+                      className={
+                        currentPage === "profile" ? "select-borde" : null
+                      }
+                    >
+                      Perfil
+                    </Nav.Link>
+                  )}
+                </Nav>
+              )}
               </Nav>
               <Nav className="d-flex">
                 {!user ? (
@@ -85,9 +142,10 @@ export const NavBarApp = () => {
                   </button>
                 ) : (
                   <button
-                   type="button"
-                   className="trio-outline-btn"
-                   onClick={logOut}>
+                    type="button"
+                    className="trio-outline-btn"
+                    onClick={logOut}
+                  >
                     Cerrar Sesión
                   </button>
                 )}

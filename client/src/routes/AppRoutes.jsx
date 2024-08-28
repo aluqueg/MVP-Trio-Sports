@@ -65,16 +65,20 @@ export const AppRoutes = () => {
               {!user && <Route path="/register" element={<Register />} /> }
               <Route path="/recoverPassword" element={<RecoverPassword />} />
               <Route path="/editPassword/:token" element={<EditPassword />} />
-              <Route path="*" element={<ErrorPage />} />
               <Route path = "/validation/:token" element={<Validation/>}/>
               <Route path="/oneUser/:id" element={<OneUser/>} >
                 <Route index element={<OneUserActivies />} />
                 <Route path="1" element={<OneUserParticipatedActivities />} />
               </Route>
+
+              {user?.type === 1 &&
               <Route path="/admin" element={<Admin/>}>
                 <Route index element = {<AdminUsers/>}/>
                 <Route path="1" element = {<AdminSports/>} />
               </Route>
+              }
+
+            <Route path="*" element={<ErrorPage />} />
             </Routes>
         </Container>
     </BrowserRouter>

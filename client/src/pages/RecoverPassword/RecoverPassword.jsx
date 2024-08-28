@@ -22,7 +22,9 @@ export const RecoverPassword = () => {
   const onSubmit = async () => {
     if (!email) {
       setMsg({ text: "El campo no puede estar vacío", show: true });      
-    }else{
+    }else if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)){
+      setMsg({text: "Formato de email incorrecto", show:true})
+    } else{
       setMsg({text: "Revisa tu correo electrónico.", show:true})
     }
     try {
