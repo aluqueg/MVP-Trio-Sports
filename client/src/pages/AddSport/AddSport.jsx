@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { TrioContext } from "../../context/TrioContextProvider";
+import { Container } from "react-bootstrap";
 
 export const AddSport = () => {
   const { token } = useContext(TrioContext);
@@ -51,7 +52,7 @@ export const AddSport = () => {
   };
 
   return (
-    <div>
+    <Container fluid="xl">
       <h2>Crear Nuevo Deporte</h2>
       {error && <div style={{ color: "red" }}>{error}</div>}
       {success && <div style={{ color: "green" }}>{success}</div>}
@@ -68,6 +69,6 @@ export const AddSport = () => {
         </div>
         <button type="submit">Crear Deporte</button>
       </form>
-    </div>
+    </Container>
   );
 };
