@@ -19,7 +19,7 @@ export const ModalCreateSport = ({
     e.preventDefault();
     setError("");
 
-    // Verificar si el deporte ya existe en la lista
+    // Verificamos si el deporte ya existe en la lista
     const sportExists = existingSports.some(
       (sport) => sport.sport_name.toLowerCase() === sportName.toLowerCase()
     );
@@ -39,7 +39,7 @@ export const ModalCreateSport = ({
         onSportCreated(response.data);
         setSportName("");
         closeModal();
-        addSports(response.data.sport_name);
+        //addSports(response.data.sport_name);
       }
     } catch (error) {
       console.log("Error en la solicitud:", error.response || error);
