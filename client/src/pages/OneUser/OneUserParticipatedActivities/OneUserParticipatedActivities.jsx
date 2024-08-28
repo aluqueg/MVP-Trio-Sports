@@ -18,7 +18,7 @@ export const OneUserParticipatedActivities = () => {
   useEffect(()=>{
     const userActivities = async () => {
       try{
-        let res = await axios.get(`http://localhost:4000/api/users/getOneUserParticipatedActivities/${id}/1`, {headers: {Authorization: `Bearer ${token}`}})
+        let res = await axios.get(`http://localhost:4000/api/users/getOneUserParticipatedActivities/${id}`, {headers: {Authorization: `Bearer ${token}`}})
         
         setUserActivities(res.data); 
         setFilteredActivities(res.data); // Inicialmente, muestra todas las actividades

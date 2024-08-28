@@ -8,16 +8,19 @@ import ModalCreateComment from "../../../components/ModalCreateComment/ModalCrea
 import { useNavigate } from "react-router-dom";
 
 export const UserActivities = () => {
-
-  const { token, user } = useContext(TrioContext); 
+  const { token, user } = useContext(TrioContext);
   const [userActivities, setUserActivities] = useState([]);
 
   const navigate = useNavigate();
-  useEffect(()=>{
+  
+  useEffect(() => {
     const userActivities = async () => {
-      try{
-        let res = await axios.get('http://localhost:4000/api/users/getUserActivities', {headers: {Authorization: `Bearer ${token}`}})
-        
+      try {
+        let res = await axios.get(
+          "http://localhost:4000/api/users/getUserActivities",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
         setUserActivities(res.data);
       } catch (err) {
         console.log(err);
@@ -47,7 +50,7 @@ export const UserActivities = () => {
         "http://localhost:4000/api/comments/addComment",
         {
           activity_id: selectedActivity.activity_id,
-          user_id: user.user_id, 
+          user_id: user.user_id,
           text: comment,
         },
         {
@@ -64,6 +67,7 @@ export const UserActivities = () => {
       console.error("Error al enviar el comentario:", error);
     }
   };
+
   const getButtonLabel = (activity) => {
     if (activity.limit_users === null) {
       return "Unirse";
@@ -73,7 +77,10 @@ export const UserActivities = () => {
   };
 
   const isActivityFull = (activity) => {
-    return activity.limit_users !== null && activity.num_asistants >= activity.limit_users;
+    return (
+      activity.limit_users !== null &&
+      activity.num_assistants >= activity.limit_users
+    );
   };
 
   const isActivityPast = (activityDate) => {
@@ -99,14 +106,25 @@ export const UserActivities = () => {
         { activity_id: activityId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      const updatedActivities = userActivities.map((activity) =>
-        activity.activity_id === activityId
-          ? { ...activity, num_assistants: activity.num_assistants + 1, is_user_participant: true }
-          : activity
-      );
-      setUserActivities(updatedActivities);
+
+      if (response.status === 200) {
+        setUserActivities((prevActivities) =>
+          prevActivities.map((activity) =>
+            activity.activity_id === activityId
+              ? {
+                  ...activity,
+                  num_assistants: activity.num_assistants + 1,
+                  is_user_participant: true,
+                }
+              : activity
+          )
+        );
+      }
     } catch (error) {
-      console.error("Error al unirse a la actividad:", error.response?.data || error.message);
+      console.error(
+        "Error al unirse a la actividad:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -117,26 +135,36 @@ export const UserActivities = () => {
         { activity_id: activityId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      const updatedActivities = userActivities.map((activity) =>
-        activity.activity_id === activityId
-          ? { ...activity, num_assistants: activity.num_assistants - 1, is_user_participant: false }
-          : activity
-      );
-      setUserActivities(updatedActivities);
+
+      if (response.status === 200) {
+        setUserActivities((prevActivities) =>
+          prevActivities.map((activity) =>
+            activity.activity_id === activityId
+              ? {
+                  ...activity,
+                  num_assistants: Math.max(activity.num_assistants - 1, 0),
+                  is_user_participant: false,
+                }
+              : activity
+          )
+        );
+      }
     } catch (error) {
-      console.error("Error al abandonar la actividad:", error.response?.data || error.message);
+      console.error(
+        "Error al abandonar la actividad:",
+        error.response?.data || error.message
+      );
     }
   };
-  
 
   return (
-    <Container >
+    <Container>
       <Row>
-          {!Array.isArray(userActivities) ? (
-            <p>No hay actividades disponibles</p>
-          ) : (
-            userActivities.map((e) => (
-              <CardOneActivity
+        {!Array.isArray(userActivities) ? (
+          <p>No hay actividades disponibles</p>
+        ) : (
+          userActivities.map((e) => (
+            <CardOneActivity
               key={e.activity_id}
               activity={e}
               handleJoinActivity={handleJoinActivity}
@@ -146,10 +174,10 @@ export const UserActivities = () => {
               getButtonLabel={getButtonLabel}
               getStatusLabel={getStatusLabel}
               handleShowModal={handleShowModal}
-              showEditButton={true} 
+              showEditButton={true}
             />
-            ))
-          )}
+          ))
+        )}
       </Row>
       <ModalCreateComment
         show={showModal}
@@ -159,6 +187,3 @@ export const UserActivities = () => {
     </Container>
   );
 };
-  
-
-

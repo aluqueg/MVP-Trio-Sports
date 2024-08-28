@@ -8,7 +8,7 @@ import { CardOneActivity } from '../../../components/CardOneActivity/CardOneActi
 import { useNavigate } from 'react-router-dom';
 
 export const UserParticipatedActivities = ({participated}) => {
-  const { token } = useContext(TrioContext);
+  const { token , user} = useContext(TrioContext);
   const [userParticipatedActivities, setUserParticipatedActivities] = useState([]);
   const navigate = useNavigate();
   
@@ -23,7 +23,7 @@ export const UserParticipatedActivities = ({participated}) => {
       }
     }
     userParticipated();
-  },[])
+  },[token])
 
   /* NECESARIO PARA LA CARD */
 
@@ -43,13 +43,19 @@ export const UserParticipatedActivities = ({participated}) => {
   const handleCommentSubmit = async (comment) => {
     try {
       // Envía el comentario al backend
-      const response = await axios.post("http://localhost:4000/api/comments/addComment", {
-        activity_id: selectedActivity.activity_id,
-        text: comment,
-      });
-  
+      const response = await axios.post(
+        "http://localhost:4000/api/comments/addComment",
+        {
+          activity_id: selectedActivity.activity_id,
+          user_id: user.user_id, 
+          text: comment,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }, // token
+        }
+      );
       if (response.status === 201) {
-        // Si el comentario se ha guardado correctamente, redirige a la vista de la actividad
+        // Redirige a la vista de la actividad
         navigate(`/activity/${selectedActivity.activity_id}`);
       } else {
         console.error("Error al crear el comentario");
@@ -64,15 +70,17 @@ export const UserParticipatedActivities = ({participated}) => {
     if (activity.limit_users === null) {
       return "Unirse";
     }
-    const numAsistants = activity.num_asistants || 1;
+    const numAsistants = activity.num_assistants || 1;
     return `Unirse ${numAsistants} / ${activity.limit_users}`;
   };
-
   const isActivityFull = (activity) => {
-    return (
-      activity.limit_users !== null &&
-      activity.num_asistants >= activity.limit_users
-    );
+    console.log(activity)
+    console.log(activity.limit_users)
+    console.log(activity.num_assistants)
+   let res =  activity.limit_users !== null &&
+    activity.num_assistants >= activity.limit_users
+   console.log(res)
+    return res 
   };
 
   const isActivityPast = (activityDate) => {
@@ -80,39 +88,79 @@ export const UserParticipatedActivities = ({participated}) => {
     return isBefore(activityDate, currentDateTime);
   };
 
+  const disableActions = true;//deshabilitamos los botones de unirse
+
   const getStatusLabel = (activity) => {
     const activityDate = parseISO(activity.date_time_activity);
-
     if (isActivityPast(activityDate)) {
       return "Finalizada";
     }
-
     if (isActivityFull(activity)) {
       return "Completa";
     }
-
     return null;
   };
 
   const handleJoinActivity = async (activityId) => {
+    console.log("Joining Activity ID:", activityId);
+  
     try {
       const response = await axios.put(
         "http://localhost:4000/api/activity/joinActivity",
-        {
-          activity_id: activityId,
-        }
+        { activity_id: activityId },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log(response.data);
-      const updatedActivities = activities.map((activity) =>
-        activity.activity_id === activityId
-          ? { ...activity, num_asistants: activity.num_asistants + 1 }
-          : activity
-      );
-      setActivities(updatedActivities);
+  
+      if (response.status === 200) {
+        setUserParticipatedActivities((prevActivities) => {
+          const updatedActivities = prevActivities.map((activity) =>
+            activity.activity_id === activityId
+              ? {
+                  ...activity,
+                  num_assistants: activity.num_assistants + 1,
+                  is_user_participant: true,
+                }
+              : activity
+          );
+          console.log("Updated Activities:", updatedActivities); 
+          return updatedActivities;
+        });
+      }
     } catch (error) {
-      console.error("Error al unirse a la actividad:", error);
+      console.error("Error al unirse a la actividad:", error.response?.data || error.message);
     }
   };
+  
+
+  const handleLeaveActivity = async (activityId) => {
+    try {
+      const response = await axios.put(
+        "http://localhost:4000/api/activity/leaveActivity",
+        { activity_id: activityId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 200) {
+        setUserParticipatedActivities((prevActivities) =>
+          prevActivities.map((activity) =>
+            activity.activity_id === activityId
+              ? {
+                  ...activity,
+                  num_assistants: Math.max(activity.num_assistants - 1, 0),
+                  is_user_participant: false,
+                }
+              : activity
+          )
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Error al abandonar la actividad:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
 
   return (
     <Container >
@@ -121,11 +169,13 @@ export const UserParticipatedActivities = ({participated}) => {
               key={e.activity_id}
               activity={e}
               handleJoinActivity={handleJoinActivity}
+              handleLeaveActivity={handleLeaveActivity}
               isActivityFull={isActivityFull}
               isActivityPast={isActivityPast}
               getButtonLabel={getButtonLabel}
               getStatusLabel={getStatusLabel}
               handleShowModal={handleShowModal}
+              disableActions={disableActions}
             />)}
       </Row>
 
