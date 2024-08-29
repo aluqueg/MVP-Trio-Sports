@@ -68,9 +68,9 @@ export const AllUsers = () => {
 
   return (
     <Container>
-      <Row className="d-flex justify-content-center align-items-center flex-wrap mt-3">        
+      <Row className="d-flex justify-content-center align-items-center flex-wrap m-5 gap-4">        
           <Col className="d-flex justify-content-center">
-            <Form.Group className="filter-group">
+            <Form.Group>
             <Form.Select
               id="deporte"
               title="Deporte"
@@ -99,7 +99,7 @@ export const AllUsers = () => {
             />
           </Col>
           <Col className="d-flex justify-content-center">
-          <Form.Group className="filter-group">
+          <Form.Group>
             <Form.Select
               id="sexo"
               title="Sexo"
@@ -128,12 +128,12 @@ export const AllUsers = () => {
             />
           </Col>
           <Col className="d-flex justify-content-center">
-            <button type="button" className="trio-btn" onClick={handleClick}>
+            <button type="button" className="filter-button-allusers" onClick={handleClick}>
               Buscar
             </button>
           </Col>
           <Col className="d-flex justify-content-center">
-          <button type="button" onClick={handleReset} className="trio-btn">
+          <button type="button" onClick={handleReset} className="filter-button-allusers">
             Mostrar todo
           </button>
           </Col>        
