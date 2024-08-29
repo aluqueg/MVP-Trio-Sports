@@ -402,7 +402,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                 <>
                   <Form.Group controlId="formSportId">
                     <Form.Label className="my-3">DEPORTES</Form.Label>
-                    <div style={{ maxHeight: "100px", overflowY: "auto" }}>
+                    <div style={{ maxHeight: "200px", overflowY: "auto" }}>
                       {sports.map((e, idx) => (
                         <Form.Check
                           key={idx}
