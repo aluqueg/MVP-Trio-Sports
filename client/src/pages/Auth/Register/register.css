@@ -138,3 +138,44 @@
 .block img{
   max-height: 150px;
 }
+
+@media (max-width: 992px) {
+  .custom-progress{
+    margin-bottom: 5vh;
+    width: 60vw;
+  }
+  .trio-input{
+    width: 50vw;
+  }
+  .buttons-general{
+    min-width: 35vw;
+  }
+  .buttons-general-block{
+    min-width: 35vw;
+  }
+  .list-genders, .list-sports, .block{
+    width: 50vw;
+  }
+  .all_sports, .description-text{
+    width: 40vw;
+  }
+
+}
+@media (max-width: 576px) {
+  .custom-progress{
+    margin-bottom: 5vh;
+    width: 70vw;
+  }
+  .trio-input{
+    width: 60vw;
+  }
+  .buttons-general{
+    min-width: 45vw;
+  }
+  .buttons-general-block{
+    min-width: 55vw;
+  }
+  .list-genders{
+    width: 60vw;
+  }
+}
