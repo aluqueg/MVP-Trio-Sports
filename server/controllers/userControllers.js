@@ -21,7 +21,8 @@ class userController {
       sport_id,
       description,
     } = user;
-    const caps_user_name = user_name.charAt(0).toUpperCase() + user_name.slice(1)
+    const caps_user_name =
+      user_name.charAt(0).toUpperCase() + user_name.slice(1);
     let saltRounds = 8;
     bcrypt.hash(password, saltRounds, (err, hash) => {
       if (err) {
@@ -276,9 +277,7 @@ class userController {
     });
   };
 
-  prueba = (req, res) => {
-
-  };
+  prueba = (req, res) => {};
 
   //revisar
   getAllUsers = (req, res) => {
@@ -437,19 +436,21 @@ ORDER BY
   };
 
   sendMessage = (req, res) => {
-    const { message, date, receiver, userID } = req.body;  
+    const { message, date, receiver, userID } = req.body;
     let sql = `INSERT INTO message (text,date_time,sender_user_id,receiver_user_id) VALUES (?,?,?,?)`;
     let data = [message, date, userID, receiver];
-    connection.query(sql, data, (err, result) => {
-      if (err) {
-        res.status(500).json({
-          error: "Ocurrió un error en la consulta SQL.",
-          details: err.message,
-        });
-      } else {
-        res.status(200).json(result);
-      }
-    });
+    if(message.length <= 255){
+      connection.query(sql, data, (err, result) => {
+        if (err) {
+          res.status(500).json({
+            error: "Ocurrió un error en la consulta SQL.",
+            details: err.message,
+          });
+        } else {
+          res.status(200).json(result);
+        }
+      });
+    }
   };
   getUserParticipatedActivities = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
@@ -526,7 +527,7 @@ ORDER BY
   };
 
   getOneUser = (req, res) => {
-    const id = req.params.id;  
+    const id = req.params.id;
     let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE user.is_validated = 1 AND user.is_disabled = 0 AND user.type = 2 AND user.user_id = ${id};`;
     connection.query(sql, (err, result) => {
       if (err) {
@@ -591,9 +592,7 @@ ORDER BY
         res.status(500).json(err);
       } else {
         res.status(200).json(result);
-
       }
-
     });
   };
 
