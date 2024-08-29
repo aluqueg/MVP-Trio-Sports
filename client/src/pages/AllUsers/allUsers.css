@@ -8,11 +8,18 @@
   transition: border-color 0.3s ease;
   outline: none;
   box-shadow: none;
-  width: 100%;
-  min-width: 100px;
+  width: 150px;
+
 }
 
-.filter-button {
+.filter-select-allusers:focus,
+.filter-input-allusers:focus {
+  border-color: var(--trio);
+  outline: none;
+  box-shadow: none;
+}
+
+.filter-button-allusers {
   border-radius: 20px;
   padding: 5px 15px;
   height: 38px;
@@ -20,9 +27,10 @@
   color: white;
   border: none;
   transition: background-color 0.3s ease;
+  width: 150px;
 }
 
-.filter-button:hover {
+.filter-button-allusers:hover {
   background-color: #e04e2e;
 }
 

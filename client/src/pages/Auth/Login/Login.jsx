@@ -1,10 +1,9 @@
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { TrioContext } from "../../../context/TrioContextProvider";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import './login.css'
 
 //valor inicial login
