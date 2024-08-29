@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Container, Row, Col, Table, Button, Image } from "react-bootstrap";
 import axios from "axios";
@@ -17,6 +17,8 @@ export const Activity = () => {
   const [error, setError] = useState(null);
   const [comments, setComments] = useState([]);
   const [showModal, setShowModal] = useState(false);
+
+  const fallbackImage = "/src/assets/images/default_user_img.png";
 
   useEffect(() => {
     if (token) {
@@ -56,16 +58,12 @@ export const Activity = () => {
     }
   }, [activity_id, token]);
 
-  const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+  const handleShowModal = (activity) => {
+    setShowModal(true);
+  };
 
-  // Manejo del estado de la imagen de usuario
-  const [fallbackImage, setFallbackImage] = useState(
-    "/src/assets/images/default_user_img.png"
-  );
-
-  const handleImageError = () => {
-    setFallbackImage("/src/assets/images/default_user_img.png");
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   const handleCommentSubmit = async (commentText) => {
@@ -100,10 +98,10 @@ export const Activity = () => {
   };
 
   const isActivityFull = (activity) => {
-    let res =
+    return (
       activity.limit_users !== null &&
-      activity.num_assistants >= activity.limit_users;
-    return res;
+      activity.num_assistants >= activity.limit_users
+    );
   };
 
   const isActivityPast = (activityDate) => {
@@ -120,7 +118,6 @@ export const Activity = () => {
       return;
     }
 
-    // Lógica para unirse a la actividad
     try {
       const response = await axios.put(
         "http://localhost:4000/api/activity/joinActivity",
@@ -147,7 +144,6 @@ export const Activity = () => {
       return;
     }
 
-    // Lógica para abandonar la actividad
     try {
       const response = await axios.put(
         "http://localhost:4000/api/activity/leaveActivity",
@@ -169,6 +165,22 @@ export const Activity = () => {
   };
 
   const activityDate = activity ? parseISO(activity.date_time_activity) : null;
+
+  if (loading) return <div>Cargando...</div>;
+  if (error) return <div>{error}</div>;
+
+  const getButtonClassName = () => {
+    if (isActivityPast(parseISO(activity.date_time_activity))) {
+      return "finalized-btn";
+    } else if (isActivityFull(activity)) {
+      return "complete-btn";
+    } else if (activity.is_user_participant) {
+      return "finalized-btn";
+    } else {
+      return "trio-btn";
+    }
+  };
+
   const getJoinButtonText = () => {
     if (isActivityPast(activityDate)) {
       return "Finalizada";
@@ -183,12 +195,8 @@ export const Activity = () => {
     }
   };
 
-  if (loading) return <div>Cargando...</div>;
-  if (error) return <div>{error}</div>;
-
   return (
     <Container fluid className="activity-container">
-      {/* Título centrado */}
       <Row className="justify-content-center">
         <h2 className="activity-title">{activity.text}</h2>
       </Row>
@@ -279,42 +287,31 @@ export const Activity = () => {
       <Row className="justify-content-center mt-4">
         <Col xs={12} md={8} className="activity-buttons">
           <Button
-            variant={
-              isActivityFull(activity) ||
-              isActivityPast(parseISO(activity.date_time_activity))
-                ? "danger" // Botón rojo si la actividad está completa o finalizada
-                : activity.is_user_participant
-                ? "secondary" // Botón gris si el usuario es participante (incluido el creador)
-                : "primary" // Botón azul si se puede unir
-            }
-            className="w-100"
+            className={`w-100 ${getButtonClassName()}`}
             disabled={
-              (isActivityFull(activity) ||
-                isActivityPast(parseISO(activity.date_time_activity))) &&
-              !activity.is_user_participant // Deshabilitar si la actividad está completa o finalizada y el usuario no está inscrito
+              isActivityPast(activityDate) ||
+              (isActivityFull(activity) && !activity.is_user_participant)
             }
             onClick={(e) => {
               e.preventDefault();
               if (!activity.loading) {
                 if (activity.is_user_participant) {
-                  handleLeaveActivity(activity.activity_id); // Permite abandonar si es participante
+                  handleLeaveActivity(activity.activity_id);
                 } else {
-                  handleJoinActivity(activity.activity_id); // Permite unirse si no es participante
+                  handleJoinActivity(activity.activity_id);
                 }
               }
             }}
           >
-            {isActivityPast(parseISO(activity.date_time_activity))
-              ? "Finalizada"
-              : isActivityFull(activity)
-              ? "Completo"
-              : getJoinButtonText()}
+            {getJoinButtonText()}
           </Button>
 
           <Button
-            variant="secondary"
-            className="btn-large"
-            onClick={handleOpenModal}
+            className="trio-comment-btn w-100"
+            onClick={(e) => {
+              e.preventDefault();
+              handleShowModal(activity);
+            }}
           >
             Añadir comentario
           </Button>
@@ -347,7 +344,7 @@ export const Activity = () => {
                       marginRight: "10px",
                     }}
                     onError={(e) => {
-                      e.target.onerror = null; // Evitar loops infinitos si la imagen de fallback también falla
+                      e.target.onerror = null;
                       e.target.src = fallbackImage;
                     }}
                   />
