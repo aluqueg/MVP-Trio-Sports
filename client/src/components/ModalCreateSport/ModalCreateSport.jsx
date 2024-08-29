@@ -43,7 +43,7 @@ export const ModalCreateSport = ({
       console.log("Error en la solicitud:", error.response || error);
 
       if (error.response && error.response.data) {
-        setError(error.response.data.error || "Error al crear el deporte.");
+        setError(error.response.data.error || "No se puede crear el deporte. Inténtalo de nuevo con otro deporte o elija un deporte de la lista.");
       } else {
         setError("Error al crear el deporte. Inténtalo de nuevo.");
       }

@@ -462,7 +462,7 @@ export const Register = () => {
               <Form.Group className="mb-3" controlId="user_city">
                 <Form.Control
                   type="text"
-                  placeholder="cual es tu ciudad"
+                  placeholder="Cuál es tu ciudad"
                   name="user_city"
                   onChange={handleRegister}
                   value={userRegister?.user_city}
@@ -635,7 +635,7 @@ export const Register = () => {
                 <Form.Control
                   as="textarea"
                   rows={7}
-                  placeholder="Enter your text here"
+                  placeholder="Descríbete en pocas palabras"
                   onChange={handleRegister}
                   name="description"
                   maxlength="255"

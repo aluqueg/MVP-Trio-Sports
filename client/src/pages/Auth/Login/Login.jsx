@@ -84,7 +84,7 @@ export const Login = () => {
               <Form.Control
                 className="login-input"
                 type="password"
-                placeholder="Password"
+                placeholder="Contraseña"
                 name="password"
                 value={login.password}
                 onChange={handleChange}
@@ -92,7 +92,7 @@ export const Login = () => {
             </Form.Group>
             {msg.show && <p className="d-flex justify-content-center validation-color">{msg.text}</p>}
             <button type="button" className="login-input button-login trio-btn" onClick={onSubmit}>
-              Inicia sesión
+              Iniciar sesión
             </button>
           </Form>
           <p className="d-flex justify-content-center"><Link to='/recoverPassword'>¿Has olvidado la contraseña?</Link></p>

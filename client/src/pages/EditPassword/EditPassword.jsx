@@ -49,7 +49,7 @@ export const EditPassword = () => {
     <Container fluid="xl" className="my-3 d-flex flex-column justify-content-center align-items-center ">
       <Form className="my-5 d-flex flex-column text-center align-items-center">
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label className='fs-2'>Cambia la contraseña.</Form.Label>
+          <Form.Label className='fs-2'>Cambia la contraseña</Form.Label>
           <Form.Control
             className='edit-input m-4'
             type="password"
@@ -60,7 +60,7 @@ export const EditPassword = () => {
           />
           {msg.show && <p>{msg.text}</p>}
           <Form.Text>
-            Introduce una nueva contraseña.
+            Introduce una nueva contraseña
           </Form.Text>
         </Form.Group>
         <button type="button" className='trio-btn edit-input button-edit' onClick={onSubmit}>
