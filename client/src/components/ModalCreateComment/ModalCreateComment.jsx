@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 
 const ModalCreateComment = ({ show, handleClose, handleCommentSubmit }) => {
@@ -33,7 +33,8 @@ const ModalCreateComment = ({ show, handleClose, handleCommentSubmit }) => {
               rows={3}
               placeholder="Escribe aquí tu comentario..."
               value={comment}
-              maxLength={255}  
+              maxLength={255} 
+              className="form-input" 
               onChange={(e) => {
                 setComment(e.target.value);
                 if (e.target.value.length <= 255) setError("");  
@@ -46,12 +47,12 @@ const ModalCreateComment = ({ show, handleClose, handleCommentSubmit }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <button type="button" className="trio-cancel-btn me-2" onClick={handleClose}>
           Cancelar
-        </Button>
-        <Button variant="primary" onClick={handleSubmit}>
+        </button>
+        <button type="submit" className="trio-btn" onClick={handleSubmit}>
           Aceptar
-        </Button>
+        </button>
       </Modal.Footer>
     </Modal>
   );
