@@ -44,3 +44,10 @@
   margin: 20px 0; 
   border-radius: 2px; 
 }
+
+.msg-allusers{
+  text-align: center;
+  color: #ff5733;
+  font-weight: bold;
+  margin-top: 20px;
+}

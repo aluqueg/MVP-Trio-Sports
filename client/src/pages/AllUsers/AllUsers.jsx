@@ -68,7 +68,7 @@ export const AllUsers = () => {
 
   return (
     <Container>
-      <Row className="d-flex justify-content-center align-items-center flex-wrap m-5 gap-4">        
+      <Row className="d-flex justify-content-center align-items-center flex-wrap m-3 gap-4">        
           <Col className="d-flex justify-content-center">
             <Form.Group>
             <Form.Select
@@ -141,14 +141,19 @@ export const AllUsers = () => {
       <div className="custom-divider"></div>
       <Row>
         <Col>
-          <div className="d-flex justify-content-center flex-wrap gap-3">
-            {userMostrados
-              ? filteredUsers.map((e, index) => {
-                  return <CardOneUser key={index} data={e} />;
-                })
-              : allUsers.map((e, index) => {
-                  return <CardOneUser key={index} data={e} />;
-                })}
+          <div className="d-flex justify-content-center flex-wrap gap-3">            
+          {(userMostrados ? filteredUsers.length > 0 : allUsers.length > 0) ? (
+            userMostrados
+              ? filteredUsers.map((e, index) => (
+                  <CardOneUser key={index} data={e} />
+                ))
+              : allUsers.map((e, index) => (
+                  <CardOneUser key={index} data={e} />
+                ))
+          ) : (
+            <p className="msg-allusers">No hay usuarios que mostrar</p>
+          )}
+
           </div>
         </Col>
       </Row>
