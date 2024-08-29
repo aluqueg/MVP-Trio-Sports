@@ -1,4 +1,4 @@
-import { Card, Row, Col, Button } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import { BsTrophy, BsMap, BsCalendar3, BsPencil } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { format, parseISO } from "date-fns";
@@ -31,6 +31,8 @@ export const CardOneActivity = ({
   const getJoinButtonText = () => {
     if (isActivityPast(activityDate)) {
       return "Finalizada";
+    } else if (isActivityFull(activity) && activity.is_user_participant) {
+      return `Abandonar ${activity.num_assistants} / ${activity.limit_users}`;
     } else if (isActivityFull(activity)) {
       return "Completa";
     } else if (activity.is_user_participant) {
@@ -45,12 +47,25 @@ export const CardOneActivity = ({
   const getButtonClassName = () => {
     if (isActivityPast(activityDate)) {
       return "finalized-btn";
+    } else if (isActivityFull(activity) && activity.is_user_participant) {
+      return "complete-btn active";
     } else if (isActivityFull(activity)) {
       return "complete-btn";
     } else if (activity.is_user_participant) {
-      return "finalized-btn";
+      return "abandon-btn";
     } else {
       return "trio-btn";
+    }
+  };
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    if (!activity.loading) {
+      if (activity.is_user_participant) {
+        handleLeaveActivity(activity.activity_id);
+      } else {
+        handleJoinActivity(activity.activity_id);
+      }
     }
   };
 
@@ -65,14 +80,17 @@ export const CardOneActivity = ({
           to={`/activity/${activity.activity_id}`}
           style={{ textDecoration: "none", color: "inherit" }}
         >
-          <Card.Img
-            src={`/src/assets/activities/${activity.sport_img}`}
-            alt={activity.text}
-            className="card-img-custom"
-            onError={(e) =>
-              (e.target.src = "/src/assets/activities/newsport.jpg")
-            }
-          />
+          <div style={{ position: "relative", width: "100%", height: "100%" }}>
+            <Card.Img
+              src={`/src/assets/activities/${activity.sport_img}`}
+              alt={activity.text}
+              className="card-img-custom"
+              onError={(e) =>
+                (e.target.src = "/src/assets/activities/newsport.jpg")
+              }
+            />
+            <div className="card-img-overlay"></div>
+          </div>
         </Link>
         {showEditButton && !isActivityPast(activityDate) && (
           <Link
@@ -131,28 +149,21 @@ export const CardOneActivity = ({
 
           <Row className="mt-3 btn-group">
             <Col xs={12} md={12} className="mb-2">
-              <Button
+              <button
+                type="button"
                 className={`w-100 ${getButtonClassName()}`}
                 disabled={
                   isActivityPast(activityDate) ||
                   (isActivityFull(activity) && !activity.is_user_participant)
                 }
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (!activity.loading) {
-                    if (activity.is_user_participant) {
-                      handleLeaveActivity(activity.activity_id);
-                    } else {
-                      handleJoinActivity(activity.activity_id);
-                    }
-                  }
-                }}
+                onClick={handleButtonClick}
               >
                 {getJoinButtonText()}
-              </Button>
+              </button>
             </Col>
             <Col xs={12} md={12}>
-              <Button
+              <button
+                type="button"
                 className="trio-comment-btn w-100"
                 onClick={(e) => {
                   e.preventDefault();
@@ -160,7 +171,7 @@ export const CardOneActivity = ({
                 }}
               >
                 Añadir comentario
-              </Button>
+              </button>
             </Col>
           </Row>
         </Card.Body>

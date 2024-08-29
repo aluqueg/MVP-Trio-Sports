@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { BsCalendar3 } from "react-icons/bs";
 import { TrioContext } from "../../context/TrioContextProvider";
@@ -60,15 +60,16 @@ export const ActivityFilter = ({ onFilter, onReset }) => {
         value={selectedCity}
         onChange={(e) => setSelectedCity(e.target.value)}
       />
-      <Button className="filter-button" onClick={handleFilter}>
+      <button type="button" className="filter-button" onClick={handleFilter}>
         Buscar
-      </Button>
-      <Button
+      </button>
+      <button
+        type="button"
         className="filter-button filter-button-secondary ms-2"
         onClick={handleReset}
       >
         Mostrar todas
-      </Button>
+      </button>
     </div>
   );
 };
