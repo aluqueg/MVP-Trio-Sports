@@ -90,7 +90,7 @@ export const Chats = () => {
     }
   }
   console.log(received)
-  return (
+    return (
     <Container fluid="xxl" className="chats-body">
      <div className="messages">
       <div className="lateral-mensajes">
@@ -102,11 +102,11 @@ export const Chats = () => {
           <>
           <div key={idx} className="one-message" onClick={() => viewOneChat(e.user_id,user.user_id)}>
           <Row>
-            <Col lg="3">
-              <img src="../../src/assets/images/default_user_img.png" alt="" />
+            <Col md="3" className="sender-img">
+              <img src= {`http://localhost:4000/images/users/${e?.user_img}`} />
             </Col>
-            <Col lg="9" className="body-message">
-              <div className="name"><span>{e.user_name} {e.last_name}</span> <span>{isToday? hourOnly : dateOnly}</span></div>
+            <Col md="9" className="body-message">
+              <div className="name-message"><span>{e.user_name} {e.last_name}</span> <span>{isToday? hourOnly : dateOnly}</span></div>
               <div className="prev-message">{e.last_message_text}</div>
               <div className="datos">{e.opened_received == "0"? <span>Nuevo Mensaje</span> : null}</div>
             </Col>
@@ -119,12 +119,12 @@ export const Chats = () => {
       <div className="cuerpo-mensajes">
         {viewMessages?.map((e,idx)=>{
           return(
-            <div className={e.message_type === "sent" ? "chat-box dch" : " chat-box"} key={idx} >{e.message_type === "sent" ? null : <img src="../../src/assets/images/default_user_img.png" alt="" />}<span>{e.text}</span>{e.message_type === "sent" ? <img src="../../src/assets/images/default_user_img.png" alt="" /> : null}</div>
+            <div className={e.message_type === "sent" ? "chat-box dch" : " chat-box"} key={idx} >{e.message_type === "sent" ? null : <img src="../../src/assets/images/default_user_img.png" alt="" />}<span>{e.text}</span>{e.message_type === "sent" ? <img src={`http://localhost:4000/images/users/${user?.user_img}`} alt="" /> : null}</div>
           )
         })}
       </div>
-      <textarea id="message" name="message" placeholder="Escribe aquí..." className="chat" onChange={handleSend} value={currentMessage}></textarea>
-      <button onClick={currentSend && currentMessage? ()=>sendMessage(currentMessage,today,currentSend,user.user_id) : null}>ENVIAR</button>
+      <textarea  id="message" name="message" placeholder="Escribe aquí..." className="chat" onChange={handleSend} value={currentMessage} maxLength="255" ></textarea>
+      <button onClick={currentSend && currentMessage? ()=>sendMessage(currentMessage,today,currentSend,user.user_id) : null} type="button" className="trio-btn">ENVIAR</button>
     </div>
     </Container>
   )

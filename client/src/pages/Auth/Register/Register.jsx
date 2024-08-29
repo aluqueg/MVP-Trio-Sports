@@ -226,7 +226,7 @@ export const Register = () => {
     setSportId(newSport.sport_id); //Selecciona automáticamente el nuevo deporte
   };
   /* ENVIAR DATOS REGISTER */
-  const [file, setFile] = useState({});
+  const [file, setFile] = useState();
   const handleFile = (e) => {
     setFile(e.target.files[0]);
   };
@@ -252,6 +252,7 @@ export const Register = () => {
 
   console.log(selectedSport)
   console.log(userRegister)
+  console.log(file)
   return (
     <Container className="body-register">
       <Form action="">
