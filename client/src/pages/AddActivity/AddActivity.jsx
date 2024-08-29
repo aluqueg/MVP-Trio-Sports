@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Container, Alert, Row, Col } from "react-bootstrap";
 import { BsCalendar3 } from "react-icons/bs";
@@ -110,19 +110,20 @@ export const AddActivity = () => {
   return (
     <Container
       fluid="xxl"
-      className="d-flex justify-content-center align-items-center"
+      className="d-flex justify-content-center align-items-start"
+      style={{ minHeight: "100vh", marginTop: "60px" }}
     >
       <div
         className="w-100 container-add-activity"
         style={{ maxWidth: "600px", padding: "20px" }}
       >
-        <h4 className="text-center mb-2">
+        <h4 className="text-center mt-0">
           Formulario de creación de una actividad
         </h4>
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
 
-        <div className="add-activity-custom-divider mt-2 mb-2"></div>
+        <div className="add-activity-custom-divider mt-1 mb-1"></div>
 
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="formText" className="mb-1">

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { TrioContext } from "../../context/TrioContextProvider";
@@ -71,7 +71,8 @@ export const AddSport = () => {
   return (
     <Container
       fluid="xxl"
-      className="d-flex justify-content-center align-items-center"
+      className="d-flex justify-content-center align-items-start"
+      style={{ minHeight: "100vh", marginTop: "100px" }}
     >
       <div
         className="w-100 container-add-activity"

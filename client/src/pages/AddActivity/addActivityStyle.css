@@ -1,3 +1,13 @@
+.container-add-activity{
+  border: 2px solid var(--trio2);
+  margin-block: 10px;
+  border-radius: 20px;
+  padding: 20px;
+  max-width: 100%;
+  width: 90%;
+  box-sizing: border-box;
+}
+
 .add-activity-datepicker-container {
     display: flex;
     align-items: center;
@@ -35,12 +45,6 @@
     text-overflow: ellipsis;
   }
   
-  .container-add-activity{
-    border: 2px solid var(--trio2);
-    margin-block: 20px;
-    border-radius: 20px;
-  }
-  
   .add-activity-custom-divider {
     height: 2px; 
     background-color: var(--trio2); 
@@ -48,3 +52,17 @@
     border-radius: 2px; 
   }
   
+  @media (max-width: 768px) {
+    .container-add-activity {
+      padding: 15px;
+      width: 95%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .container-add-activity {
+      padding: 10px;
+      width: 100%;
+    }
+  }
+
