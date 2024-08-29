@@ -5,8 +5,10 @@ const adminController = require("../controllers/adminControllers");
 router.get("/", adminController.getAllUsers);
 router.get("/getAllUsers", adminController.getAllUsers)
 router.put("/disableUser", adminController.disableUser);
-router.put("/disableSport/:sport_id", adminController.disableSport);
-router.get("/prueba", adminController.prueba)
+router.put("/enableUser", adminController.enableUser);
 
+router.get("/getAllSports", adminController.getAllSports)
+router.put("/disableSport", adminController.disableSport);
+router.put("/enableSport", adminController.enableSport);
 
 module.exports = router;
