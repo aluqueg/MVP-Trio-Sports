@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Button, Modal, Form, Alert } from "react-bootstrap";
+import { Modal, Form, Alert } from "react-bootstrap";
 import axios from "axios";
 
 export const ModalCreateSport = ({
   show,
   closeModal,
   onSportCreated,
-  existingSports,
-  addSports,
+  existingSports
 }) => {
   const [sportName, setSportName] = useState("");
   const [error, setError] = useState("");
@@ -39,7 +38,6 @@ export const ModalCreateSport = ({
         onSportCreated(response.data);
         setSportName("");
         closeModal();
-        //addSports(response.data.sport_name);
       }
     } catch (error) {
       console.log("Error en la solicitud:", error.response || error);
@@ -55,7 +53,7 @@ export const ModalCreateSport = ({
   return (
     <Modal show={show} onHide={closeModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Creación de un nuevo deporte</Modal.Title>
+        <Modal.Title>Formulario de creación de nuevo deporte</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
@@ -63,7 +61,7 @@ export const ModalCreateSport = ({
             <Form.Control
               type="text"
               name="sportName"
-              placeholder="Introduce el nombre del nuevo deporte"
+              placeholder="Nombre del nuevo deporte"
               value={sportName}
               onChange={handleChange}
               required

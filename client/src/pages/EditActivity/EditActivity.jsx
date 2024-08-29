@@ -5,7 +5,6 @@ import { BsCalendar3 } from "react-icons/bs";
 import axios from "axios";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setHours, setMinutes } from "date-fns";
 import { es } from "date-fns/locale";
 import { TrioContext } from "../../context/TrioContextProvider";
 
@@ -133,14 +132,15 @@ export const EditActivity = () => {
   return (
     <Container
       fluid="xxl"
-      className="d-flex justify-content-center align-items-start"
-      style={{ minHeight: "100vh", marginTop: "60px" }}
+      className="d-flex justify-content-center align-items-start m-auto"
     >
       <div
         className="w-100 container-add-activity"
-        style={{ maxWidth: "600px", padding: "20px" }}
+        style={{ maxWidth: "600px", padding: "10px 20px", margin: "5px" }}
       >
-        <h4 className="text-center mt-0">Formulario de edición de una actividad</h4>
+        <h4 className="text-center mt-0">
+          Formulario de edición de una actividad
+        </h4>
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
 
@@ -151,7 +151,7 @@ export const EditActivity = () => {
             <Form.Label>Título</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Introduce un título para la actividad o evento"
+              placeholder="Introduce el título"
               value={text}
               onChange={(e) => setText(e.target.value)}
               required
@@ -159,12 +159,13 @@ export const EditActivity = () => {
             />
           </Form.Group>
 
-          <Row className="mb-2">
-            <Col>
+          <Row className="mb-2 d-flex flex-wrap">
+            <Col xs="12" sm="6" md="6" lg="6" xl="6" xxl="6">
               <Form.Group controlId="formLimitUsers">
                 <Form.Label>Número de Participantes</Form.Label>
                 <Form.Control
                   type="number"
+                  placeholder="Sin límite"
                   value={limitUsers}
                   onChange={(e) =>
                     setLimitUsers(e.target.value < 0 ? 0 : e.target.value)
@@ -173,7 +174,7 @@ export const EditActivity = () => {
                 />
               </Form.Group>
             </Col>
-            <Col>
+            <Col xs="12" sm="6" md="6" lg="6" xl="6" xxl="6">
               <Form.Group controlId="formSportName">
                 <Form.Label>Deporte</Form.Label>
                 <Form.Control
@@ -194,12 +195,6 @@ export const EditActivity = () => {
                 onChange={(date) => setDateTimeActivity(date)}
                 showTimeSelect
                 timeCaption="Hora"
-                excludeTimes={[
-                  setHours(setMinutes(new Date(), 0), 17),
-                  setHours(setMinutes(new Date(), 30), 18),
-                  setHours(setMinutes(new Date(), 30), 19),
-                  setHours(setMinutes(new Date(), 30), 17),
-                ]}
                 minDate={new Date()}
                 dateFormat="Pp"
                 locale="es"
