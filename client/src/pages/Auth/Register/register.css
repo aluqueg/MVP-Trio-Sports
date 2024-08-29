@@ -43,7 +43,8 @@
 }
 
 .list-group-item.active {
-  background-color: #ff5733;
+  background-color: var(--trio);
+  border-color: var(--trio2);
 }
 
 .error-msg{
@@ -178,4 +179,23 @@
   .list-genders{
     width: 60vw;
   }
+}
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px; 
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* color del fondo */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--trio); /* color de la barra */
+  border-radius: 10px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--trio2); /* hover de la barra */
 }
