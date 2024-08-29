@@ -7,11 +7,9 @@ import { Container } from 'react-bootstrap';
 function App() {
 
   return (
-    <Container fluid className='m-0 p-0'>
       <TrioContextProvider>
         <AppRoutes/>
       </TrioContextProvider>
-    </Container>
   )
 }
 

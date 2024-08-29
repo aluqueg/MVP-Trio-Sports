@@ -34,10 +34,10 @@ export const AppRoutes = () => {
   const { user } = useContext(TrioContext);
   return (
     <BrowserRouter>
+        <Container fluid>
       <Row>
         <NavBarApp />
       </Row>
-        <Container fluid className="m-0 p-0">
             <Routes>
               <Route path="/" element={<Home />} />
               {user && <Route path="/allActivities" element={<AllActivities />} />}
