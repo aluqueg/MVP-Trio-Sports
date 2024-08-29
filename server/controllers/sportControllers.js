@@ -57,7 +57,7 @@ class SportController {
 
 
   getAllSports = (req, res) => {
-    const sql = `SELECT sport_id, sport_name FROM sport ORDER BY sport_name ASC`;
+    const sql = `SELECT sport_id, sport_name FROM sport WHERE is_disabled = 0 ORDER BY sport_name ASC`;
 
     connection.query(sql, (error, results) => {
       if (error) {

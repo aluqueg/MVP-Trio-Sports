@@ -2,7 +2,7 @@ const connection = require("../config/db");
 
 class adminController {
   getAllUsers = (req,res) =>{
-    let sql = "SELECT user.user_id, user.user_name, user.last_name, user.user_city, user.is_validated, user.is_disabled, user.type, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id GROUP BY user.user_id, user.user_name, user.last_name, user.user_city, user.is_validated, user.is_disabled, user.type"
+    let sql = "SELECT * from user"
     connection.query(sql,(err,result)=>{
       if(err){
         res.status(500).json(err);
@@ -15,13 +15,20 @@ class adminController {
   disableUser = (req,res)=>{
     const {user_id,status} = req.body
     console.log(req.body)
-    let sql = `UPDATE user SET is_disabled = 1 WHERE user_id = "${user_id}"`
+    let sql = `UPDATE user SET is_disabled = 1 WHERE user_id = ${user_id}`
 
-    connection.query(sql,(err, result)=>{
+    connection.query(sql,(err)=>{
       if(err){
         res.status(500).json(err)
       }else{
-        res.status(200).json(result)
+        let sql2 = `DELETE FROM participate WHERE user_id = ${user_id}`
+        connection.query(sql2, (err2, result) => {
+          if(err2){
+            res.status(500).json(err)
+          }else{
+            res.status(200).json(result)
+          }
+        })
       }
     })
   }
@@ -29,7 +36,7 @@ class adminController {
   enableUser = (req,res)=>{
     const {user_id} = req.body
     console.log(req.body)
-    let sql = `UPDATE user SET is_disabled = 0 WHERE user_id = "${user_id}"`
+    let sql = `UPDATE user SET is_disabled = 0 WHERE user_id = ${user_id}`
 
     connection.query(sql,(err, result)=>{
       if(err){
@@ -54,19 +61,26 @@ class adminController {
   
 
   disableSport = (req, res) => {
-    let { sport_id, status } = req.body;
+    let { sport_id } = req.body;
     let sql = `UPDATE sport SET is_disabled = 1 WHERE sport_id = ${sport_id}`;
-    connection.query(sql, (err, result) => {
+    connection.query(sql, (err) => {
       if (err) {
         res.status(500).json(err);
       } else {
-        res.status(200).json(result);
+        let sql2 = `DELETE FROM practice WHERE sport_id = ${sport_id}`
+        connection.query(sql2, (err2, result) =>{
+          if(err2){
+            res.status(500).json(err2)
+          }else{
+            res.status(200).json(result)
+          }
+        })
       }
     });
   };
 
   enableSport = (req, res) => {
-    let { sport_id, status } = req.body;
+    let { sport_id } = req.body;
     let sql = `UPDATE sport SET is_disabled = 0 WHERE sport_id = ${sport_id}`;
     connection.query(sql, (err, result) => {
       if (err) {
