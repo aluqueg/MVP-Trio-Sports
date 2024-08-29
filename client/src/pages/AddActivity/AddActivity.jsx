@@ -29,7 +29,7 @@ export const AddActivity = () => {
 
   const navigate = useNavigate();
 
-  // Cargar la lista de deportes solo si no se han cargado antes
+
   useEffect(() => {
     if (!sports.length) {
       axios
@@ -47,7 +47,7 @@ export const AddActivity = () => {
 
   const handleSportCreated = (newSport) => {
     setSports((prevSports) => {
-      // Añade el nuevo deporte y ordena alfabéticamente
+
       const updatedSports = [...prevSports, newSport].sort((a, b) =>
         a.sport_name.localeCompare(b.sport_name, "es", { sensitivity: "base" })
       );

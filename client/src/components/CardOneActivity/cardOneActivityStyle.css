@@ -136,6 +136,17 @@
     object-position: top;
     height: 200px;
   }
+
+  @media (max-width: 576px) {
+    .card-img-custom {
+      object-position: center top;
+      height: 200px;
+    }
+
+    .card-img-custom[src*="newsport.jpg"] {
+      object-position: center -100px;
+    }
+  }
 }
 
 @media (min-width: 768px) and (max-width: 992px) {
