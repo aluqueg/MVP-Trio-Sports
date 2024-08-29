@@ -5,7 +5,6 @@ import { BsCalendar3 } from "react-icons/bs";
 import axios from "axios";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setHours, setMinutes } from "date-fns";
 import { es } from "date-fns/locale";
 import { ModalCreateSport } from "../../components/ModalCreateSport/ModalCreateSport";
 import { TrioContext } from "../../context/TrioContextProvider";
@@ -187,12 +186,6 @@ export const AddActivity = () => {
                 onChange={(date) => setDateTimeActivity(date)}
                 showTimeSelect
                 timeCaption="Hora"
-                excludeTimes={[
-                  setHours(setMinutes(new Date(), 0), 17),
-                  setHours(setMinutes(new Date(), 30), 18),
-                  setHours(setMinutes(new Date(), 30), 19),
-                  setHours(setMinutes(new Date(), 30), 17),
-                ]}
                 minDate={new Date()}
                 dateFormat="Pp"
                 locale="es"
