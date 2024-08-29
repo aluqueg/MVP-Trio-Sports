@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Row, Col, Table, Button, Image } from "react-bootstrap";
+import { Row, Col, Table, Image } from "react-bootstrap";
 import axios from "axios";
 import { BsTrophy, BsMap, BsClock, BsCalendar3 } from "react-icons/bs";
 import { MdLocationOn } from "react-icons/md";
@@ -169,21 +169,11 @@ export const Activity = () => {
   if (loading) return <div>Cargando...</div>;
   if (error) return <div>{error}</div>;
 
-  const getButtonClassName = () => {
-    if (isActivityPast(parseISO(activity.date_time_activity))) {
-      return "finalized-btn";
-    } else if (isActivityFull(activity)) {
-      return "complete-btn";
-    } else if (activity.is_user_participant) {
-      return "finalized-btn";
-    } else {
-      return "trio-btn";
-    }
-  };
-
   const getJoinButtonText = () => {
     if (isActivityPast(activityDate)) {
       return "Finalizada";
+    } else if (isActivityFull(activity) && activity.is_user_participant) {
+      return `Abandonar ${activity.num_assistants} / ${activity.limit_users}`;
     } else if (isActivityFull(activity)) {
       return "Completa";
     } else if (activity.is_user_participant) {
@@ -195,174 +185,198 @@ export const Activity = () => {
     }
   };
 
+  const getButtonClassName = () => {
+    if (isActivityPast(activityDate)) {
+      return "finalized-btn";
+    } else if (isActivityFull(activity) && activity.is_user_participant) {
+      return "complete-btn active";
+    } else if (isActivityFull(activity)) {
+      return "complete-btn";
+    } else if (activity.is_user_participant) {
+      return "abandon-btn";
+    } else {
+      return "trio-btn";
+    }
+  };
+
   return (
-    <Container fluid className="activity-container">
-      <Row className="justify-content-center">
-        <h2 className="activity-title">{activity.text}</h2>
-      </Row>
-      {/* Imagen a la izquierda y tabla con información a la derecha */}
-      <Row className="align-items-center justify-content-center activity-content">
-        <Col xs={12} md={6} className="activity-image-col">
-          <img
-            src={`/src/assets/activities/${activity.sport_img}`}
-            alt={activity.sport_name}
-            className="activity-image"
-            onError={(e) =>
-              (e.target.src = "/src/assets/activities/newsport.jpg")
-            }
-          />
-        </Col>
-        <Col xs={12} md={6} className="activity-details-wrapper">
-          <Table borderless className="activity-table">
-            <tbody>
-              <tr className="table-separator">
-                <td>
-                  <BsTrophy className="icon" />
-                </td>
-                <td className="text-large">{activity.sport_name}</td>
-              </tr>
-              <tr className="table-separator">
-                <td>
-                  <BsMap className="icon" />
-                </td>
-                <td className="text-large">
-                  {activity.activity_address}, {activity.activity_city}
-                </td>
-              </tr>
-              <tr className="table-separator">
-                <td>
-                  <BsCalendar3 className="icon" />
-                </td>
-                <td className="text-large">
-                  {new Date(activity.date_time_activity).toLocaleDateString(
-                    "es-ES"
-                  )}
-                </td>
-              </tr>
-              <tr className="table-separator">
-                <td>
-                  <BsClock className="icon" />
-                </td>
-                <td className="text-large">
-                  {new Date(activity.date_time_activity).toLocaleTimeString(
-                    "es-ES",
-                    {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }
-                  )}
-                </td>
-              </tr>
-              {/* No mostrar maps_link si es null */}
-              {activity.maps_link && (
+    <div className="container-xxl">
+      <Col xl={8} className="mx-auto">
+        <Row className="justify-content-center">
+          <h2 className="activity-title">{activity.text}</h2>
+        </Row>
+
+        <Row className="align-items-center justify-content-center activity-content">
+          <Col xs={12} md={6} className="activity-image-col">
+            <img
+              src={`/src/assets/activities/${activity.sport_img}`}
+              alt={activity.sport_name}
+              className="activity-image"
+              onError={(e) =>
+                (e.target.src = "/src/assets/activities/newsport.jpg")
+              }
+            />
+          </Col>
+          <Col xs={12} md={6} className="activity-details-wrapper">
+            <Table borderless className="activity-table">
+              <tbody>
                 <tr className="table-separator">
                   <td>
-                    <MdLocationOn
-                      className="icon"
-                      style={{ color: "#EA4335" }}
-                    />
+                    <BsTrophy className="icon" />
+                  </td>
+                  <td className="text-large">{activity.sport_name}</td>
+                </tr>
+                <tr className="table-separator">
+                  <td>
+                    <BsMap className="icon" />
                   </td>
                   <td className="text-large">
-                    <a
-                      href={activity.maps_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Ver en Google Maps
-                    </a>
+                    {activity.activity_address}, {activity.activity_city}
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </Table>
-          <div className="activity-info-box">
-            <p className="activity-info-text">
-              {activity.details ||
-                "No hay detalles adicionales para esta actividad."}
-            </p>
-          </div>
-        </Col>
-      </Row>
-      {/* Botones */}
-      <Row className="justify-content-center mt-4">
-        <Col xs={12} md={8} className="activity-buttons">
-          <Button
-            className={`w-100 ${getButtonClassName()}`}
-            disabled={
-              isActivityPast(activityDate) ||
-              (isActivityFull(activity) && !activity.is_user_participant)
-            }
-            onClick={(e) => {
-              e.preventDefault();
-              if (!activity.loading) {
-                if (activity.is_user_participant) {
-                  handleLeaveActivity(activity.activity_id);
-                } else {
-                  handleJoinActivity(activity.activity_id);
-                }
-              }
-            }}
-          >
-            {getJoinButtonText()}
-          </Button>
+                <tr className="table-separator">
+                  <td>
+                    <BsCalendar3 className="icon" />
+                  </td>
+                  <td className="text-large">
+                    {new Date(activity.date_time_activity).toLocaleDateString(
+                      "es-ES"
+                    )}
+                  </td>
+                </tr>
+                <tr className="table-separator">
+                  <td>
+                    <BsClock className="icon" />
+                  </td>
+                  <td className="text-large">
+                    {new Date(activity.date_time_activity).toLocaleTimeString(
+                      "es-ES",
+                      {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }
+                    )}
+                  </td>
+                </tr>
 
-          <Button
-            className="trio-comment-btn w-100"
-            onClick={(e) => {
-              e.preventDefault();
-              handleShowModal(activity);
-            }}
-          >
-            Añadir comentario
-          </Button>
-        </Col>
-      </Row>
-      <hr />
-      {/* Modal para añadir comentario */}
-      <ModalCreateComment
-        show={showModal}
-        handleClose={handleCloseModal}
-        handleCommentSubmit={handleCommentSubmit}
-      />
-      {/* Comentarios */}
-      <Row className="justify-content-center mt-4">
-        <Col xs={12}>
-          {comments.map((comment, index) => (
-            <div key={index} className="comment-box mb-3 p-3">
-              <div className="comment-header d-flex justify-content-between">
-                <div className="d-flex align-items-center">
-                  <Image
-                    src={
-                      comment.user_img
-                        ? `http://localhost:4000/images/users/${comment.user_img}`
-                        : fallbackImage
-                    }
-                    roundedCircle
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginRight: "10px",
-                    }}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = fallbackImage;
-                    }}
-                  />
-                  <strong>{comment.user_name}</strong>
-                </div>
-                <span>
-                  {new Date(comment.date).toLocaleDateString("es-ES")}{" "}
-                  {new Date(comment.date).toLocaleTimeString("es-ES", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
-              </div>
-              <div className="comment-text">{comment.text}</div>
+                {activity.maps_link && (
+                  <tr className="table-separator">
+                    <td>
+                      <MdLocationOn
+                        className="icon"
+                        style={{ color: "#EA4335" }}
+                      />
+                    </td>
+                    <td className="text-large">
+                      <a
+                        href={activity.maps_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Ver en Google Maps
+                      </a>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+            <div className="activity-info-box">
+              <p className="activity-info-text">
+                {activity.details ||
+                  "No hay detalles adicionales para esta actividad."}
+              </p>
             </div>
-          ))}
-        </Col>
-      </Row>
-    </Container>
+          </Col>
+        </Row>
+
+        <Row className="justify-content-center mt-4">
+          <Col xs={12} md={8} className="activity-buttons">
+            <button
+              type="button"
+              className={`w-100 ${getButtonClassName()}`}
+              disabled={
+                isActivityPast(activityDate) ||
+                (isActivityFull(activity) && !activity.is_user_participant)
+              }
+              onClick={(e) => {
+                e.preventDefault();
+                if (!activity.loading) {
+                  if (activity.is_user_participant) {
+                    handleLeaveActivity(activity.activity_id);
+                  } else {
+                    handleJoinActivity(activity.activity_id);
+                  }
+                }
+              }}
+            >
+              {getJoinButtonText()}
+            </button>
+
+            <button
+              type="button"
+              className="trio-comment-btn w-100"
+              onClick={(e) => {
+                e.preventDefault();
+                handleShowModal(activity);
+              }}
+            >
+              Añadir comentario
+            </button>
+          </Col>
+        </Row>
+
+        <div className="custom-divider"></div>
+
+        <ModalCreateComment
+          show={showModal}
+          handleClose={handleCloseModal}
+          handleCommentSubmit={handleCommentSubmit}
+        />
+
+        <Row className="justify-content-center mt-4">
+          <Col xs={12}>
+            {comments.map((comment, index) => (
+              <div
+                key={index}
+                className={`${
+                  index % 2 === 0 ? "comment-box" : "comment-box-alternate"
+                } mb-3 p-3`}
+              >
+                <div className="comment-header d-flex justify-content-between">
+                  <div className="d-flex align-items-center">
+                    <Image
+                      src={
+                        comment.user_img
+                          ? `http://localhost:4000/images/users/${comment.user_img}`
+                          : fallbackImage
+                      }
+                      roundedCircle
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        marginRight: "10px",
+                      }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = fallbackImage;
+                      }}
+                    />
+                    <strong>{comment.user_name}</strong>
+                  </div>
+                  <span>
+                    {new Date(comment.date).toLocaleDateString("es-ES")}{" "}
+                    {new Date(comment.date).toLocaleTimeString("es-ES", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+                <div className="comment-text">{comment.text}</div>
+              </div>
+            ))}
+          </Col>
+        </Row>
+      </Col>
+    </div>
   );
 };
