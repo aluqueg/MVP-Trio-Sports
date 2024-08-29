@@ -28,7 +28,6 @@ export const AddActivity = () => {
 
   const navigate = useNavigate();
 
-
   useEffect(() => {
     if (!sports.length) {
       axios
@@ -46,7 +45,6 @@ export const AddActivity = () => {
 
   const handleSportCreated = (newSport) => {
     setSports((prevSports) => {
-
       const updatedSports = [...prevSports, newSport].sort((a, b) =>
         a.sport_name.localeCompare(b.sport_name, "es", { sensitivity: "base" })
       );
@@ -109,12 +107,11 @@ export const AddActivity = () => {
   return (
     <Container
       fluid="xxl"
-      className="d-flex justify-content-center align-items-start"
-      style={{ minHeight: "100vh", marginTop: "60px" }}
+      className="d-flex justify-content-center align-items-start m-auto"
     >
       <div
         className="w-100 container-add-activity"
-        style={{ maxWidth: "600px", padding: "20px" }}
+        style={{padding: "10px 20px", margin: "5px"}}
       >
         <h4 className="text-center mt-0">
           Formulario de creación de una actividad
@@ -138,7 +135,7 @@ export const AddActivity = () => {
           </Form.Group>
 
           <Row className="mb-2">
-            <Col>
+            <Col xs="12" sm="6" md="6" lg="6" xl="6" xxl="6">
               <Form.Group controlId="formSportId">
                 <Form.Label>Deporte</Form.Label>
                 <Form.Select
@@ -163,11 +160,12 @@ export const AddActivity = () => {
                 </Form.Select>
               </Form.Group>
             </Col>
-            <Col>
+            <Col xs="12" sm="6" md="6" lg="6" xl="6" xxl="6">
               <Form.Group controlId="formLimitUsers">
                 <Form.Label>Número de participantes</Form.Label>
                 <Form.Control
                   type="number"
+                  placeholder="Sin límite"
                   value={limitUsers}
                   onChange={(e) =>
                     setLimitUsers(e.target.value < 0 ? 0 : e.target.value)

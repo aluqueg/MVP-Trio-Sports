@@ -72,7 +72,7 @@ export const AddSport = () => {
     <Container
       fluid="xxl"
       className="d-flex justify-content-center align-items-start"
-      style={{ minHeight: "100vh", marginTop: "100px" }}
+      style={{ marginTop: "100px" }}
     >
       <div
         className="w-100 container-add-activity"
