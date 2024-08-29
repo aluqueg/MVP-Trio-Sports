@@ -470,7 +470,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                 onClick={handleClose}
                 className="trio-cancel-btn"
               >
-                Close
+                Cancelar
               </button>
               <button
                 type="button"

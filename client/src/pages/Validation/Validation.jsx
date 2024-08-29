@@ -20,7 +20,7 @@ export const Validation = () => {
     }
   },[])
   return (
-    <div>CORREO VALIDADO
+    <div>Correo validado
       <Button onClick={()=>navigate("/login")}>Ir a Login</Button>
     </div>
   )
