@@ -1,0 +1,16 @@
+.span-error{
+  font-size: 15rem;
+  margin-inline: 3rem;
+  color: #EA8930;
+}
+
+@media (max-width: 550px){
+  .span-error{
+    font-size: 8rem;
+    margin-inline: 1.3rem;
+  }
+  .img-error{
+    scale: 0.8;
+  }
+}
+
