@@ -18,7 +18,7 @@ export const NavBarApp = () => {
   const url = `${location.pathname}`;
   const partes = url.split("/");
   const currentPage = partes[1];
-  console.log("navBar user", user);
+
   return (
     <>
       <Navbar expand="md" className="bg-body-tertiary ">
