@@ -43,7 +43,6 @@ export const ActivityFilter = ({ onFilter, onReset }) => {
           ))}
         </Form.Select>
       </Form.Group>
-
       <div className="filter-input-group">
         <DatePicker
           selected={selectedDate}
@@ -54,7 +53,6 @@ export const ActivityFilter = ({ onFilter, onReset }) => {
         />
         <BsCalendar3 className="calendar-icon" />
       </div>
-
       <input
         className="filter-input"
         type="text"
@@ -62,7 +60,6 @@ export const ActivityFilter = ({ onFilter, onReset }) => {
         value={selectedCity}
         onChange={(e) => setSelectedCity(e.target.value)}
       />
-
       <Button className="filter-button" onClick={handleFilter}>
         Buscar
       </Button>

@@ -3,7 +3,7 @@ import { BsTrophy, BsMap, BsCalendar3, BsPencil } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
-import './CardOneActivityStyle.css'; 
+import "./CardOneActivityStyle.css";
 
 export const CardOneActivity = ({
   activity,
@@ -44,13 +44,13 @@ export const CardOneActivity = ({
 
   const getButtonClassName = () => {
     if (isActivityPast(activityDate)) {
-      return "finalized-btn"; 
+      return "finalized-btn";
     } else if (isActivityFull(activity)) {
-      return "complete-btn"; 
+      return "complete-btn";
     } else if (activity.is_user_participant) {
-      return "finalized-btn"; 
+      return "finalized-btn";
     } else {
-      return "trio-btn"; 
+      return "trio-btn";
     }
   };
 
@@ -71,11 +71,9 @@ export const CardOneActivity = ({
             className="card-img-custom"
             onError={(e) =>
               (e.target.src = "/src/assets/activities/newsport.jpg")
-            } // Reemplazar imagen si falla la carga
+            }
           />
         </Link>
-
-        {/* Ícono de lápiz siempre visible si el usuario es el creador */}
         {showEditButton && !isActivityPast(activityDate) && (
           <Link
             to={`/editActivity/${activity.activity_id}`}
@@ -132,41 +130,39 @@ export const CardOneActivity = ({
           <div style={{ flexGrow: 1 }}></div>
 
           <Row className="mt-3 btn-group">
-  <Col xs={12} md={12} className="mb-2">
-    <Button
-      className={`w-100 ${getButtonClassName()}`}
-      disabled={
-        isActivityPast(activityDate) ||
-        (isActivityFull(activity) && !activity.is_user_participant)
-      }
-      onClick={(e) => {
-        e.preventDefault();
-        if (!activity.loading) {
-          if (activity.is_user_participant) {
-            handleLeaveActivity(activity.activity_id);
-          } else {
-            handleJoinActivity(activity.activity_id);
-          }
-        }
-      }}
-    >
-      {getJoinButtonText()}
-    </Button>
-  </Col>
-  <Col xs={12} md={12}>
-    <Button
-      className="trio-comment-btn w-100"
-      onClick={(e) => {
-        e.preventDefault();
-        handleShowModal(activity);
-      }}
-    >
-      Añadir comentario
-    </Button>
-  </Col>
-</Row>
-
-
+            <Col xs={12} md={12} className="mb-2">
+              <Button
+                className={`w-100 ${getButtonClassName()}`}
+                disabled={
+                  isActivityPast(activityDate) ||
+                  (isActivityFull(activity) && !activity.is_user_participant)
+                }
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!activity.loading) {
+                    if (activity.is_user_participant) {
+                      handleLeaveActivity(activity.activity_id);
+                    } else {
+                      handleJoinActivity(activity.activity_id);
+                    }
+                  }
+                }}
+              >
+                {getJoinButtonText()}
+              </Button>
+            </Col>
+            <Col xs={12} md={12}>
+              <Button
+                className="trio-comment-btn w-100"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleShowModal(activity);
+                }}
+              >
+                Añadir comentario
+              </Button>
+            </Col>
+          </Row>
         </Card.Body>
       </Card>
     </Col>

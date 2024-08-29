@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Container, Row } from "react-bootstrap";
+import { Container, Row} from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TrioContext } from "../../context/TrioContextProvider";
@@ -24,11 +24,11 @@ export const AllActivities = () => {
         const response = await axios.get(
           "http://localhost:4000/api/activity/getAllActivities",
           {
-            headers: { Authorization: `Bearer ${token}` }, // token
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
         setActivities(response.data);
-        setFilteredActivities(response.data); // Inicialmente, muestra todas las actividades
+        setFilteredActivities(response.data);
       } catch (error) {
         console.error("Error al cargar actividades:", error);
       }
@@ -40,10 +40,14 @@ export const AllActivities = () => {
   }, [token]);
 
   //filtros deportes, fecha, ciudad
-
   const handleFilter = (filters) => {
     const filtered = activities.filter((activity) => {
       const normalizedActivityCity = activity.activity_city
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+
+      const normalizedFilterCity = filters.city
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
@@ -52,7 +56,7 @@ export const AllActivities = () => {
         ? activity.sport_name === filters.sport
         : true;
       const matchesCity = filters.city
-        ? normalizedActivityCity.includes(filters.city.toLowerCase())
+        ? normalizedActivityCity.includes(normalizedFilterCity)
         : true;
 
       const activityDate = new Date(activity.date_time_activity.split(" ")[0]);
@@ -83,7 +87,7 @@ export const AllActivities = () => {
   };
 
   const handleReset = () => {
-    setFilteredActivities(activities); // Restablecer todas las actividades
+    setFilteredActivities(activities);
   };
 
   const handleShowModal = (activity) => {
@@ -102,11 +106,11 @@ export const AllActivities = () => {
         "http://localhost:4000/api/comments/addComment",
         {
           activity_id: selectedActivity.activity_id,
-          user_id: user.user_id, // user_id
+          user_id: user.user_id,
           text: comment,
         },
         {
-          headers: { Authorization: `Bearer ${token}` }, // token
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -150,7 +154,6 @@ export const AllActivities = () => {
     return null;
   };
 
-  // Lógica para unirse a la actividad
   const handleJoinActivity = async (activityId) => {
     console.log("JOINNNNNNNNN", activityId);
     try {
@@ -181,7 +184,6 @@ export const AllActivities = () => {
     }
   };
 
-  // Lógica para abandonar la actividad
   const handleLeaveActivity = async (activityId) => {
     console.log("holaaaaa", activityId);
 
@@ -213,12 +215,11 @@ export const AllActivities = () => {
       );
     }
   };
+
   return (
     <Container>
-      {/* Filtro de actividades */}
       <ActivityFilter onFilter={handleFilter} onReset={handleReset} />
       <div className="custom-divider"></div>
-      {/* Actividades filtradas */}
       <Row>
         {filteredActivities.length > 0 ? (
           filteredActivities.map((activity) => (
@@ -239,8 +240,6 @@ export const AllActivities = () => {
           </p>
         )}
       </Row>
-
-      {/* Modal para añadir comentarios */}
       <ModalCreateComment
         show={showModal}
         handleClose={handleCloseModal}
