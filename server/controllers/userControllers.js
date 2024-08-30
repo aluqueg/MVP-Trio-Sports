@@ -147,7 +147,7 @@ class userController {
                 const token = jwt.sign(
                   { id: result[0].user_id },
                   process.env.SECRET_KEY,
-                  { expiresIn: "14d" }
+                  { expiresIn: "1d" }
                 );
                 res.status(200).json(token);
               } else {
