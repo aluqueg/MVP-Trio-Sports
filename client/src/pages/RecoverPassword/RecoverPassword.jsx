@@ -53,7 +53,7 @@ export const RecoverPassword = () => {
           {msg.show && <p>{msg.text}</p>}
           <Form.Text>
             Introduce la dirección de correo electrónico que utilizas en tu
-            cuenta. Te enviarémos instrucciones para reestablecer la contraseña.
+            cuenta. Te enviaremos instrucciones para reestablecer la contraseña.
           </Form.Text>
         </Form.Group>
         <button type="button" className="trio-btn recover-input button-recover" onClick={onSubmit}>

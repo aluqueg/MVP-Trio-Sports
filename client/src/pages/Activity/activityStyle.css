@@ -1,117 +1,149 @@
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-y: auto;
-  }
-  
-  .activity-container {
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
-  .activity-title {
-    text-align: center;
-    margin-top: 50px;
-    margin-bottom: 100px;
-    font-size: 2rem;
-  }
-  
-  .activity-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 50px; 
-  }
-  
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.activity-container {
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.activity-title {
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 100px;
+  font-size: 2rem;
+  color: #000;
+}
+
+.activity-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.activity-image-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.activity-image {
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.activity-details-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 40px;
+  width: 100%;
+}
+
+.activity-table {
+  margin-bottom: 20px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.activity-table td {
+  padding: 10px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--trio);
+}
+
+.table-separator td {
+  border-bottom: 1px solid;
+}
+
+.icon {
+  font-size: 1.1rem;
+}
+
+.activity-info-box {
+  background-color: #f0f0f0;
+  border: 1px solid var(--trio);
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 100%;
+  color: #333;
+}
+
+.activity-info-text {
+  margin: 0;
+  font-size: 1rem;
+  color: #000; 
+}
+
+
+.trio-btn,
+.complete-btn,
+.finalized-btn,
+.trio-comment-btn,
+.abandon-btn,
+.btn-large {
+  color: white;
+  border-radius: 20px;
+  padding: 10px 15px;
+  border: none;
+  transition: background-color 0.3s ease;
+  min-height: 38px;
+  font-size: 16px;
+  width: 200px;
+}
+
+.activity-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.comment-box {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  border: 1px solid var(--trio);
+}
+
+.comment-box-alternate {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  border: 1px solid var(--trio);
+}
+
+.comment-header {
+  font-size: 1rem;
+  color: #000;
+}
+
+.comment-text {
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+@media (max-width: 992px) {
   .activity-image-col {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin-bottom: 30px;
   }
-  
-  .activity-image {
-    width: 100%;
-    height: auto;
-    max-width: 800px; 
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  .activity-details-col {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 80px; 
-    width: 100%;
-  }
-  
-  .activity-table {
-    margin-bottom: 20px;
-    border-collapse: collapse;
-  }
-  
-  .activity-table td {
-    padding-bottom: 10px;
-    font-size: 1.1rem;
-  }
-  
-  .table-separator td {
-    border-bottom: 1px solid #dee2e6;
-  }
-  
-  .icon {
-    font-size: 1.1rem;
-  }
-  
-  .activity-info-box {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    width: 100%;
-  }
-  
-  .activity-info-text {
-    margin: 0;
-    font-size: 1rem;
-  }
-  
-  .activity-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 300px;
-    margin-top: 20px;
-  }
-  
-  .btn-large {
-    font-size: 1.1rem;
-    padding: 10px 15px;
-    width: 200px; 
-    margin-bottom: 50px;
-  }
-  
-  .comment-box {
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    padding: 20px;
-    width: 100%; /* Ocupa todo el ancho disponible */
-    margin-bottom: 20px;
-    word-wrap: break-word; /* Permite que las palabras largas se partan en varias líneas */
-    overflow-wrap: break-word; /* Alternativa para navegadores que no soportan word-wrap */
-  }
-  
-  .comment-header {
-    font-size: 1rem;
-  }
-  
-  .comment-text {
-    margin-top: 20px; /* Ajusta el margen superior */
-    font-size: 1.1rem;
-    word-wrap: break-word; 
-    overflow-wrap: break-word; 
-  }
-  
-  
-  
+}

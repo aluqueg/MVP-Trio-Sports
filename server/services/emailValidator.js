@@ -20,7 +20,7 @@ const sendMail = (email, name,token) => {
   <title>Document</title>
 </head>
 <body>
-  <h1>BIENVENIDO ${name}</h1>
+  <h1>Bienvenido/a ${name}</h1>
   http://localhost:5173/validation/${token}
 </body>
 </html>`;

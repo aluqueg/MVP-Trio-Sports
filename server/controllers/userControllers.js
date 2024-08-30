@@ -401,24 +401,56 @@ ORDER BY
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
     const sql = `
-      (SELECT message.message_id, message.text, message.date_time, message.opened, 
-              sender.user_id AS sender_user_id, sender.user_name AS sender_user_name, 
-              sender.last_name AS sender_user_last_name, sender.user_img AS sender_user_img, 
-              sender.last_log_date AS sender_user_last_log_date, sender.type AS sender_user_type, 
-              'sent' AS message_type 
-       FROM message 
-       JOIN user sender ON message.sender_user_id = sender.user_id 
-       WHERE message.sender_user_id = ? AND message.receiver_user_id = ?)
-      UNION ALL
-      (SELECT message.message_id, message.text, message.date_time, message.opened, 
-              sender.user_id AS sender_user_id, sender.user_name AS sender_user_name, 
-              sender.last_name AS sender_user_last_name, sender.user_img AS sender_user_img, 
-              sender.last_log_date AS sender_user_last_log_date, sender.type AS sender_user_type, 
-              'received' AS message_type 
-       FROM message 
-       JOIN user sender ON message.sender_user_id = sender.user_id 
-       WHERE message.sender_user_id = ? AND message.receiver_user_id = ?)
-      ORDER BY date_time;
+      (SELECT 
+    m.message_id, 
+    m.text, 
+    m.date_time, 
+    m.opened, 
+    sender.user_id AS sender_user_id, 
+    sender.user_name AS sender_user_name, 
+    sender.last_name AS sender_user_last_name, 
+    sender.user_img AS sender_user_img, 
+    receiver.user_img AS receiver_user_img, 
+    sender.last_log_date AS sender_user_last_log_date, 
+    sender.type AS sender_user_type, 
+    'sent' AS message_type 
+ FROM 
+    message m
+ JOIN 
+    user sender ON m.sender_user_id = sender.user_id 
+ JOIN 
+    user receiver ON m.receiver_user_id = receiver.user_id 
+ WHERE 
+    m.sender_user_id = ? 
+    AND m.receiver_user_id = ?)
+
+UNION ALL
+
+(SELECT 
+    m.message_id, 
+    m.text, 
+    m.date_time, 
+    m.opened, 
+    sender.user_id AS sender_user_id, 
+    sender.user_name AS sender_user_name, 
+    sender.last_name AS sender_user_last_name, 
+    sender.user_img AS sender_user_img, 
+    receiver.user_img AS receiver_user_img, 
+    sender.last_log_date AS sender_user_last_log_date, 
+    sender.type AS sender_user_type, 
+    'received' AS message_type 
+ FROM 
+    message m
+ JOIN 
+    user sender ON m.sender_user_id = sender.user_id 
+ JOIN 
+    user receiver ON m.receiver_user_id = receiver.user_id 
+ WHERE 
+    m.sender_user_id = ? 
+    AND m.receiver_user_id = ?)
+
+ORDER BY 
+    date_time;
     `;
 
     connection.query(
