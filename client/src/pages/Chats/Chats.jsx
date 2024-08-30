@@ -106,6 +106,7 @@ export const Chats = () => {
       console.log(err);
     }
   };
+  console.log(viewMessages)
   return (
     <Container fluid="xxl" className="chats-body">
       <div className="messages">
@@ -158,7 +159,8 @@ export const Chats = () => {
               >
                 {e.message_type === "sent" ? null : (
                   <img
-                    src="../../src/assets/images/default_user_img.png"
+                    src={`http://localhost:4000/images/users/${e?.receiver_user_img
+                    }`}
                     alt=""
                   />
                 )}
