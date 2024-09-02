@@ -6,7 +6,7 @@ class ActivityController {
     const {
       date_time_activity,
       limit_users,
-      text,
+      title,
       activity_city,
       activity_address,
       details,
@@ -24,7 +24,7 @@ class ActivityController {
     // Validación de campos obligatorios
     if (
       !date_time_activity ||
-      !text ||
+      !title ||
       !activity_city ||
       !activity_address ||
       !sport_id ||
@@ -60,8 +60,8 @@ class ActivityController {
       });
     }
 
-    // Validación de texto de la actividad (longitud máxima)
-    if (text.length > 255) {
+    // Validación del título de la actividad (longitud máxima)
+    if (title.length > 255) {
       return res.status(400).json({
         error: "El título no puede tener más de 255 caracteres.",
       });
@@ -94,16 +94,16 @@ class ActivityController {
       return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     };
 
-    let formattedText = formatText(text);
+    let formattedTitle = formatText(title);
     let formattedCity = formatText(activity_city);
     let formattedAddress = formatText(activity_address);
 
     // Crear la nueva actividad en la base de datos
-    const sql = `INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, sport_id, user_id, maps_link, num_assistants) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`;
+    const sql = `INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, sport_id, user_id, maps_link, num_assistants) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`;
     const values = [
       date_time_activity,
       limit_users || null,
-      formattedText,
+      formattedTitle,
       formattedCity,
       formattedAddress,
       details,
@@ -283,7 +283,7 @@ class ActivityController {
     let user_id = decoded.id;
 
     const sql = `
-      SELECT a.activity_id, a.date_time_activity, a.limit_users, a.text, a.activity_city, 
+      SELECT a.activity_id, a.date_time_activity, a.limit_users, a.title, a.activity_city, 
              a.activity_address, a.details, a.maps_link, a.num_assistants, s.sport_name, s.sport_img,
              CASE
                WHEN a.date_time_activity >= NOW() THEN 0
@@ -385,7 +385,7 @@ class ActivityController {
     const {
       date_time_activity,
       limit_users,
-      text,
+      title,
       activity_city,
       activity_address,
       details,
@@ -394,13 +394,13 @@ class ActivityController {
 
     const sql = `
       UPDATE activity 
-      SET date_time_activity = ?, limit_users = ?, text = ?, activity_city = ?, activity_address = ?, details = ?, maps_link = ?
+      SET date_time_activity = ?, limit_users = ?, title = ?, activity_city = ?, activity_address = ?, details = ?, maps_link = ?
       WHERE activity_id = ?`;
 
     const values = [
       date_time_activity,
       limit_users,
-      text,
+      title,
       activity_city,
       activity_address,
       details,

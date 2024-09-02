@@ -69,7 +69,7 @@ export const CardOneActivity = ({
     }
   };
 
-  const truncatedTitle = truncateText(activity.text, 50);
+  const truncatedTitle = truncateText(activity.title, 50);
   const truncatedAddress = truncateText(activity.activity_address, 30);
   const truncatedCity = truncateText(activity.activity_city, 20);
 
@@ -83,7 +83,7 @@ export const CardOneActivity = ({
           <div style={{ position: "relative", width: "100%", height: "100%" }}>
             <Card.Img
               src={`/src/assets/activities/${activity.sport_img}`}
-              alt={activity.text}
+              alt={activity.title}
               className="card-img-custom"
               onError={(e) =>
                 (e.target.src = "/src/assets/activities/newsport.jpg")
@@ -121,7 +121,7 @@ export const CardOneActivity = ({
         )}
 
         <Card.Body className="d-flex flex-column">
-          {activity.text && <Card.Title>{truncatedTitle}</Card.Title>}
+          {activity.title && <Card.Title>{truncatedTitle}</Card.Title>}
 
           <Card.Text>
             <BsTrophy /> {activity.sport_name}
