@@ -70,7 +70,6 @@ export const UserParticipatedActivities = ({participated}) => {
   const isActivityFull = (activity) => {
     let res = activity.limit_users !== null &&
               activity.num_assistants >= activity.limit_users;
-    console.log('isActivityFull:', res);
     return res;
   };
   
@@ -78,7 +77,6 @@ export const UserParticipatedActivities = ({participated}) => {
   const isActivityPast = (activityDate) => {
     const currentDateTime = new Date();
     let res = isBefore(activityDate, currentDateTime);
-    console.log('isActivityPast:', res);
     return res;
   };
   

@@ -32,7 +32,6 @@ export const AdminUsers = () => {
         user_id: id,
       })
       .then((res) => {
-        console.log(res.data);
         getAllUsers();
       })
       .catch((error) => {
@@ -46,7 +45,6 @@ export const AdminUsers = () => {
         user_id: id,
       })
       .then((res) => {
-        console.log(res.data);
         getAllUsers();
       })
       .catch((error) => {

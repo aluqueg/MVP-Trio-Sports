@@ -250,6 +250,7 @@ export const Register = () => {
     axios
       .post("http://localhost:4000/api/users/createUser", newFormData)
       .then((res) => {
+        navigate("/login");
         setpage(page+1)
       })
       .catch((err) => console.log(err));

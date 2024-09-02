@@ -23,10 +23,12 @@ export const Login = () => {
   const [login, setLogin] = useState(initialValue);
   const [msg, setMsg] = useState(initialValueMsg);
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLogin({ ...login, [name]: value });
   };
+
   const onSubmit = async () => {
     if (!login.email || !login.password) {
       setMsg({ text: "Debes cumplimentar todos los campos", show: true });
@@ -79,6 +81,7 @@ export const Login = () => {
                 value={login.email}
                 onChange={handleChange}
               />
+
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Control
