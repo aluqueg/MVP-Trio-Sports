@@ -256,6 +256,10 @@ export const Register = () => {
       .catch((err) => console.log(err));
   };
 
+  const toLogin = ()=>{
+    navigate("/login")
+  }
+
   return (
     <Container className="body-register">
       <Form action="">
@@ -317,7 +321,7 @@ export const Register = () => {
           <div className="name">
             <ProgressBar animated now={22.22} className="custom-progress" />
             <h2 className="register-text">¿Cómo te llamas?</h2>
-            <Form.Group className="mb-3" controlId="user_name">
+            <Form.Group className="mb-3 input-form" controlId="user_name">
               <Form.Label></Form.Label>
               <Form.Control
                 type="text"
@@ -332,7 +336,7 @@ export const Register = () => {
               ) : null}
               <Form.Text className="text-muted"></Form.Text>{" "}
             </Form.Group>
-            <Form.Group className="mb-3" controlId="last_name">
+            <Form.Group className="mb-3 input-form" controlId="last_name">
               <Form.Label></Form.Label>
               <Form.Control
                 type="text"
