@@ -6,7 +6,7 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: "alexmakigo@gmail.com",
+    user: "triosports.oficial@gmail.com",
     pass: process.env.EMAIL_PASS,
   },
 });
@@ -21,12 +21,12 @@ const sendMail = (email, name,token) => {
 </head>
 <body>
   <h1>Bienvenido/a ${name}</h1>
-  http://localhost:5173/validation/${token}
+  <a href="http://localhost:5173/validation/${token}">http://localhost:5173/validation/${token}</a>
 </body>
 </html>`;
   
   const info = transporter.sendMail({
-    from: '"trio" <alexmakigo@gmail.com>',
+    from: '"trio" <triosports.oficial@gmail.com>',
     to: email,
     subject: "bienvenido a trio",
     html: mensajeHtml
