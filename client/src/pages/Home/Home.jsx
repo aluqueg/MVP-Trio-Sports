@@ -11,6 +11,7 @@ export const Home = () => {
   const handleRegisterClick = () => {
     navigate("/register");
   };
+
   return (
     <>
       <Row className="home-register-section">
