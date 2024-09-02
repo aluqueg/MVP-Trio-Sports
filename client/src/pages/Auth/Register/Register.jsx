@@ -254,7 +254,6 @@ export const Register = () => {
     axios
       .post("http://localhost:4000/api/users/createUser", newFormData)
       .then((res) => {
-        navigate("/login");
         setpage(page+1)
       })
       .catch((err) => console.log(err));
@@ -726,7 +725,7 @@ export const Register = () => {
             </div>
           </div>
         ) : null}
-                {page == 8 ? (
+          {page == 8 ? (
           <div className="auth">
             <ProgressBar animated now={100} className="custom-progress" />
             <h2 className="register-text-block text-center">Se te ha enviado un correo de autenticación</h2>
