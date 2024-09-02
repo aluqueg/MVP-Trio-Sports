@@ -177,9 +177,6 @@ class ActivityController {
     let decoded = jwt.decode(token);
     let user_id = decoded.id;
 
-    console.log("Activity ID:", activity_id); 
-    console.log("User ID:", user_id); 
-
     // Verificar la capacidad antes de permitir que el usuario se una
     const sqlCheckCapacity = `SELECT num_assistants, limit_users FROM activity WHERE activity_id = ?`;
     connection.query(sqlCheckCapacity, [activity_id], (err, results) => {
@@ -248,9 +245,6 @@ leaveActivity = (req, res) => {
   let token = req.headers.authorization.split(" ")[1];
   let decoded = jwt.decode(token);
   let user_id = decoded.id;
-
-  console.log("Leaving Activity ID:", activity_id); 
-  console.log("User ID:", user_id); 
 
   // Comprobar si el usuario está inscrito en la actividad
   const sqlCheckParticipation = `SELECT * FROM participate WHERE activity_id = ? AND user_id = ?`;
