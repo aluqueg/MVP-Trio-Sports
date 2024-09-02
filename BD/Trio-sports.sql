@@ -14,7 +14,7 @@ CREATE TABLE user (
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     description VARCHAR(255),
-    last_log_date DATETIME NOT NULL,  -- se tiene que actualizar en cada login
+    last_log_date DATETIME NOT NULL,
     is_validated BOOLEAN NOT NULL default 0,
     is_disabled BOOLEAN NOT NULL default 0,
     type TINYINT NOT NULL default 2 -- 1 - admin | 2 - user
@@ -34,8 +34,8 @@ CREATE TABLE message (
 CREATE TABLE sport (
 	sport_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     sport_name VARCHAR(50) NOT NULL UNIQUE,
-    sport_img VARCHAR(255) NOT NULL DEFAULT 'newsport.jpg', -- nuevo campo añadido
-    is_disabled BOOLEAN NOT NULL DEFAULT 0 -- nuevo campo añadido
+    sport_img VARCHAR(255) NOT NULL DEFAULT 'newsport.jpg',
+    is_disabled BOOLEAN NOT NULL DEFAULT 0
 );
 
 CREATE TABLE practice (
@@ -49,19 +49,16 @@ CREATE TABLE practice (
 CREATE TABLE activity (
 	activity_id BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     date_time_activity DATETIME NOT NULL,
-    limit_users INT,  -- null: senderismo | 4: tenis o pádel | 10: baloncesto
+    limit_users INT,
     text VARCHAR(255) NOT NULL,
     activity_city VARCHAR(50) NOT NULL,
-    activity_address VARCHAR(250) NOT NULL, -- nuevo campo añadido
+    activity_address VARCHAR(250) NOT NULL,
     details TINYTEXT,
-    num_assistants INT DEFAULT 0,  -- nuevo campo añadido usuarios que se han apuntado
+    num_assistants INT DEFAULT 0,
     user_id INT UNSIGNED NOT NULL,
     sport_id INT UNSIGNED NOT NULL,
     maps_link VARCHAR(350),
-    is_deleted BOOLEAN NOT NULL DEFAULT 0, -- nuevo campo añadido para el borrado lógico de una actividad
-
-   
-    -- disabled  -> el admin deshabilita una actividad
+    is_deleted BOOLEAN NOT NULL DEFAULT 0,
 	CONSTRAINT fk_activity_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_activity_sport FOREIGN KEY (sport_id) REFERENCES sport (sport_id) ON DELETE CASCADE ON UPDATE CASCADE
 );

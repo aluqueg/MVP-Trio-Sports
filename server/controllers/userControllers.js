@@ -26,7 +26,7 @@ class userController {
     let saltRounds = 8;
     bcrypt.hash(password, saltRounds, (err, hash) => {
       if (err) {
-        console.log("error create user 1");
+        console.log(err);
       } else {
         let userId = null;
         if (req.file) {
@@ -317,7 +317,17 @@ class userController {
   getAllUsers = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
-    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE is_validated = 1 AND user.is_disabled = 0 AND	user.type = 2 AND user.user_id != ${id} GROUP BY user.user_id ORDER BY user.user_name;`;
+    let sql = `
+    SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age 
+    FROM user JOIN practice ON user.user_id = practice.user_id 
+    JOIN sport ON practice.sport_id = sport.sport_id 
+    WHERE is_validated = 1 
+    AND user.is_disabled = 0 
+    AND	user.type = 2 
+    AND user.user_id != ${id} 
+    GROUP BY user.user_id 
+    ORDER BY user.user_name
+    `;
     connection.query(sql, (error, result) => {
       if (error) {
         res.status(500).json(error);
@@ -372,19 +382,19 @@ class userController {
             m4.date_time DESC 
         LIMIT 1
     ) AS last_message_text
-FROM 
-    user u
-JOIN 
-    message m ON m.sender_user_id = u.user_id OR m.receiver_user_id = u.user_id
-WHERE 
-    (m.sender_user_id = ${id} OR m.receiver_user_id = ${id}) 
-    AND u.user_id != ${id}
-GROUP BY 
-    u.user_id, 
-    u.user_name, 
-    u.last_name, 
-    u.user_img 
-ORDER BY 
+    FROM 
+        user u
+    JOIN 
+        message m ON m.sender_user_id = u.user_id OR m.receiver_user_id = u.user_id
+    WHERE 
+        (m.sender_user_id = ${id} OR m.receiver_user_id = ${id}) 
+        AND u.user_id != ${id}
+    GROUP BY 
+        u.user_id, 
+        u.user_name, 
+        u.last_name, 
+        u.user_img 
+    ORDER BY
     last_message_date DESC;`;
     connection.query(sql, (err, result) => {
       if (err) {
@@ -398,7 +408,7 @@ ORDER BY
   viewOneChat = (req, res) => {
     const { user_sender_id: sender, user_receiver_id: receiver } = req.body;
     const sql = `
-      (SELECT 
+    (SELECT 
     m.message_id, 
     m.text, 
     m.date_time, 
@@ -411,43 +421,42 @@ ORDER BY
     sender.last_log_date AS sender_user_last_log_date, 
     sender.type AS sender_user_type, 
     'sent' AS message_type 
- FROM 
-    message m
- JOIN 
-    user sender ON m.sender_user_id = sender.user_id 
- JOIN 
-    user receiver ON m.receiver_user_id = receiver.user_id 
- WHERE 
-    m.sender_user_id = ? 
-    AND m.receiver_user_id = ?)
+    FROM 
+        message m
+    JOIN 
+        user sender ON m.sender_user_id = sender.user_id 
+    JOIN 
+        user receiver ON m.receiver_user_id = receiver.user_id 
+    WHERE 
+        m.sender_user_id = ? 
+        AND m.receiver_user_id = ?)
 
-UNION ALL
+    UNION ALL
 
-(SELECT 
-    m.message_id, 
-    m.text, 
-    m.date_time, 
-    m.opened, 
-    sender.user_id AS sender_user_id, 
-    sender.user_name AS sender_user_name, 
-    sender.last_name AS sender_user_last_name, 
-    sender.user_img AS sender_user_img, 
-    receiver.user_img AS receiver_user_img, 
-    sender.last_log_date AS sender_user_last_log_date, 
-    sender.type AS sender_user_type, 
-    'received' AS message_type 
- FROM 
-    message m
- JOIN 
-    user sender ON m.sender_user_id = sender.user_id 
- JOIN 
-    user receiver ON m.receiver_user_id = receiver.user_id 
- WHERE 
-    m.sender_user_id = ? 
-    AND m.receiver_user_id = ?)
+    (SELECT 
+        m.message_id, 
+        m.text, 
+        m.date_time, 
+        m.opened, 
+        sender.user_id AS sender_user_id, 
+        sender.user_name AS sender_user_name, 
+        sender.last_name AS sender_user_last_name, 
+        sender.user_img AS sender_user_img, 
+        receiver.user_img AS receiver_user_img, 
+        sender.last_log_date AS sender_user_last_log_date, 
+        sender.type AS sender_user_type, 
+        'received' AS message_type 
+    FROM 
+        message m
+    JOIN 
+        user sender ON m.sender_user_id = sender.user_id 
+    JOIN 
+        user receiver ON m.receiver_user_id = receiver.user_id 
+    WHERE 
+        m.sender_user_id = ? 
+        AND m.receiver_user_id = ?)
 
-ORDER BY 
-    date_time;
+    ORDER BY date_time;
     `;
 
     connection.query(
@@ -557,7 +566,13 @@ ORDER BY
 
   getOneUser = (req, res) => {
     const id = req.params.id;
-    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age FROM user JOIN practice ON user.user_id = practice.user_id JOIN sport ON practice.sport_id = sport.sport_id WHERE user.is_validated = 1 AND user.is_disabled = 0 AND user.type = 2 AND user.user_id = ${id};`;
+    let sql = `SELECT user.*, GROUP_CONCAT(sport.sport_name ORDER BY sport.sport_name SEPARATOR ', ') AS sports, TIMESTAMPDIFF(YEAR, user.birth_date, CURDATE()) AS age 
+    FROM user JOIN practice ON user.user_id = practice.user_id 
+    JOIN sport ON practice.sport_id = sport.sport_id 
+    WHERE user.is_validated = 1 
+    AND user.is_disabled = 0 
+    AND user.type = 2 
+    AND user.user_id = ${id};`;
     connection.query(sql, (err, result) => {
       if (err) {
         res.status(500).json(err);
