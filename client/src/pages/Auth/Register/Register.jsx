@@ -88,7 +88,6 @@ export const Register = () => {
         "http://localhost:4000/api/users/emailValidator",
         userRegister
       );
-      console.log("continuar res", res);
 
       let emailIsValid = false;
       let passwordIsValid = false;
@@ -101,10 +100,8 @@ export const Register = () => {
         )
       ) {
         emailError = "Formato de email incorrecto";
-        console.log("error 1");
       } else if (res.data[0]) {
         emailError = "Este email ya esta en uso";
-        console.log("error 2");
       } else {
         emailIsValid = true;
       }
@@ -143,7 +140,6 @@ export const Register = () => {
     const isValid = Object.keys(userRegister).every((key) =>
       validateField(key, userRegister[key])
     );
-    console.log("valid", isValid);
 
     if (isValid) {
       // Avanza a la siguiente página si la validación es exitosa
@@ -235,7 +231,6 @@ export const Register = () => {
     newFormData.append("userRegister", JSON.stringify(userRegister));
     newFormData.append("last_log_date", lastLogDate);
     newFormData.append("sports", selectedSport);
-    console.log(selectedSport, "*************");
     if (file) {
       newFormData.append("file", file);
     }
@@ -243,7 +238,6 @@ export const Register = () => {
     axios
       .post("http://localhost:4000/api/users/createUser", newFormData)
       .then((res) => {
-        console.log(res);
         navigate("/login");
       })
       .catch((err) => console.log(err));

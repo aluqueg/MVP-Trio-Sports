@@ -11,7 +11,6 @@ export const Home = () => {
   const handleRegisterClick = () => {
     navigate("/register");
   };
-  console.log("card info", HOME_CARD_DATA)
   return (
     <>
       <Row className="home-register-section">

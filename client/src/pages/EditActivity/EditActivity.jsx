@@ -85,8 +85,6 @@ export const EditActivity = () => {
         }
       );
 
-      console.log(response);
-
       if (response.status === 200) {
         setSuccess("Actividad actualizada con éxito");
         setTimeout(() => {
@@ -112,7 +110,6 @@ export const EditActivity = () => {
           headers: { Authorization: `Bearer ${token}` }, // token
         }
       );
-      console.log(response);
 
       setSuccess("Actividad eliminada correctamente.");
 
