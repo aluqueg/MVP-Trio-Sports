@@ -1,4 +1,4 @@
-.container-add-activity{
+.container-add-activity {
   border: 2px solid var(--trio);
   margin-block: 10px;
   border-radius: 20px;
@@ -9,47 +9,45 @@
 }
 
 .add-activity-datepicker-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-    max-width: 535px; 
-    width: 100%; 
-  }
-  
-  .add-activity-datepicker {
-    padding-right: 40px;
-    width: 100%; 
-  }
-  
-  .add-activity-calendar-icon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none; 
-  }
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 535px;
+  width: 100%;
+}
 
-  .text-large {
-    word-wrap: break-word;
-    white-space: pre-wrap;
-  }
-  
-  .activity-info-text {
-    word-wrap: break-word;
-    white-space: pre-wrap; 
-  }
-  
-  .activity-table td {
-    max-width: 300px; 
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .add-activity-custom-divider {
-    height: 2px; 
-    background-color: var(--trio); 
-    margin: 20px 0; 
-    border-radius: 2px; 
-  }
-  
+.add-activity-datepicker {
+  padding-right: 40px;
+  width: 100%;
+}
 
+.add-activity-calendar-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.text-large {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.activity-info-text {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.activity-table td {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.add-activity-custom-divider {
+  height: 2px;
+  background-color: var(--trio);
+  margin: 20px 0;
+  border-radius: 2px;
+}
