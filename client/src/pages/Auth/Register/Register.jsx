@@ -249,9 +249,6 @@ export const Register = () => {
       .catch((err) => console.log(err));
   };
 
-  console.log(selectedSport);
-  console.log(userRegister);
-  console.log(file);
   return (
     <Container className="body-register">
       <Form action="">
@@ -672,7 +669,7 @@ export const Register = () => {
                 className="mb-3"
               />
               <Form.Group>
-                <Form.Label htmlFor="file" className="trio-btn">
+                <Form.Label htmlFor="file" className="trio-btn foto">
                   Sube una foto
                 </Form.Label>
                 <Form.Control

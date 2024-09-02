@@ -39,7 +39,7 @@ export const AppRoutes = () => {
         <NavBarApp />
       </Row>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={user ? <AllActivities /> : <Home />} />
               {user && <Route path="/allActivities" element={<AllActivities />} />}
               {user && (
                 <Route path="/activity/:activity_id" element={<Activity />} />

@@ -19,7 +19,7 @@ const initialValueMsg = {
 };
 
 export const Login = () => {
-  const { user, setUser , setToken} = useContext(TrioContext);
+  const { setUser , setToken} = useContext(TrioContext);
   const [login, setLogin] = useState(initialValue);
   const [msg, setMsg] = useState(initialValueMsg);
   const navigate = useNavigate();
