@@ -38,3 +38,15 @@
 .validation-color{
   color: white;
 }
+
+@media (max-width: 700px){
+  .login-input{
+    width: 60vw;
+  }
+
+  .frase-login{
+    font-size: 1.2rem;
+  }
+}
+
+

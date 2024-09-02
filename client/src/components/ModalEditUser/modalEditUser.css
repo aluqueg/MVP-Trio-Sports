@@ -30,3 +30,19 @@
 .form-checkbox .form-check-input:checked::before {
   color: white;
 }
+
+.add-activity-datepicker-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 535px;
+  width: 100%;
+}
+
+.add-activity-calendar-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}

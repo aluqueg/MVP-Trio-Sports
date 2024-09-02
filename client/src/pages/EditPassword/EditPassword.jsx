@@ -33,7 +33,7 @@ export const EditPassword = () => {
       setMsg({show: false})      
     }
     try {
-      const res = await axios.put("http://localhost:4000/api/users/editPassword", {password, validationToken})
+      const res = await axios.put("http://localhost:4000/api/users/editPassword", {password, validationToken})      
       navigate("/login")
     }catch(err){
       console.log(err);      

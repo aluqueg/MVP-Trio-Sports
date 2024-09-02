@@ -20,7 +20,7 @@ export const ErrorPage = () => {
         </Col>
         <Row>
           <Col className="d-flex justify-content-center m-5">
-          <button onClick={()=>navigate('/')} className="trio-btn">Volver a Home</button>
+          <button onClick={()=>navigate('/')} className="trio-error-btn">Volver a Home</button>
           </Col>
         </Row>
       </Row>

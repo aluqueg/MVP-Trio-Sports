@@ -39,7 +39,7 @@ export const OneUser = () => {
   return (
     <Container fluid="xxl">
       <Row className="my-3">
-        <Col className="profile-data-oneuser" xs md="4" lg="3">
+        <Col className="profile-data-oneuser" xs="12" md="4" lg="3">
           <img
             className="profile-pic-oneuser"
             src={
