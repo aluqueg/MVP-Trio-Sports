@@ -234,13 +234,13 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 -- Activity
 
--- INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, user_id, sport_id, maps_link)
+-- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, user_id, sport_id, maps_link)
 -- VALUES ('2024-09-07 09:00:00', 2, 'Partido amistoso de tenis en la cancha', 'Barcelona', 'Barcelona', 'Participa en un amistoso torneo de tenis. No olvides tu raqueta y pelotas.', 2, 3, -- 'https://maps.example.com/abc');
 
--- INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, user_id, sport_id, maps_link)
+-- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, user_id, sport_id, maps_link)
 -- VALUES ('2024-09-07 07:00:00', NULL, 'Ruta en bicicleta por la montaña', 'Valencia', 'Valencia', 'Acompáñanos en una ruta en bicicleta por los senderos de montaña. Lleva tu bicicleta en -- buen estado y equipo de protección.', 3, 2, 'https://maps.example.com/def');
 
--- INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, user_id, sport_id, maps_link)
+-- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, user_id, sport_id, maps_link)
 -- VALUES ('2024-09-19 10:00:00', 10, 'Competencia de atletismo en el estadio', 'Sevilla', 'Sevilla', 'Participa en una competencia de atletismo en el estadio local. Prepárate para las pruebas de velocidad y resistencia.', 4, 4, 'https://maps.example.com/ghi');
 
 -- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, user_id, sport_id, maps_link)
