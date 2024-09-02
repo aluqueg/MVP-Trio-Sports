@@ -1,6 +1,6 @@
 import { format, getMonth, getYear, isValid, parse, subYears } from "date-fns";
 import { useContext, useEffect, useState } from "react";
-import { Form, ListGroup } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { TrioContext } from "../../context/TrioContextProvider";
 import DatePicker from "react-datepicker";
@@ -426,7 +426,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                     show={modalAddSports}
                     closeModal={addSportStatus}
                     onSportCreated={handleSportCreated}
-                    existingSports={sports} //pasamos la lista de deportes existentes al modal
+                    existingSports={sports}
                   />
                   {errorSports ? <span>{errorSports}</span> : null}
                 </>
@@ -437,14 +437,19 @@ function ModalEditUser({ show, setShowModal, data }) {
                   <Form.Group className="my-3" controlId="user_city">
                     <Form.Label>DESCRIPCIÓN</Form.Label>
                     <Form.Control
-                      type="textarea"
+                      as="textarea"
+                      rows={3}
                       placeholder="Cuentanos más sobre ti..."
                       name="description"
                       onChange={handleChange}
                       value={values.description}
                       className="form-input"
+                      maxLength={255}
                     />
                     <Form.Text className="text-muted"></Form.Text>
+                    <Form.Text className="text-muted">
+                    {`${values.description.length}/255 caracteres`}
+                    </Form.Text>
                   </Form.Group>
                 </>
                 {/* IMAGEN */}

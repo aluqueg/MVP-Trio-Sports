@@ -19,9 +19,7 @@ export const OneUserParticipatedActivities = () => {
       try{
         let res = await axios.get(`http://localhost:4000/api/users/getOneUserParticipatedActivities/${id}`, {headers: {Authorization: `Bearer ${token}`}})
         
-        setUserActivities(res.data); 
-
-        setFilteredActivities(res.data); // Inicialmente, muestra todas las actividades               
+        setUserActivities(res.data);            
 
       } catch (err) {
         console.log(err);
