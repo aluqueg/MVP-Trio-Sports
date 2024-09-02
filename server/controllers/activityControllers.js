@@ -150,84 +150,9 @@ class ActivityController {
     let decoded = jwt.decode(token);
     let user_id = decoded.id;
 
-<<<<<<< HEAD
-    // Verificar la capacidad antes de permitir que el usuario se una
-    const sqlCheckCapacity = `SELECT num_assistants, limit_users FROM activity WHERE activity_id = ?`;
-    connection.query(sqlCheckCapacity, [activity_id], (err, results) => {
-        if (err) {
-            console.error("Error al verificar la capacidad:", err);
-            return res.status(500).json({ error: "Error al verificar la capacidad." });
-        }
-
-        const { num_assistants, limit_users } = results[0];
-        if (limit_users !== null && num_assistants >= limit_users) {
-            return res.status(400).json({ error: "La actividad ya está completa." });
-        }
-
-        // Comprobar si el usuario ya está inscrito en la actividad
-        const sqlCheckParticipation = `SELECT * FROM participate WHERE activity_id = ? AND user_id = ?`;
-        connection.query(sqlCheckParticipation, [activity_id, user_id], (err, results) => {
-            if (err) {
-                console.error("Error al verificar la participación:", err);
-                return res.status(500).json({ error: "Error al verificar la participación." });
-            }
-
-            if (results.length > 0) {
-                return res.status(400).json({ error: "Ya estás inscrito en esta actividad." });
-            }
-
-            // Añadir el usuario a la tabla de participantes
-            const sqlAddParticipant = `INSERT INTO participate (activity_id, user_id) VALUES (?, ?)`;
-            connection.query(sqlAddParticipant, [activity_id, user_id], (err) => {
-                if (err) {
-                    console.error("Error al unirse a la actividad:", err);
-                    return res.status(500).json({ error: "Error al unirse a la actividad." });
-                }
-
-                // Actualizar el número de asistentes en la tabla de actividades
-                const sqlUpdateAssistants = `UPDATE activity SET num_assistants = num_assistants + 1 WHERE activity_id = ?`;
-                connection.query(sqlUpdateAssistants, [activity_id], (err) => {
-                    if (err) {
-                        console.error("Error al actualizar la actividad:", err);
-                        return res.status(500).json({ error: "Error al actualizar la actividad." });
-                    }
-
-                    res.status(200).json({ message: "Te has unido a la actividad." });
-                });
-            });
-        });
-    });
-};
-
-
-
-
-
-  
-  
-  
-  
-
-leaveActivity = (req, res) => {
-  const { activity_id } = req.body;
-
-  if (!activity_id) {
-      return res.status(400).json({ error: "Activity ID is required." });
-  }
-
-  // Obtener el user_id del token
-  let token = req.headers.authorization.split(" ")[1];
-  let decoded = jwt.decode(token);
-  let user_id = decoded.id;
-
-  // Comprobar si el usuario está inscrito en la actividad
-  const sqlCheckParticipation = `SELECT * FROM participate WHERE activity_id = ? AND user_id = ?`;
-  connection.query(sqlCheckParticipation, [activity_id, user_id], (err, results) => {
-=======
     // Verificamos la capacidad de la actividad antes de permitir que el usuario se una
     const sqlCheckCapacity = `SELECT num_assistants, limit_users FROM activity WHERE activity_id = ?`;
     connection.query(sqlCheckCapacity, [activity_id], (err, results) => {
->>>>>>> 100b6fda5c3866b9559ffeddf80b1eba01bbd480
       if (err) {
         console.error("Error al verificar la capacidad:", err);
         return res

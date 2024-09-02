@@ -21,7 +21,7 @@ const recuperarPassword = (email,  token) => {
 <body>
   <h1>Recupera tu cuenta</h1>
   <p>Para recupear tu cuenta pulsa en el siguiente enlace</p>
-  <a href="http://localhost:5173/editPassword/${token}">http://localhost:5173/editPassword/${token}</a>
+  <a href="http://localhost:5173/editPassword/${token}">http://localhost:5173/editPassword/${token}</a>"
 </body>
 </html>`;
 
