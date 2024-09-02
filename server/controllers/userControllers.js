@@ -279,7 +279,7 @@ class userController {
 
   prueba = (req, res) => {};
 
-  //revisar
+
   getAllUsers = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
