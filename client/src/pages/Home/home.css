@@ -23,7 +23,7 @@
 
 .home-register-section{
   height: calc(100vh - 58.72px);
-  background-image: linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),url("../../assets/images/prueba.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),url("../../assets/images/home.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -31,7 +31,7 @@
   h1{
     color: white;
     text-align: center;
-    font-size: 4rem;
+    font-size: 3.5rem;
   }
   
 }
@@ -65,14 +65,6 @@
     width: 300px;
   }
 }
-
-
-@media (max-width: 993px) and (min-width: 500px) {
-  .home-register-section {
-    background-position: 25%; 
-  }
-}
-
 
 @media (max-width: 768px) {
   .home-btn {
