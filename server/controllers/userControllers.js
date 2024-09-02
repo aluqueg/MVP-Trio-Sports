@@ -324,12 +324,6 @@ class userController {
     });
   };
 
-<<<<<<< HEAD
-  prueba = (req, res) => {};
-
-
-=======
->>>>>>> 82c2ff2a75e2abe7fa193b10accf8bbd6ccbd4dd
   getAllUsers = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];
     let { id } = jwt.decode(token);
