@@ -74,10 +74,10 @@ CREATE TABLE participate (
 
 CREATE TABLE comment (
 	activity_id BIGINT UNSIGNED NOT NULL,
-	comment_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,  -- modify campo a auto_increment
+	comment_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	user_id INT UNSIGNED NOT NULL,
     text TINYTEXT NOT NULL,
-    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- nuevo campo añadido
+    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (comment_id,activity_id),
     CONSTRAINT fk_comment_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -175,7 +175,7 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 -- Admin123!
  INSERT INTO user (user_name, last_name, user_city, email, password, last_log_date, is_validated, is_disabled, type)
- VALUES ('Admin', 'Admin', 'Admin', 'admin@admin.com', '$2a$08$Ln5EpUoPUyhcRRXNYJHGzOM12qAWuZadtnFx1maHrBm0gon6UeEYy', '2024-08-13 12:00:00', 1, 0, 1);
+ VALUES ('Admin', 'Admin', 'Admin', 'admin@admin.com', '$2a$08$XXitHE5Yr0jSLaq8x19Cru0FrfskPAxz0NgyZH.JuSaYYVB0PObWe', '2024-08-13 12:00:00', 1, 0, 1);
 
 -- Password123!
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
