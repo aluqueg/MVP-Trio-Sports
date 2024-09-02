@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Container, Row} from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TrioContext } from "../../context/TrioContextProvider";
@@ -70,19 +70,13 @@ export const AllActivities = () => {
         filterDate.setHours(0, 0, 0, 0);
       }
 
-      console.log("Activity Date:", activityDate);
-      console.log("Filter Date:", filterDate);
-
       const matchesDate = filters.date
         ? activityDate.getTime() === filterDate?.getTime()
         : true;
 
-      console.log("Matches Date:", matchesDate);
-
       return matchesSport && matchesCity && matchesDate;
     });
 
-    console.log("Filtered Activities:", filtered);
     setFilteredActivities(filtered);
   };
 
@@ -151,7 +145,6 @@ export const AllActivities = () => {
   };
 
   const handleJoinActivity = async (activityId) => {
-    console.log("JOINNNNNNNNN", activityId);
     try {
       const response = await axios.put(
         "http://localhost:4000/api/activity/joinActivity",
@@ -181,10 +174,7 @@ export const AllActivities = () => {
   };
 
   const handleLeaveActivity = async (activityId) => {
-    console.log("holaaaaa", activityId);
-
     try {
-      console.log("hola");
       const response = await axios.put(
         "http://localhost:4000/api/activity/leaveActivity",
         { activity_id: activityId },

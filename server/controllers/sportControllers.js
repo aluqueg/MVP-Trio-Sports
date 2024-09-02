@@ -23,29 +23,27 @@ class SportController {
         return res.status(401).json("El deporte ya existe");
       }
 
-      // validación varchar
+      // validación deporte: longitud nombre deporte
       if (sport_name.length > 50) {
         return res.status(400).json({
           error: "El nombre del deporte no puede tener más de 50 caracteres.",
         });
       }
 
-      // Validación: Campo vacío
+      // Validación deporte: Campo vacío
       if (!sport_name || sport_name.trim() === "") {
         return res
           .status(400)
           .json({ error: "El nombre del deporte no puede estar vacío." });
       }
 
-      // Insertar un deporte con la imagen por defecto
+      // Insertamos el deporte con la imagen por defecto
       let sql2 = `INSERT INTO sport (sport_name, sport_img) VALUES (?, ?)`;
       connection.query(sql2, [sport_name, sport_img], (errIns, result2) => {
         if (errIns) {
-          console.log("Error en la inserción:", errIns); // Depurar errores de inserción
           return res.status(500).json({ error: "Error al insertar deporte" });
         }
 
-        console.log("Deporte insertado correctamente:", result2); // Verificar inserción exitosa
         return res.status(201).json({
           sport_id: result2.insertId,
           sport_name: sport_name,
@@ -54,7 +52,6 @@ class SportController {
       });
     });
   };
-
 
   getAllSports = (req, res) => {
     const sql = `SELECT sport_id, sport_name FROM sport WHERE is_disabled = 0 ORDER BY sport_name ASC`;
@@ -69,6 +66,5 @@ class SportController {
     });
   };
 }
-
 
 module.exports = new SportController();
