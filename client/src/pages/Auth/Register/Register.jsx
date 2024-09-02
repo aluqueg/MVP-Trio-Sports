@@ -15,6 +15,7 @@ import { TrioContext } from "../../../context/TrioContextProvider";
 setDefaultLocale("es");
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { BsCalendar3 } from "react-icons/bs";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"; 
 
 const initialValue = {
   email: "",
@@ -35,6 +36,8 @@ export const Register = () => {
   const [validatePassword, setValidatePassword] = useState(false);
   const { sports, setSports } = useContext(TrioContext);
   const [contador, setContador] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const handleRegister = (e) => {
     const { name, value } = e.target;
@@ -261,61 +264,76 @@ export const Register = () => {
     navigate("/login")
   }
 
-  return (
-    <Container className="body-register">
-      <Form action="">
-        {page == 0 ? (
-          <div className="email-password">
-            <ProgressBar animated now={11.11} className="custom-progress" />
-            <h2 className="register-text">Correo y Contraseña</h2>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label></Form.Label>
+  return (    <Container className="body-register">
+    <Form action="">
+      {page === 0 ? (
+        <div className="email-password">
+          <ProgressBar animated now={11.11} className="custom-progress" />
+          <h2 className="register-text">Correo y Contraseña</h2>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label></Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Escribe email"
+              name="email"
+              onChange={handleRegister}
+              value={userRegister?.email}
+              className="trio-input trio-input:focus"
+            />
+            {formErrors.email ? (
+              <span className="error-msg">{formErrors.email}</span>
+            ) : null}
+            <Form.Text className="text-muted"></Form.Text>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="password">
+            <div style={{ position: "relative" }}>
               <Form.Control
-                type="email"
-                placeholder="Escribe email"
-                name="email"
-                onChange={handleRegister}
-                value={userRegister?.email}
-                className="trio-input trio-input:focus"
-              />
-              {formErrors.email ? (
-                <span className="error-msg">{formErrors.email}</span>
-              ) : null}
-              <Form.Text className="text-muted"></Form.Text>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label></Form.Label>
-              <Form.Control
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Escribe tu contraseña"
                 name="password"
                 onChange={handleRegister}
                 value={userRegister?.password}
                 className="trio-input trio-input:focus"
               />
-              {formErrors.password ? (
-                <span className="error-msg">{formErrors.password}</span>
-              ) : null}
-              <Form.Text className="text-muted"></Form.Text>
-            </Form.Group>
-            <div className="buttons-email">
-              {!userRegister.email || !userRegister.password ? (
-                <button className="trio-cancel-btn" type="button">
-                  Continuar
-                </button>
-              ) : (
-                <button
-                  className="trio-btn"
-                  type="button"
-                  onClick={continuarEmail}
-                >
-                  Continuar
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "none",
+                  border: "none",
+                  color: "#999",
+                  cursor: "pointer",
+                }}
+              >
+                {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+              </button>
             </div>
+            {formErrors.password ? (
+              <span className="error-msg">{formErrors.password}</span>
+            ) : null}
+            <Form.Text className="text-muted"></Form.Text>
+          </Form.Group>
+          <div className="buttons-email">
+            {!userRegister.email || !userRegister.password ? (
+              <button className="trio-cancel-btn" type="button">
+                Continuar
+              </button>
+            ) : (
+              <button
+                className="trio-btn"
+                type="button"
+                onClick={continuarEmail}
+              >
+                Continuar
+              </button>
+            )}
           </div>
-        ) : null}
-
+        </div>
+      ) : null}
         {/* NOMBRE Y APELLIDOS*/}
 
         {page == 1 ? (
