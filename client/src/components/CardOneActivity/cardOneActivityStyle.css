@@ -1,4 +1,4 @@
-.trio-btn,
+.trio-card-btn,
 .complete-btn,
 .finalized-btn,
 .trio-comment-btn,
@@ -13,11 +13,11 @@
   font-size: 16px;
 }
 
-.trio-btn {
+.trio-card-btn {
   background-color: var(--trio);
 }
 
-.trio-btn:hover {
+.trio-card-btn:hover {
   background-color: var(--trio2);
 }
 

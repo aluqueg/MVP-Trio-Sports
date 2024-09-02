@@ -21,8 +21,18 @@ class userController {
       sport_id,
       description,
     } = user;
+
+    function capsLastName(name) {
+      return name.split(' ')
+                 .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                 .join(' ');
+  }
+
+    const caps_last_name = capsLastName(last_name)
+
     const caps_user_name =
       user_name.charAt(0).toUpperCase() + user_name.slice(1);
+
     let saltRounds = 8;
     bcrypt.hash(password, saltRounds, (err, hash) => {
       if (err) {
@@ -32,7 +42,7 @@ class userController {
         if (req.file) {
           let data = [
             caps_user_name,
-            last_name,
+            caps_last_name,
             birth_date,
             gender,
             user_city,
@@ -70,8 +80,8 @@ class userController {
           });
         } else {
           let data2 = [
-            user_name,
-            last_name,
+            caps_user_name,
+            caps_last_name,
             birth_date,
             gender,
             user_city,
@@ -313,7 +323,6 @@ class userController {
       }
     });
   };
-
 
   getAllUsers = (req, res) => {
     let token = req.headers.authorization.split(" ")[1];

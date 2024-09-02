@@ -22,7 +22,7 @@
 }
 
 .home-register-section{
-  height: calc(100vh - 58.72px);
+  height: calc(100vh - 58.64px);
   background-image: linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),url("../../assets/images/home.jpg");
   background-position: center;
   background-repeat: no-repeat;

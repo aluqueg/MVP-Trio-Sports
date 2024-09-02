@@ -54,7 +54,7 @@ export const CardOneActivity = ({
     } else if (activity.is_user_participant) {
       return "abandon-btn";
     } else {
-      return "trio-btn";
+      return "trio-card-btn";
     }
   };
 
