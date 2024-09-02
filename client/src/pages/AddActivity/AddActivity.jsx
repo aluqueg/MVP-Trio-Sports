@@ -111,7 +111,7 @@ export const AddActivity = () => {
     >
       <div
         className="w-100 container-add-activity"
-        style={{padding: "10px 20px", margin: "5px"}}
+        style={{ padding: "10px 20px", margin: "5px" }}
       >
         <h4 className="text-center mt-0">
           Formulario de creación de una actividad

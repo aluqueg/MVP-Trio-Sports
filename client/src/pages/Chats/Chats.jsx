@@ -53,7 +53,6 @@ export const Chats = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setReceived(res.data);
-      console.log(received);
     } catch (err) {
       console.log(err);
     }
@@ -66,7 +65,6 @@ export const Chats = () => {
         { user_sender_id: senderUserID },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log(res);
     } catch (err) {
       console.log(err);
     }
@@ -82,7 +80,6 @@ export const Chats = () => {
       setCurrentSend(senderUserID);
       await readed(senderUserID);
       refreshChat();
-      console.log(res);
     } catch (err) {
       console.log(err);
     }

@@ -23,7 +23,7 @@
 
 
 .bg-photo{
-  background-image: linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),url("/src/assets/images/pexels-pixabay-163407.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.60)),url("/src/assets/images/login.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -37,4 +37,14 @@
 
 .validation-color{
   color: white;
+}
+
+@media (max-width: 700px){
+  .login-input{
+    width: 60vw;
+  }
+
+  .frase-login{
+    font-size: 1.2rem;
+  }
 }

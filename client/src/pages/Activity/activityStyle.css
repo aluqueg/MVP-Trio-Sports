@@ -81,10 +81,11 @@ body {
 .activity-info-text {
   margin: 0;
   font-size: 1rem;
-  color: #000; 
+  color: #000;
 }
 
 
+.trio-btn,
 .complete-btn,
 .finalized-btn,
 .trio-comment-btn,
