@@ -178,7 +178,6 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 -- Password123!
 
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
-
 -- VALUES ('Juan', 'Pérez', '1990-05-15', 'Hombre', 'juan_perez.jpg', 'Madrid', 'juan.perez@example.com', '$2a$08$3ooLVGALeP5oKD82r1Lv5O2iLcgJ7WDGdqIhzeeL613GfYGE82l.a', 'Amante de la tecnología y la programación.', '2024-08-13 12:00:00', 1, 0, 2);
 
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
@@ -234,17 +233,17 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 -- Activity
 
--- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, user_id, sport_id, maps_link)
--- VALUES ('2024-09-07 09:00:00', 2, 'Partido amistoso de tenis en la cancha', 'Barcelona', 'Barcelona', 'Participa en un amistoso torneo de tenis. No olvides tu raqueta y pelotas.', 2, 3, -- 'https://maps.example.com/abc');
+-- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, num_assistants, user_id, sport_id, maps_link)
+-- VALUES ('2024-09-07 09:00:00', 2, 'Partido amistoso de tenis en la cancha', 'Barcelona', 'Barcelona', 'Participa en un amistoso torneo de tenis. No olvides tu raqueta y pelotas.', 2, 2, 3, -- 'https://maps.example.com/abc');
 
--- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, user_id, sport_id, maps_link)
--- VALUES ('2024-09-07 07:00:00', NULL, 'Ruta en bicicleta por la montaña', 'Valencia', 'Valencia', 'Acompáñanos en una ruta en bicicleta por los senderos de montaña. Lleva tu bicicleta en -- buen estado y equipo de protección.', 3, 2, 'https://maps.example.com/def');
+-- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, num_assistants, user_id, sport_id, maps_link)
+-- VALUES ('2024-09-07 07:00:00', 2, 'Ruta en bicicleta por la montaña', 'Valencia', 'Valencia', 'Acompáñanos en una ruta en bicicleta por los senderos de montaña. Lleva tu bicicleta en -- buen estado y equipo de protección.', 1, 3, 2, 'https://maps.example.com/def');
 
--- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, user_id, sport_id, maps_link)
--- VALUES ('2024-09-19 10:00:00', 10, 'Competencia de atletismo en el estadio', 'Sevilla', 'Sevilla', 'Participa en una competencia de atletismo en el estadio local. Prepárate para las pruebas de velocidad y resistencia.', 4, 4, 'https://maps.example.com/ghi');
+-- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, num_assistants, user_id, sport_id, maps_link)
+-- VALUES ('2024-09-19 10:00:00', 10, 'Competencia de atletismo en el estadio', 'Sevilla', 'Sevilla', 'Participa en una competencia de atletismo en el estadio local. Prepárate para las pruebas de velocidad y resistencia.', 1, 4, 4, 'https://maps.example.com/ghi');
 
--- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, user_id, sport_id, maps_link)
--- VALUES ('2024-08-19 10:00:00', 10, 'Partido de fútbol amistoso en el campo de deportes', 'Madrid', 'Madrid', 'Únete a un divertido partido de fútbol en el campo de deportes. Asegúrate de llevar tu equipo y estar listo para jugar.', 1, 1, 'https://maps.example.com/jkl');
+-- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, num_assistants, user_id, sport_id, maps_link)
+-- VALUES ('2024-08-19 10:00:00', 10, 'Partido de fútbol amistoso en el campo de deportes', 'Madrid', 'Madrid', 'Únete a un divertido partido de fútbol en el campo de deportes. Asegúrate de llevar tu equipo y estar listo para jugar.', 1, 1, 1, 'https://maps.example.com/jkl');
 
 
 -- Participate
