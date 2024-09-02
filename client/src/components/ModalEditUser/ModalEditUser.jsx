@@ -10,6 +10,7 @@ import * as formik from "formik";
 import * as yup from "yup";
 import "./modalEditUser.css";
 import { GENDER } from "../../helpers/genderData"
+import { BsCalendar3 } from "react-icons/bs";
 
 function ModalEditUser({ show, setShowModal, data }) {
   const [editUser, setEditUser] = useState(data);
@@ -264,10 +265,9 @@ function ModalEditUser({ show, setShowModal, data }) {
                 </>
 
                 {/* CUMPLEAÑOS */}
-                <>
+                <div className="add-activity-datepicker-container">
                   <DatePicker
                     className="filter-datepicker"
-                    showIcon
                     dateFormat="dd/MM/yyyy"
                     locale="es"
                     maxDate={maxDate}
@@ -347,8 +347,9 @@ function ModalEditUser({ show, setShowModal, data }) {
                     onBlur={handleOnBlur}
                     placeholderText="Introduce tu fecha de nacimiento"
                   />
+                  <BsCalendar3 className="add-activity-calendar-icon" />
                   {errorDate ? <span>{errorDate}</span> : null}
-                </>
+                </div>
 
                 {/* CIUDAD */}
                 <>

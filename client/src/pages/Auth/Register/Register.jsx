@@ -14,8 +14,8 @@ import { ModalCreateSport } from "../../../components/ModalCreateSport/ModalCrea
 import { TrioContext } from "../../../context/TrioContextProvider";
 setDefaultLocale("es");
 import ProgressBar from "react-bootstrap/ProgressBar";
+import { BsCalendar3 } from "react-icons/bs";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"; 
-
 
 const initialValue = {
   email: "",
@@ -392,11 +392,10 @@ export const Register = () => {
           <div className="birthDate">
             <ProgressBar animated now={33.33} className="custom-progress" />
             <h2 className="register-text">¿Cuándo es tu cumpleaños?</h2>
-            <div className="container1">
+            <div className="container1 add-activity-datepicker-container">
               <DatePicker
                 className="trio-input trio-input:focus"
                 isClearable
-                showIcon
                 locale={es}
                 maxDate={maxDate}
                 renderCustomHeader={({
@@ -458,6 +457,7 @@ export const Register = () => {
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
               />
+              <BsCalendar3 className="add-activity-calendar-icon" />
             </div>
             <div className="buttons-general">
               <button onClick={volver} type="button" className="trio-btn">
