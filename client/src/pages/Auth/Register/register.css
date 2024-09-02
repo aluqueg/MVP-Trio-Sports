@@ -199,3 +199,10 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--trio2); /* hover de la barra */
 }
+
+.foto{
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
