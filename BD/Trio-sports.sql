@@ -50,7 +50,7 @@ CREATE TABLE activity (
 	activity_id BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     date_time_activity DATETIME NOT NULL,
     limit_users INT,
-    text VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
     activity_city VARCHAR(50) NOT NULL,
     activity_address VARCHAR(250) NOT NULL,
     details TINYTEXT,
@@ -82,9 +82,6 @@ CREATE TABLE comment (
     CONSTRAINT fk_comment_activity FOREIGN KEY (activity_id) REFERENCES activity (activity_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
-
-
 
 -- Inserciones de deportes que el CLIENTE quiere que aparezcan en la aplicación
 INSERT INTO sport (sport_name, sport_img)
@@ -177,8 +174,11 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
  INSERT INTO user (user_name, last_name, user_city, email, password, last_log_date, is_validated, is_disabled, type)
  VALUES ('Admin', 'Admin', 'Admin', 'admin@admin.com', '$2a$08$XXitHE5Yr0jSLaq8x19Cru0FrfskPAxz0NgyZH.JuSaYYVB0PObWe', '2024-08-13 12:00:00', 1, 0, 1);
 
+
 -- Password123!
+
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
+
 -- VALUES ('Juan', 'Pérez', '1990-05-15', 'Hombre', 'juan_perez.jpg', 'Madrid', 'juan.perez@example.com', '$2a$08$3ooLVGALeP5oKD82r1Lv5O2iLcgJ7WDGdqIhzeeL613GfYGE82l.a', 'Amante de la tecnología y la programación.', '2024-08-13 12:00:00', 1, 0, 2);
 
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
@@ -190,6 +190,7 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
 -- VALUES ('Ana', 'Martínez', '1995-07-30', 'Mujer', 'ana_martinez.jpg', 'Sevilla', 'ana.martinez@example.com', '$2a$08$tMTKbFtEY6W7awzgYBBTtONFuSB4U5sD3LzDwSsH63jflKg15v0y.', 'Administradora de empresas con interés en el marketing.', '2024-08-13 13:30:00', 1, 0, 2);
     
+ 
 -- MENSAJES
     
 -- INSERT INTO message (text, date_time, sender_user_id, receiver_user_id, opened)
@@ -242,7 +243,7 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 -- INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, user_id, sport_id, maps_link)
 -- VALUES ('2024-09-19 10:00:00', 10, 'Competencia de atletismo en el estadio', 'Sevilla', 'Sevilla', 'Participa en una competencia de atletismo en el estadio local. Prepárate para las pruebas de velocidad y resistencia.', 4, 4, 'https://maps.example.com/ghi');
 
--- INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, user_id, sport_id, maps_link)
+-- INSERT INTO activity (date_time_activity, limit_users, title, activity_city, activity_address, details, user_id, sport_id, maps_link)
 -- VALUES ('2024-08-19 10:00:00', 10, 'Partido de fútbol amistoso en el campo de deportes', 'Madrid', 'Madrid', 'Únete a un divertido partido de fútbol en el campo de deportes. Asegúrate de llevar tu equipo y estar listo para jugar.', 1, 1, 'https://maps.example.com/jkl');
 
 

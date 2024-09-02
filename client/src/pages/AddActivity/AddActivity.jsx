@@ -16,7 +16,7 @@ export const AddActivity = () => {
   const { token, sports, setSports } = useContext(TrioContext);
   const [dateTimeActivity, setDateTimeActivity] = useState(null);
   const [limitUsers, setLimitUsers] = useState("");
-  const [text, setText] = useState("");
+  const [title, setTitle] = useState("");
   const [activityCity, setActivityCity] = useState("");
   const [activityAddress, setActivityAddress] = useState("");
   const [details, setDetails] = useState("");
@@ -73,7 +73,7 @@ export const AddActivity = () => {
         {
           date_time_activity: formattedDateTime,
           limit_users: limitUsers || null,
-          text,
+          title,
           activity_city: activityCity,
           activity_address: activityAddress,
           details,
@@ -122,13 +122,13 @@ export const AddActivity = () => {
         <div className="add-activity-custom-divider mt-1 mb-1"></div>
 
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formText" className="mb-1">
+          <Form.Group controlId="formTitle" className="mb-1">
             <Form.Label>Título</Form.Label>
             <Form.Control
               type="text"
               placeholder="Introduce el título"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               required
               className="form-input"
             />
