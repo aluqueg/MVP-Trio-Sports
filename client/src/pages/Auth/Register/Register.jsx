@@ -713,7 +713,7 @@ export const Register = () => {
             <h2 className="register-text-block text-center">Se te ha enviado un correo de autenticación</h2>
             <div className="block">
               <h3 className="mb-3 text-center">Muchas gracias por registrarte</h3>
-                <button className="trio-btn" type="button">Ir a Login</button>
+                <button className="trio-btn" type="button" onClick={toLogin}>Ir a Login</button>
             </div>
           </div>
         ) : null}
