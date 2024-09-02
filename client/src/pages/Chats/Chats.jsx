@@ -106,7 +106,6 @@ export const Chats = () => {
       console.log(err);
     }
   };
-  console.log(viewMessages)
   return (
     <Container fluid="xxl" className="chats-body">
       <div className="messages">
@@ -116,7 +115,7 @@ export const Chats = () => {
             const hourOnly = e.last_message_date.split(" ")[1];
             const isToday = dateOnly === actualDate;
             return (
-              <>
+              
                 <div
                   key={idx}
                   className="one-message"
@@ -144,7 +143,7 @@ export const Chats = () => {
                     </Col>
                   </Row>
                 </div>
-              </>
+              
             );
           })}
         </div>
@@ -159,7 +158,7 @@ export const Chats = () => {
               >
                 {e.message_type === "sent" ? null : (
                   <img
-                    src={`http://localhost:4000/images/users/${e?.receiver_user_img
+                    src={`http://localhost:4000/images/users/${e?.sender_user_img
                     }`}
                     alt=""
                   />
@@ -167,7 +166,7 @@ export const Chats = () => {
                 <span>{e.text}</span>
                 {e.message_type === "sent" ? (
                   <img
-                    src={`http://localhost:4000/images/users/${user?.user_img}`}
+                    src={`http://localhost:4000/images/users/${e?.sender_user_img}`}
                     alt=""
                   />
                 ) : null}

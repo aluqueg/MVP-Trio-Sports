@@ -244,20 +244,17 @@ export const Register = () => {
       .post("http://localhost:4000/api/users/createUser", newFormData)
       .then((res) => {
         console.log(res);
-        navigate("/login");
+        setpage(page+1)
       })
       .catch((err) => console.log(err));
   };
 
-  console.log(selectedSport);
-  console.log(userRegister);
-  console.log(file);
   return (
     <Container className="body-register">
       <Form action="">
         {page == 0 ? (
           <div className="email-password">
-            <ProgressBar animated now={12.5} className="custom-progress" />
+            <ProgressBar animated now={11.11} className="custom-progress" />
             <h2 className="register-text">Correo y Contraseña</h2>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label></Form.Label>
@@ -311,7 +308,7 @@ export const Register = () => {
 
         {page == 1 ? (
           <div className="name">
-            <ProgressBar animated now={25} className="custom-progress" />
+            <ProgressBar animated now={22.22} className="custom-progress" />
             <h2 className="register-text">¿Cómo te llamas?</h2>
             <Form.Group className="mb-3" controlId="user_name">
               <Form.Label></Form.Label>
@@ -363,7 +360,7 @@ export const Register = () => {
         {/* CUMPLEAÑOS */}
         {page === 2 ? (
           <div className="birthDate">
-            <ProgressBar animated now={37.5} className="custom-progress" />
+            <ProgressBar animated now={33.33} className="custom-progress" />
             <h2 className="register-text">¿Cuándo es tu cumpleaños?</h2>
             <div className="container1">
               <DatePicker
@@ -456,7 +453,7 @@ export const Register = () => {
         {/* CIUDAD */}
         {page == 3 ? (
           <div className="city">
-            <ProgressBar animated now={50} className="custom-progress" />
+            <ProgressBar animated now={44.44} className="custom-progress" />
             <h2 className="register-text">¿Dónde vives?</h2>
             <div className="container1">
               <Form.Group className="mb-3" controlId="user_city">
@@ -491,7 +488,7 @@ export const Register = () => {
         {/* GENERO */}
         {page == 4 ? (
           <div className="gender">
-            <ProgressBar animated now={62.5} className="custom-progress" />
+            <ProgressBar animated now={55.55} className="custom-progress" />
             <h2 className="register-text-block">¿Cuál es tu género?</h2>
             {noBinario ? (
               <div className="list-genders">
@@ -557,7 +554,7 @@ export const Register = () => {
         {/* SPORTS */}
         {page == 5 ? (
           <div className="sports">
-            <ProgressBar animated now={75} className="custom-progress" />
+            <ProgressBar animated now={66.66} className="custom-progress" />
             <h2 className="register-text-block">
               Elige tus deportes preferidos
             </h2>
@@ -628,7 +625,7 @@ export const Register = () => {
         {/* DESCRIPCION */}
         {page == 6 ? (
           <div className="description">
-            <ProgressBar animated now={87.5} className="custom-progress" />
+            <ProgressBar animated now={77.77} className="custom-progress" />
             <h2 className="register-text-block">Cuéntanos más sobre ti</h2>
             <div className="block">
               <Form.Group className="mb-1">
@@ -663,7 +660,7 @@ export const Register = () => {
         {/* FOTO */}
         {page == 7 ? (
           <div className="photo">
-            <ProgressBar animated now={100} className="custom-progress" />
+            <ProgressBar animated now={88.88} className="custom-progress" />
             <h2 className="register-text-block">Elige una foto para ti</h2>
             <div className="block">
               <img
@@ -672,7 +669,7 @@ export const Register = () => {
                 className="mb-3"
               />
               <Form.Group>
-                <Form.Label htmlFor="file" className="trio-btn">
+                <Form.Label htmlFor="file" className="trio-btn foto">
                   Sube una foto
                 </Form.Label>
                 <Form.Control
@@ -698,6 +695,16 @@ export const Register = () => {
                   Continuar
                 </button>
               )}
+            </div>
+          </div>
+        ) : null}
+                {page == 8 ? (
+          <div className="auth">
+            <ProgressBar animated now={100} className="custom-progress" />
+            <h2 className="register-text-block">Se te ha enviado un correo de autenticación</h2>
+            <div className="block">
+              <h3 className="mb-3">Muchas gracias por registrarte</h3>
+                <button className="trio-btn" type="button">Ir a Login</button>
             </div>
           </div>
         ) : null}
