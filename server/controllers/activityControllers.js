@@ -98,85 +98,59 @@ class ActivityController {
     let formattedCity = formatText(activity_city);
     let formattedAddress = formatText(activity_address);
 
-    // Validación de actividad duplicada (misma fecha, ciudad y deporte)
-    const sqlCheckDuplicate = `SELECT * FROM activity WHERE date_time_activity = ? AND activity_city = ? AND sport_id = ?`;
-    connection.query(
-      sqlCheckDuplicate,
-      [date_time_activity, formattedCity, sport_id],
-      (err, result) => {
-        if (err) {
-          console.error("Error al verificar actividad duplicada:", err);
-          return res
-            .status(500)
-            .json({ error: "Error al verificar actividad duplicada." });
-        }
+    // Crear la nueva actividad en la base de datos
+    const sql = `INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, sport_id, user_id, maps_link, num_assistants) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`;
+    const values = [
+      date_time_activity,
+      limit_users || null,
+      formattedText,
+      formattedCity,
+      formattedAddress,
+      details,
+      sport_id,
+      user_id,
+      maps_link || null,
+    ];
 
-        if (result.length > 0) {
-          return res.status(400).json({
-            error:
-              "Ya existe una actividad similar programada en la misma fecha y lugar.",
-          });
-        }
-
-        // Crear la nueva actividad en la base de datos
-        const sql = `INSERT INTO activity (date_time_activity, limit_users, text, activity_city, activity_address, details, sport_id, user_id, maps_link, num_assistants) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`;
-        const values = [
-          date_time_activity,
-          limit_users || null,
-          formattedText,
-          formattedCity,
-          formattedAddress,
-          details,
-          sport_id,
-          user_id, // Usar el user_id extraído del token
-          maps_link || null,
-        ];
-
-        connection.query(sql, values, (err, result) => {
-          if (err) {
-            console.error("Error al crear la actividad:", err);
-            return res
-              .status(500)
-              .json({ error: "Error al crear la actividad." });
-          }
-
-          const activity_id = result.insertId;
-
-          // Añadir el creador de la actividad como participante automáticamente
-          const sqlAddParticipant = `INSERT INTO participate (activity_id, user_id) VALUES (?, ?)`;
-          connection.query(sqlAddParticipant, [activity_id, user_id], (err) => {
-            if (err) {
-              console.error(
-                "Error al añadir al creador como participante:",
-                err
-              );
-              return res.status(500).json({
-                error: "Error al añadir al creador como participante.",
-              });
-            }
-
-            res.status(201).json({
-              message:
-                "Actividad creada con éxito y creador añadido como participante",
-              activity_id: activity_id,
-            });
-          });
-        });
+    connection.query(sql, values, (err, result) => {
+      if (err) {
+        console.error("Error al crear la actividad:", err);
+        return res.status(500).json({ error: "Error al crear la actividad." });
       }
-    );
+
+      const activity_id = result.insertId;
+
+      // Añadimos al creador de la actividad como participante automáticamente
+      const sqlAddParticipant = `INSERT INTO participate (activity_id, user_id) VALUES (?, ?)`;
+      connection.query(sqlAddParticipant, [activity_id, user_id], (err) => {
+        if (err) {
+          console.error("Error al añadir al creador como participante:", err);
+          return res.status(500).json({
+            error: "Error al añadir al creador como participante.",
+          });
+        }
+
+        res.status(201).json({
+          message:
+            "Actividad creada con éxito y creador añadido como participante",
+          activity_id: activity_id,
+        });
+      });
+    });
   };
 
   joinActivity = (req, res) => {
     const { activity_id } = req.body;
-    
+
     if (!activity_id) {
-        return res.status(400).json({ error: "Activity ID is required." });
+      return res.status(400).json({ error: "Activity ID is required." });
     }
 
     let token = req.headers.authorization.split(" ")[1];
     let decoded = jwt.decode(token);
     let user_id = decoded.id;
 
+<<<<<<< HEAD
     // Verificar la capacidad antes de permitir que el usuario se una
     const sqlCheckCapacity = `SELECT num_assistants, limit_users FROM activity WHERE activity_id = ?`;
     connection.query(sqlCheckCapacity, [activity_id], (err, results) => {
@@ -249,45 +223,140 @@ leaveActivity = (req, res) => {
   // Comprobar si el usuario está inscrito en la actividad
   const sqlCheckParticipation = `SELECT * FROM participate WHERE activity_id = ? AND user_id = ?`;
   connection.query(sqlCheckParticipation, [activity_id, user_id], (err, results) => {
+=======
+    // Verificamos la capacidad de la actividad antes de permitir que el usuario se una
+    const sqlCheckCapacity = `SELECT num_assistants, limit_users FROM activity WHERE activity_id = ?`;
+    connection.query(sqlCheckCapacity, [activity_id], (err, results) => {
+>>>>>>> 100b6fda5c3866b9559ffeddf80b1eba01bbd480
       if (err) {
-          console.error("Error al verificar la participación:", err);
-          return res.status(500).json({ error: "Error al verificar la participación." });
+        console.error("Error al verificar la capacidad:", err);
+        return res
+          .status(500)
+          .json({ error: "Error al verificar la capacidad." });
       }
 
-      if (results.length === 0) {
-          return res.status(400).json({ error: "No estás inscrito en esta actividad." });
+      const { num_assistants, limit_users } = results[0];
+      if (limit_users !== null && num_assistants >= limit_users) {
+        return res
+          .status(400)
+          .json({ error: "La actividad ya está completa." });
       }
 
-      // Eliminar el usuario de la tabla de participantes
-      const sqlRemoveParticipant = `DELETE FROM participate WHERE activity_id = ? AND user_id = ?`;
-      connection.query(sqlRemoveParticipant, [activity_id, user_id], (err) => {
+      // Comprobar si el usuario ya está inscrito en la actividad
+      const sqlCheckParticipation = `SELECT * FROM participate WHERE activity_id = ? AND user_id = ?`;
+      connection.query(
+        sqlCheckParticipation,
+        [activity_id, user_id],
+        (err, results) => {
           if (err) {
-              console.error("Error al abandonar la actividad:", err);
-              return res.status(500).json({ error: "Error al abandonar la actividad." });
+            console.error("Error al verificar la participación:", err);
+            return res
+              .status(500)
+              .json({ error: "Error al verificar la participación." });
           }
 
-          // Actualizar el número de asistentes en la tabla de actividades
-          const sqlUpdateAssistants = `UPDATE activity SET num_assistants = num_assistants - 1 WHERE activity_id = ?`;
-          connection.query(sqlUpdateAssistants, [activity_id], (err) => {
+          if (results.length > 0) {
+            return res
+              .status(400)
+              .json({ error: "Ya estás inscrito en esta actividad." });
+          }
+
+          // Añadir el usuario a la tabla de participantes
+          const sqlAddParticipant = `INSERT INTO participate (activity_id, user_id) VALUES (?, ?)`;
+          connection.query(sqlAddParticipant, [activity_id, user_id], (err) => {
+            if (err) {
+              console.error("Error al unirse a la actividad:", err);
+              return res
+                .status(500)
+                .json({ error: "Error al unirse a la actividad." });
+            }
+
+            // Actualizar el número de asistentes en la tabla de actividades
+            const sqlUpdateAssistants = `UPDATE activity SET num_assistants = num_assistants + 1 WHERE activity_id = ?`;
+            connection.query(sqlUpdateAssistants, [activity_id], (err) => {
               if (err) {
-                  console.error("Error al actualizar la actividad:", err);
-                  return res.status(500).json({ error: "Error al actualizar la actividad." });
+                console.error("Error al actualizar la actividad:", err);
+                return res
+                  .status(500)
+                  .json({ error: "Error al actualizar la actividad." });
+              }
+
+              res.status(200).json({ message: "Te has unido a la actividad." });
+            });
+          });
+        }
+      );
+    });
+  };
+
+  leaveActivity = (req, res) => {
+    const { activity_id } = req.body;
+
+    if (!activity_id) {
+      return res.status(400).json({ error: "Activity ID is required." });
+    }
+
+    // Obtener el user_id del token
+    let token = req.headers.authorization.split(" ")[1];
+    let decoded = jwt.decode(token);
+    let user_id = decoded.id;
+
+    // Comprobar si el usuario está inscrito en la actividad
+    const sqlCheckParticipation = `SELECT * FROM participate WHERE activity_id = ? AND user_id = ?`;
+    connection.query(
+      sqlCheckParticipation,
+      [activity_id, user_id],
+      (err, results) => {
+        if (err) {
+          console.error("Error al verificar la participación:", err);
+          return res
+            .status(500)
+            .json({ error: "Error al verificar la participación." });
+        }
+
+        if (results.length === 0) {
+          return res
+            .status(400)
+            .json({ error: "No estás inscrito en esta actividad." });
+        }
+
+        // Eliminar el usuario de la tabla de participantes
+        const sqlRemoveParticipant = `DELETE FROM participate WHERE activity_id = ? AND user_id = ?`;
+        connection.query(
+          sqlRemoveParticipant,
+          [activity_id, user_id],
+          (err) => {
+            if (err) {
+              console.error("Error al abandonar la actividad:", err);
+              return res
+                .status(500)
+                .json({ error: "Error al abandonar la actividad." });
+            }
+
+            // Actualizar el número de asistentes en la tabla de actividades
+            const sqlUpdateAssistants = `UPDATE activity SET num_assistants = num_assistants - 1 WHERE activity_id = ?`;
+            connection.query(sqlUpdateAssistants, [activity_id], (err) => {
+              if (err) {
+                console.error("Error al actualizar la actividad:", err);
+                return res
+                  .status(500)
+                  .json({ error: "Error al actualizar la actividad." });
               }
 
               res.status(200).json({ message: "Has abandonado la actividad." });
-          });
-      });
-  });
-};
-
-  
+            });
+          }
+        );
+      }
+    );
+  };
 
   getAllActivities = (req, res) => {
     // Obtener el user_id del token
     let token = req.headers.authorization.split(" ")[1];
     let decoded = jwt.decode(token);
     let user_id = decoded.id;
-  
+
     const sql = `
       SELECT a.activity_id, a.date_time_activity, a.limit_users, a.text, a.activity_city, 
              a.activity_address, a.details, a.maps_link, a.num_assistants, s.sport_name, s.sport_img,
@@ -308,24 +377,26 @@ leaveActivity = (req, res) => {
       LEFT JOIN participate p ON a.activity_id = p.activity_id AND p.user_id = ?
       WHERE a.is_deleted = 0
       ORDER BY is_past ASC, a.date_time_activity ASC`;
-  
+
     connection.query(sql, [user_id, user_id], (error, results) => {
       if (error) {
         console.error("Error al obtener las actividades:", error);
-        return res.status(500).json({ error: "Error al obtener las actividades" });
+        return res
+          .status(500)
+          .json({ error: "Error al obtener las actividades" });
       }
       res.status(200).json(results);
     });
   };
-  
+
   getOneActivity = (req, res) => {
     const { activity_id } = req.params;
-  
+
     // Obtener el user_id del token
     let token = req.headers.authorization.split(" ")[1];
     let decoded = jwt.decode(token);
     let user_id = decoded.id;
-  
+
     const sqlGetActivity = `
       SELECT a.*, s.sport_name, s.sport_img,
              CASE
@@ -340,41 +411,48 @@ leaveActivity = (req, res) => {
       JOIN sport s ON a.sport_id = s.sport_id
       LEFT JOIN participate p ON a.activity_id = p.activity_id AND p.user_id = ?
       WHERE a.activity_id = ? AND a.is_deleted = 0`;
-  
-    connection.query(sqlGetActivity, [user_id, user_id, activity_id], (err, result) => {
-      if (err) {
-        console.error("Error al obtener la actividad:", err);
-        return res.status(500).json({ error: "Error al obtener la actividad." });
+
+    connection.query(
+      sqlGetActivity,
+      [user_id, user_id, activity_id],
+      (err, result) => {
+        if (err) {
+          console.error("Error al obtener la actividad:", err);
+          return res
+            .status(500)
+            .json({ error: "Error al obtener la actividad." });
+        }
+
+        if (result.length > 0) {
+          res.json(result[0]);
+        } else {
+          res
+            .status(404)
+            .json({ message: "Actividad no encontrada o ha sido eliminada" });
+        }
       }
-  
-      if (result.length > 0) {
-        res.json(result[0]);
-      } else {
-        res.status(404).json({ message: "Actividad no encontrada o ha sido eliminada" });
-      }
-    });
+    );
   };
-  
 
-
-  
   // obtener los datos de una actividad para su edición
   getEditActivity = (req, res) => {
     const { activity_id } = req.params;
-    const sql = 'SELECT * FROM activity WHERE activity_id = ? AND is_deleted = 0';
-  
+    const sql =
+      "SELECT * FROM activity WHERE activity_id = ? AND is_deleted = 0";
+
     connection.query(sql, [activity_id], (err, results) => {
       if (err) {
-        console.error('Error al obtener la actividad:', err);
-        return res.status(500).json({ error: 'Error al obtener la actividad' });
+        console.error("Error al obtener la actividad:", err);
+        return res.status(500).json({ error: "Error al obtener la actividad" });
       }
       if (results.length === 0) {
-        return res.status(404).json({ error: 'Actividad no encontrada o ha sido eliminada' });
+        return res
+          .status(404)
+          .json({ error: "Actividad no encontrada o ha sido eliminada" });
       }
       res.json(results[0]);
     });
   };
-  
 
   // editar la actividad en db
   editActivity = (req, res) => {
@@ -387,7 +465,7 @@ leaveActivity = (req, res) => {
       activity_address,
       details,
       maps_link,
-    } = req.body; 
+    } = req.body;
 
     const sql = `
       UPDATE activity 
@@ -395,44 +473,54 @@ leaveActivity = (req, res) => {
       WHERE activity_id = ?`;
 
     const values = [
-      date_time_activity, 
-      limit_users, 
-      text, 
-      activity_city, 
-      activity_address, 
-      details, 
-      maps_link, 
-      activity_id
+      date_time_activity,
+      limit_users,
+      text,
+      activity_city,
+      activity_address,
+      details,
+      maps_link,
+      activity_id,
     ];
 
     connection.query(sql, values, (err, result) => {
       if (err) {
-        console.error('Error al actualizar la actividad:', err);
-        return res.status(500).json({ error: 'Error al actualizar la actividad' });
+        console.error("Error al actualizar la actividad:", err);
+        return res
+          .status(500)
+          .json({ error: "Error al actualizar la actividad" });
       }
       if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Actividad no encontrada' });
+        return res.status(404).json({ error: "Actividad no encontrada" });
       }
-      res.json({ message: `Actividad con activity_id: ${activity_id} actualizada con éxito` });
+      res.json({
+        message: `Actividad con activity_id: ${activity_id} actualizada con éxito`,
+      });
     });
   };
 
   deleteActivity = (req, res) => {
     const { activity_id } = req.params;
-    const sql = 'UPDATE activity SET is_deleted = 1 WHERE activity_id = ? AND is_deleted = 0'; // Solo marcar como eliminada si no ha sido eliminada previamente
-  
+    const sql =
+      "UPDATE activity SET is_deleted = 1 WHERE activity_id = ? AND is_deleted = 0"; // Solo marcar como eliminada si no ha sido eliminada previamente
+
     connection.query(sql, [activity_id], (err, result) => {
       if (err) {
-        console.error('Error al borrar (lógicamente) la actividad:', err);
-        return res.status(500).json({ error: 'Error al borrar (lógicamente) la actividad' });
+        console.error("Error al borrar (lógicamente) la actividad:", err);
+        return res
+          .status(500)
+          .json({ error: "Error al borrar (lógicamente) la actividad" });
       }
       if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Actividad no encontrada o ya eliminada' }); // Mensaje más claro
+        return res
+          .status(404)
+          .json({ error: "Actividad no encontrada o ya eliminada" }); // Mensaje más claro
       }
-      res.json({ message: `Actividad con activity_id: ${activity_id} marcada como eliminada` });
+      res.json({
+        message: `Actividad con activity_id: ${activity_id} marcada como eliminada`,
+      });
     });
   };
-  
 }
 
 module.exports = new ActivityController();

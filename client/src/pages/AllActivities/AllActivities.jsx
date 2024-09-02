@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Container, Row} from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TrioContext } from "../../context/TrioContextProvider";
@@ -174,7 +174,6 @@ export const AllActivities = () => {
   };
 
   const handleLeaveActivity = async (activityId) => {
-
     try {
       const response = await axios.put(
         "http://localhost:4000/api/activity/leaveActivity",

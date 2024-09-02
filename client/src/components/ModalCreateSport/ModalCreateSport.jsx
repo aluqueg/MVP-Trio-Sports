@@ -6,7 +6,7 @@ export const ModalCreateSport = ({
   show,
   closeModal,
   onSportCreated,
-  existingSports
+  existingSports,
 }) => {
   const [sportName, setSportName] = useState("");
   const [error, setError] = useState("");
@@ -43,7 +43,10 @@ export const ModalCreateSport = ({
       console.log("Error en la solicitud:", error.response || error);
 
       if (error.response && error.response.data) {
-        setError(error.response.data.error || "No se puede crear el deporte. Inténtalo de nuevo con otro deporte o elija un deporte de la lista.");
+        setError(
+          error.response.data.error ||
+            "No se puede crear el deporte. Inténtalo de nuevo con otro deporte o elija un deporte de la lista."
+        );
       } else {
         setError("Error al crear el deporte. Inténtalo de nuevo.");
       }
@@ -78,7 +81,11 @@ export const ModalCreateSport = ({
       </Modal.Body>
 
       <Modal.Footer>
-        <button type="button" className="trio-cancel-btn me-2" onClick={closeModal}>
+        <button
+          type="button"
+          className="trio-cancel-btn me-2"
+          onClick={closeModal}
+        >
           Cancelar
         </button>
         <button type="button" className="trio-btn" onClick={handleSubmit}>
