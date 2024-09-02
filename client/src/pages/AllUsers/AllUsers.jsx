@@ -2,7 +2,7 @@ import { TrioContext } from "../../context/TrioContextProvider";
 import { useContext, useEffect, useState } from "react";
 import { CardOneUser } from "../../components/CardOneUser/CardOneUser";
 import axios from "axios";
-import { gender } from "../../helpers/genderData";
+import { GENDER } from "../../helpers/genderData";
 import { Col, Container, Row, Form } from "react-bootstrap";
 import "./allUsers.css";
 
@@ -108,7 +108,7 @@ export const AllUsers = () => {
               onChange={(e) => setSelectedGender(e.target.value)}
               >
               <option value="">Sexo</option>
-              {gender.map((e, index) => {
+              {GENDER.map((e, index) => {
                 return (
                   <option key={index} >
                     {e}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, Button, Form, Alert } from "react-bootstrap";
+import { Modal, Form, Alert } from "react-bootstrap";
 
 const ModalCreateComment = ({ show, handleClose, handleCommentSubmit }) => {
   const [comment, setComment] = useState("");
@@ -11,7 +11,6 @@ const ModalCreateComment = ({ show, handleClose, handleCommentSubmit }) => {
       setError("El comentario no puede estar vacío.");
       return;
     }
-
     // Si pasa las validaciones, envía el comentario
     handleCommentSubmit(comment);
     setComment(""); 

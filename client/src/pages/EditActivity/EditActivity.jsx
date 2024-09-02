@@ -85,16 +85,13 @@ export const EditActivity = () => {
         }
       );
 
-      console.log(response);
-
       if (response.status === 200) {
         setSuccess("Actividad actualizada con éxito");
         setTimeout(() => {
-          navigate("/profile"); // Redirigir a la vista de perfil actualizada
+          navigate("/profile"); // Se redirige a la vista de perfil actualizada
         }, 2000);
       }
     } catch (error) {
-      console.error("Error al actualizar la actividad:", error);
       if (error.response && error.response.data) {
         setError(error.response.data.error);
       } else {
@@ -112,7 +109,6 @@ export const EditActivity = () => {
           headers: { Authorization: `Bearer ${token}` }, // token
         }
       );
-      console.log(response);
 
       setSuccess("Actividad eliminada correctamente.");
 

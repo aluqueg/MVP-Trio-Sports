@@ -14,7 +14,6 @@ class adminController {
 
   disableUser = (req,res)=>{
     const {user_id,status} = req.body
-    console.log(req.body)
     let sql = `UPDATE user SET is_disabled = 1 WHERE user_id = ${user_id}`
 
     connection.query(sql,(err)=>{
@@ -35,7 +34,6 @@ class adminController {
 
   enableUser = (req,res)=>{
     const {user_id} = req.body
-    console.log(req.body)
     let sql = `UPDATE user SET is_disabled = 0 WHERE user_id = ${user_id}`
 
     connection.query(sql,(err, result)=>{

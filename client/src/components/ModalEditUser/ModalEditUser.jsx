@@ -9,6 +9,7 @@ import axios from "axios";
 import * as formik from "formik";
 import * as yup from "yup";
 import "./modalEditUser.css";
+import { GENDER } from "../../helpers/genderData"
 
 function ModalEditUser({ show, setShowModal, data }) {
   const [editUser, setEditUser] = useState(data);
@@ -89,16 +90,7 @@ function ModalEditUser({ show, setShowModal, data }) {
 
   const [noBinario, setNoBinario] = useState(false);
   const selectNobinario = () => setNoBinario(!noBinario);
-  const generos = [
-    "Hombre",
-    "Mujer",
-    "Hombre trans",
-    "Mujer trans",
-    "Género Fluido",
-    "No binario",
-    "Pangénero",
-    "Prefiero no contestar"
-  ];
+
   const gender = (genero) => {
     setEditUser({ ...editUser, gender: genero });
   };
@@ -388,7 +380,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                       onChange={(e) => gender(e.target.value)}
                       value={editUser.gender}
                     >
-                      {generos.map((e, idx) => (
+                      {GENDER.map((e, idx) => (
                         <option key={idx} value={e}>
                           {e}
                         </option>

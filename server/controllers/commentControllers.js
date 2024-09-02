@@ -7,11 +7,10 @@ class CommentController {
 
     const sql = `
     SELECT c.comment_id, c.text, c.date, u.user_name, u.user_img 
-FROM comment c 
-JOIN user u ON c.user_id = u.user_id 
-WHERE c.activity_id = ? 
-ORDER BY c.date DESC
-
+    FROM comment c 
+    JOIN user u ON c.user_id = u.user_id 
+    WHERE c.activity_id = ? 
+    ORDER BY c.date DESC
     `;
 
     connection.query(sql, [activity_id], (error, results) => {

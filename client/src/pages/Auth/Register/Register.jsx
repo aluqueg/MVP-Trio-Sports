@@ -15,8 +15,15 @@ import { TrioContext } from "../../../context/TrioContextProvider";
 setDefaultLocale("es");
 import ProgressBar from "react-bootstrap/ProgressBar";
 
+const initialValue = {
+  email: "",
+  password: "",
+  user_name: "",
+  last_name: "",
+}
+
 export const Register = () => {
-  const [userRegister, setUserRegister] = useState({});
+  const [userRegister, setUserRegister] = useState(initialValue);
   const [page, setpage] = useState(0);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -42,7 +49,7 @@ export const Register = () => {
 
     switch (name) {
       case "user_name":
-        if (!value) {
+        if (value === "") {
           error = "El nombre es obligatorio";
         } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,15}$/.test(value)) {
           error =
@@ -88,7 +95,6 @@ export const Register = () => {
         "http://localhost:4000/api/users/emailValidator",
         userRegister
       );
-      console.log("continuar res", res);
 
       let emailIsValid = false;
       let passwordIsValid = false;
@@ -101,10 +107,8 @@ export const Register = () => {
         )
       ) {
         emailError = "Formato de email incorrecto";
-        console.log("error 1");
       } else if (res.data[0]) {
         emailError = "Este email ya esta en uso";
-        console.log("error 2");
       } else {
         emailIsValid = true;
       }
@@ -139,16 +143,19 @@ export const Register = () => {
   };
 
   const continuar = () => {
-    // Validar los campos de la página actual
     const isValid = Object.keys(userRegister).every((key) =>
       validateField(key, userRegister[key])
     );
-    console.log("valid", isValid);
 
     if (isValid) {
-      // Avanza a la siguiente página si la validación es exitosa
-      setpage(page + 1);
-      setFormErrors({});
+      if(page === 1){
+        setUserRegister({...userRegister, user_city: ""})
+        setpage(page + 1);
+        setFormErrors({});
+      }else{
+        setpage(page + 1);
+        setFormErrors({});
+      }
     }
   };
 
@@ -235,6 +242,7 @@ export const Register = () => {
     newFormData.append("userRegister", JSON.stringify(userRegister));
     newFormData.append("last_log_date", lastLogDate);
     newFormData.append("sports", selectedSport);
+
     if (file) {
       newFormData.append("file", file);
     }
@@ -242,7 +250,7 @@ export const Register = () => {
     axios
       .post("http://localhost:4000/api/users/createUser", newFormData)
       .then((res) => {
-        console.log(res);
+        navigate("/login");
         setpage(page+1)
       })
       .catch((err) => console.log(err));
@@ -570,11 +578,10 @@ export const Register = () => {
                 <ListGroup as="ul" className="all_sports">
                   {sports.map((e, idx) => {
                     return (
-                      <>
+                      <div  key={idx}>
                         {selectedSport.includes(e.sport_id) ? (
                           <ListGroup.Item
                             as="li"
-                            key={idx}
                             onClick={() => removeSports(e.sport_id)}
                             active
                           >
@@ -583,13 +590,12 @@ export const Register = () => {
                         ) : (
                           <ListGroup.Item
                             as="li"
-                            key={idx}
                             onClick={() => addSports(e.sport_id)}
                           >
                             {e.sport_name}
                           </ListGroup.Item>
                         )}
-                      </>
+                      </div>
                     );
                   })}
                   <ListGroup.Item onClick={addSportStatus}>
@@ -638,7 +644,7 @@ export const Register = () => {
                   placeholder="Descríbete en pocas palabras"
                   onChange={handleRegister}
                   name="description"
-                  maxlength="255"
+                  maxLength="255"
                   className="description-text"
                 />
               </Form.Group>
@@ -704,10 +710,10 @@ export const Register = () => {
                 {page == 8 ? (
           <div className="auth">
             <ProgressBar animated now={100} className="custom-progress" />
-            <h2 className="register-text-block">Se te ha enviado un correo de autenticación</h2>
+            <h2 className="register-text-block text-center">Se te ha enviado un correo de autenticación</h2>
             <div className="block">
-              <h3 className="mb-3">Muchas gracias por registrarte</h3>
-                <button className="trio-btn" type="button" onClick={toLogin}>Ir a Login</button>
+              <h3 className="mb-3 text-center">Muchas gracias por registrarte</h3>
+                <button className="trio-btn" type="button">Ir a Login</button>
             </div>
           </div>
         ) : null}
