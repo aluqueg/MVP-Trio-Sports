@@ -175,7 +175,7 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 -- Admin123!
  INSERT INTO user (user_name, last_name, user_city, email, password, last_log_date, is_validated, is_disabled, type)
- VALUES ('Admin', 'Admin', 'Admin', 'admin@admin.com', '$2a$08$9LIL5TD7k7dzrKYp9AKmLelrIhSLM..LfxI7GVP2Gm76CaZlNLmT2', '2024-08-13 12:00:00', 1, 0, 1);
+ VALUES ('Admin', 'Admin', 'Admin', 'admin@admin.com', '$2a$08$Ln5EpUoPUyhcRRXNYJHGzOM12qAWuZadtnFx1maHrBm0gon6UeEYy', '2024-08-13 12:00:00', 1, 0, 1);
 
 -- Password123!
 -- INSERT INTO user (user_name, last_name, birth_date, gender, user_img, user_city, email, password, description, last_log_date, is_validated, is_disabled, type)
@@ -253,6 +253,9 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 -- INSERT INTO participate (activity_id, user_id, date_time_participate)
 -- VALUES (1, 3, '2024-08-17 06:50:00');
+
+-- INSERT INTO participate (activity_id, user_id, date_time_participate)
+-- VALUES (2, 2, '2024-08-17 06:50:00');
 
 -- INSERT INTO participate (activity_id, user_id, date_time_participate)
 -- VALUES (3, 4, '2024-08-19 09:30:00');
