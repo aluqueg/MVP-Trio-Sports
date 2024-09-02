@@ -416,7 +416,7 @@ function ModalEditUser({ show, setShowModal, data }) {
                     </div>
                     <button
                       type="button"
-                      className="trio-btn"
+                      className="trio-btn mt-3"
                       onClick={addSportStatus}
                     >
                       Añadir deporte
@@ -456,7 +456,7 @@ function ModalEditUser({ show, setShowModal, data }) {
 
                 <>
                   <Form.Group className="mb-3">
-                    <Form.Label htmlFor="file">
+                    <Form.Label htmlFor="file" className="trio-btn text-center">
                       Editar foto de perfil
                     </Form.Label>
                     <Form.Control
