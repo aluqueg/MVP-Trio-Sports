@@ -2,6 +2,7 @@ import Card from "react-bootstrap/Card";
 import { format } from "date-fns";
 import { Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import './cardOneUser.css'
 
 export const CardOneUser = ({ data }) => {
   let userBirthDate = parseInt(data.birth_date);
@@ -10,7 +11,7 @@ export const CardOneUser = ({ data }) => {
   
 
   return (    
-      <Card className="rounded-4" style={{ width: "830px" }}>        
+      <Card className=" rounded-4" style={{ width: "830px" }}>        
         <Link to={`/oneUser/${data.user_id}`} style={{ textDecoration: "none", color: "inherit" }}>
       <Row>
         <Col md={4} >
