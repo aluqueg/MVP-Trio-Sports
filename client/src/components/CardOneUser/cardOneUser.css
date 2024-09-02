@@ -1,3 +1,6 @@
-.container-card{
-  width: 200px;
+.card{
+  img{
+    object-fit: cover;
+    aspect-ratio: 1/1;
+  }
 }
