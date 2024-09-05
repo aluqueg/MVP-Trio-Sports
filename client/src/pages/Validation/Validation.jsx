@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import axios from 'axios'
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import "./validation.css"
 
 export const Validation = () => {
   const url = `${location.pathname}`
@@ -20,8 +21,9 @@ export const Validation = () => {
     }
   },[])
   return (
-    <div>Correo validado
-      <Button onClick={()=>navigate("/login")}>Ir a Login</Button>
+    <div className='body-validation'>
+      <h1 className='mb-5'>Correo Validado</h1>
+      <button className='trio-btn' onClick={()=>navigate("/login")}>Ir a Login</button>
     </div>
   )
 }
