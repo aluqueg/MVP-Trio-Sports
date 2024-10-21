@@ -5,7 +5,7 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: "triosports.oficial@gmail.com",
+    user: "alexmakigo@gmail.com",
     pass: "qtecywagqzsjlmuu",
   },
 });
@@ -26,7 +26,7 @@ const recuperarPassword = (email,  token) => {
 </html>`;
 
 const info = transporter.sendMail({
-  from: '"trio" <triosports.oficial@gmail.com>',
+  from: '"trio" <alexmakigo@gmail.com>',
   to: email,
   subject: "Recupera tu contraseña",
   html: mensajeHtml 

@@ -32,6 +32,8 @@ export const RecoverPassword = () => {
         "http://localhost:4000/api/users/recoverPassword",
         {id: email}
       );
+      console.log(res);
+      
     } catch (err) {
       console.log(err);
     }

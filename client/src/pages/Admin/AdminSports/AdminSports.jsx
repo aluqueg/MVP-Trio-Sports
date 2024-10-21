@@ -32,6 +32,8 @@ export const AdminSports = () => {
           sport_id: id,
         })
         .then((res) => {
+          console.log(res);
+          
           getAllSports();
         })
         .catch((error) => {
@@ -45,6 +47,8 @@ export const AdminSports = () => {
           sport_id: id
         })
         .then((res) => {
+          console.log(res);
+          
           getAllSports();
         })
         .catch((error) => {

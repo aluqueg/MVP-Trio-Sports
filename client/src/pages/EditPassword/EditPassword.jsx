@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { useState } from 'react'
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import './editPassword.css'
 import { Container } from 'react-bootstrap';
@@ -33,7 +32,8 @@ export const EditPassword = () => {
       setMsg({show: false})      
     }
     try {
-      const res = await axios.put("http://localhost:4000/api/users/editPassword", {password, validationToken})      
+      const res = await axios.put("http://localhost:4000/api/users/editPassword", {password, validationToken})
+      console.log(res);            
       navigate("/login")
     }catch(err){
       console.log(err);      
